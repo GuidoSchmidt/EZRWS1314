@@ -3,7 +3,7 @@
 #
 # Project Properties
 #
-set(PROJECT_NAME "wip")
+set(PROJECT_NAME "tone")
 
 CMAKE_MINIMUM_REQUIRED (VERSION 2.6.2)
 PROJECT ( ${PROJECT_NAME} )
@@ -35,10 +35,9 @@ SET (LIBRARY_OUTPUT_PATH "${MAINFOLDER}/lib")
 # Project Search Paths
 #
 LIST (APPEND CMAKE_PREFIX_PATH "${MAINFOLDER}")
-LIST (APPEND CMAKE_PREFIX_PATH "${MAINFOLDER}/tools")
-LIST (APPEND CMAKE_PREFIX_PATH "${MAINFOLDER}/thirdparty")
+LIST (APPEND CMAKE_PREFIX_PATH "${MAINFOLDER}/ext")
 SET (CMAKE_MODULE_PATH "${MAINFOLDER}/tools/share/cmake")
-INCLUDE_DIRECTORIES("${MAINFOLDER}/include")
+INCLUDE_DIRECTORIES("${MAINFOLDER}/ext/include")
 
 #
 # Locate Project Prerequisites 
@@ -50,7 +49,7 @@ INCLUDE_DIRECTORIES("${MAINFOLDER}/include")
 #set(MY_EXTRACTED_FILE "ext/include/extracted")
 
 #if (NOT EXISTS "${MY_DOWNLOAD_PATH}")
-    file(DOWNLOAD "${MY_URL}" "${MY_DOWNLOAD_PATH}")
+#   file(DOWNLOAD "${MY_URL}" "${MY_DOWNLOAD_PATH}")
 #endif()
 
 #add_custom_command( OUTPUT "${MY_EXTRACTED_FILE}" COMMAND command to unpack DEPENDS "${MY_DOWNLOAD_PATH}")
@@ -115,4 +114,8 @@ ENDIF (EXISTS "${MAINFOLDER}/include/${PROJECT_NAME}" AND IS_DIRECTORY "${MAINFO
 
 #
 # Add Documentation Targets
+#
+
+#
+# Add Source
 #

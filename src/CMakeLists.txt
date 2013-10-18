@@ -1,0 +1,16 @@
+FILE (GLOB_RECURSE project_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
+SET (project_MOC_HEADERS app.h)
+SET (project_BIN ${PROJECT_NAME})
+
+# Executables
+ADD_EXECUTABLE(${project_BIN} ${project_SRCS} ${project_MOC_SRCS_GENERATED})
+
+# Libraries
+LINK_DIRECTORIES(${MAINFOLDER}/ext/lib/)
+TARGET_LINK_LIBRARIES(${project_BIN} opengl32)
+TARGET_LINK_LIBRARIES(${project_BIN} ${MAINFOLDER}/ext/lib/glew32.lib)
+TARGET_LINK_LIBRARIES(${project_BIN} ${MAINFOLDER}/ext/lib/glfw3.lib)
+
+SET_TARGET_PROPERTIES(${project_BIN} PROPERTIES VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}" OUTPUT_NAME ${project_BIN} CLEAN_DIRECT_OUTPUT 1)
+
+INSTALL(TARGETS ${project_BIN} DESTINATION bin)
