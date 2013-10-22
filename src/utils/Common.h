@@ -1,11 +1,19 @@
 //! Common Header
 /*!
- * Common header includes
+ * Often used includes
  */
-#pragma once
-#include <string>
-#include <iostream>
 
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
-#include <glm/glm.hpp>
+#pragma once
+#ifndef COMMON_H
+#define COMMON_H
+
+//! C++ includes
+    #include <string>
+    #include <iostream>
+
+//! Third party includes
+    #include <GL/glew.h>
+    #include <GLFW/glfw3.h>
+    #include <glm/glm.hpp>
+
+#endif //COMMON_H

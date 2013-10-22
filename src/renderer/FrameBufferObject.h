@@ -5,51 +5,51 @@
  */
 
 #pragma once
+#ifndef FRAMEBUFFEROBJECT_H
+#define FRAMEBUFFEROBJECT_H
 
 #include "../utils/Common.h"
 #include <vector>
 #include <iostream>
 
 namespace tone {
-	namespace renderer {
-		//! @class FrameBuffeObject
-		class FrameBufferObject
-		{
-			private:
-				GLuint m_FBO_ID;
-				bool m_isGBuffer;
-				int m_width, m_height;
-				GLsizei m_attachmentCounter;
+    namespace renderer {
+        //! @class FrameBuffeObject
+        class FrameBufferObject
+        {
+            private:
+                GLuint m_FBO_ID;
+                bool m_isGBuffer;
+                int m_width, m_height;
+                GLsizei m_attachmentCounter;
 
-				GLuint m_depthBuffer;
-				GLuint m_depthTexture;
-				GLuint m_depthMSTexture;
+                GLuint m_depthBuffer;
+                GLuint m_depthTexture;
+                GLuint m_depthMSTexture;
 
-				std::vector<GLuint> m_renderTargets;
-				std::vector<GLenum> m_drawBuffers;
+                std::vector<GLuint> m_renderTargets;
+                std::vector<GLenum> m_drawBuffers;
 
-			public:
-				FrameBufferObject(bool gBuffer);
-				FrameBufferObject(int width, int height, bool gBuffer);
-				~FrameBufferObject();
+            public:
+                FrameBufferObject(int width, int height, bool gBuffer);
+                ~FrameBufferObject();
 
-				void AddColorAttachment(int textureUnit);
-				void AddDepthAttachment_Buffer();
-				void AddDepthAttachment_Texture(int textureUnit);
-				void AddDepthAttachment_MultisampleTexture(int textureUnit);
+                void AddColorAttachment(int textureUnit);
+                void AddDepthAttachment_Buffer();
+                void AddDepthAttachment_Texture(int textureUnit);
+                void AddDepthAttachment_MultisampleTexture(int textureUnit);
 
-				void CreateGBuffer(void);
-				void CreateBuffers(int count);
+                void CreateGBuffer(void);
+                void CreateBuffers(int count);
 
+                void Use(void);
+                void Unuse(void);
 
-				void Use(void);
-				void Unuse(void);
-
-				//! Getters
-				GLuint GetTexture(unsigned int index);
-				GLuint GetDepthTexture(void);
-				GLuint GetDepthMSTexture(void);
-				int GetRenderTargetCound(void);
-		};
-	}
+                GLuint GetTexture(unsigned int index);
+                GLuint GetDepthTexture(void);
+                GLuint GetDepthMSTexture(void);
+                int GetRenderTargetCound(void);
+        };
+    }
 }
+#endif //FRAMEBUFFEROBJECT_H
