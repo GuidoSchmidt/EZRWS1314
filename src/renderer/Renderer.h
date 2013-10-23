@@ -3,14 +3,12 @@
 #ifndef H_RENDERER
 #define H_RENDERER
 
-#define GLFW_DLL
-#define GLFW_CDECL
-#include "ShaderProgram.h"
-#include "FrameBufferObject.h"
 #include "Context.h"
+#include "FrameBufferObject.h"
+#include "ShaderProgram.h"
 
 namespace tone {
-	namespace renderer {
+	namespace renderer {		
 		//! @class Renderer
 		class Renderer
 		{
@@ -20,12 +18,13 @@ namespace tone {
 				int m_fps;
 				double m_current_time, m_previous_time;
 
-				/*! Constructor and destrcutor are private because
-				 *	Renderer is implemented as signleton class
+				/*! Constructor and destructor are private because
+				 *	Renderer is implemented as singleton class
 				 */
 				Renderer(void);
 				~Renderer(void);
 				void init(void);
+				void setupGL(void);
 				
 				//! Context, which holds a window to render to
 				Context* m_context;
@@ -34,7 +33,8 @@ namespace tone {
 				ShaderProgram* m_shaderProgram_forward;
 
 			public:
-				static Renderer& instance(void);
+				//! Returns the singleton instance
+				static Renderer* instance(void);
 				void Renderer::setRenderContext(Context& context);
 				void renderloop(void);
 
@@ -62,8 +62,6 @@ namespace tone {
 				}
 				*/
 		};
-
-		static Renderer& renderer(void) { return Renderer::instance(); }
 	}
 }
 #endif //H_RENDERER

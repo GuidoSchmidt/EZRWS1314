@@ -7,7 +7,7 @@ namespace tone {
         Context::Context(const glm::ivec2& size)
         {
             m_size = size;
-            m_title = "Monarch Renderer";
+            m_title = "tone";
             init();
         }
 
@@ -23,25 +23,29 @@ namespace tone {
             */
         void Context::init()
         {
+			FILE *stream ;
+			if((stream = freopen("log.txt", "w", stdout)) == NULL)
+				std::cerr << "ERROR (Log): Could not write to file";
+			std::cout << "*** LOG ***" << std::endl;
+
             if(!glfwInit())
             {
                 //! Error handling
-                std::cout << "ERROR (GLFW): Initialization failed!\n";
+                std::cerr << "ERROR (GLFW): Initialization failed!\n";
             }
 
             m_window = glfwCreateWindow(m_size.x, m_size.y, m_title.c_str(), 0, 0);
             if(!m_window)
             {
                 //! Error handling
-                std::cout << "ERROR (GLFW): Window could not be created!\n";
+                std::cerr << "ERROR (GLFW): Window could not be created!\n";
             }
             glfwMakeContextCurrent(m_window);
 
-            glewExperimental = GL_TRUE;
             if(glewInit() != GLEW_OK)
             {
                 //! Error handling
-                std::cout << "ERROR (GLEW): Initialization failed!\n";
+                std::cerr << "ERROR (GLEW): Initialization failed!\n";
             }
 
             const GLubyte* glinfo_renderer_ptr = glGetString(GL_RENDERER);
@@ -54,16 +58,15 @@ namespace tone {
             glGetIntegerv(GL_MINOR_VERSION, &glinfo_minor);
 
             //! Write renderer infos to log
-            std::cout << "--- HARDWARE -------------------------------------------------------------\n";
+            std::cout << "--- HARDWARE -------------------------------------------------------------" << std::endl;
             std::cout << "OpenGL Vendor:     ";
-            std::cout << glinfo_vendor_ptr;
-            std::cout << "\nOpenGL Renderer:   ";
-            std::cout << glinfo_renderer_ptr;
-            std::cout << "\nOpenGL Version:    ";
-            std::cout << glinfo_openglVersion_ptr;
-            std::cout << "\nGLSL Version:      ";
-            std::cout << glinfo_glslVersion_ptr;
-            std::cout << "\n\n";
+            std::cout << glinfo_vendor_ptr << std::endl;
+            std::cout << "OpenGL Renderer:   ";
+            std::cout << glinfo_renderer_ptr << std::endl;
+            std::cout << "OpenGL Version:    ";
+            std::cout << glinfo_openglVersion_ptr << std::endl;;
+            std::cout << "GLSL Version:      ";
+            std::cout << glinfo_glslVersion_ptr  << std::endl;
         }
 
 

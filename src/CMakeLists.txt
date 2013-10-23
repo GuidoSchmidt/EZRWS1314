@@ -11,6 +11,7 @@ IF(WIN32)
     TARGET_LINK_LIBRARIES(${project_BIN} opengl32)
     TARGET_LINK_LIBRARIES(${project_BIN} ${MAINFOLDER}/ext/lib/win32/glew32.lib)
     TARGET_LINK_LIBRARIES(${project_BIN} ${MAINFOLDER}/ext/lib/win32/glfw3.lib)
+    TARGET_LINK_LIBRARIES(${project_BIN} ${MAINFOLDER}/ext/lib/win32/assimp.lib)
 ENDIF(WIN32)
 
 IF(UNIX)

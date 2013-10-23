@@ -1,18 +1,16 @@
-#include "./renderer/Context.h"
 #include "./utils/Common.h"
+#include "./renderer/Context.h"
+#include "./renderer/Renderer.h"
+
+using namespace tone;
 
 int main(void)
 {
-	tone::renderer::Context* context = new tone::renderer::Context( glm::ivec2(1024, 768) );
-
-    glClearColor(1, 1, 1, 1);
-
-    while(context->isLive())
-	{
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		context->swapBuffers();
-	}
+	renderer::Context* context = new renderer::Context( glm::ivec2(1024, 768) );
+	renderer::Renderer* main_renderer;
+	main_renderer = renderer::Renderer::instance();
+	main_renderer->setRenderContext(*context);
+	main_renderer->renderloop();
 
 	return 0;
 }

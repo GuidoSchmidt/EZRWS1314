@@ -1,4 +1,4 @@
-//! file Renderer.cpp
+//! @file Renderer.cpp
 #include "Renderer.h"
  
 namespace tone {
@@ -21,18 +21,31 @@ namespace tone {
                 }
  
                 //! \brief Returns singleton instance
-                Renderer& Renderer::instance(void)
+                Renderer* Renderer::instance(void)
                 {
-                        static Renderer m_instance;
-                        return m_instance;
+					static Renderer m_instance;
+					return &m_instance;
                 }
+
+				//! \brief Sets the context to render to
+				void Renderer::setRenderContext(Context& context)
+				{
+					m_context = &context;
+				}
  
+				//! \brief Initializes the renderer
                 void Renderer::init()
-                {
-                        //! OpenGL settings
-                        glClearColor(1.0, 1.0, 1.0, 1.0);
-                        glEnable(GL_DEPTH_TEST);
+                {	
+					setupGL();
                 }
+
+				//! \brief Sets all the initial OpenGL flags
+				void Renderer::setupGL(void)
+				{
+                    //! OpenGL settings
+                    glClearColor(0.0, 0.0, 0.0, 1.0);
+                    glEnable(GL_DEPTH_TEST);
+				}
 
 				/*
                 //! \brief Handles mouse events
@@ -126,14 +139,16 @@ namespace tone {
 				}
 				*/
 
-
                 //! \brief Render loop
                 void Renderer::renderloop()
                 {
-                        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-                        
+					while (m_context && m_context->isLive())
+					{
+						glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 						m_context->swapBuffers();
-                        m_framecount++;
+						m_framecount++;
+					}
                 }
         }
 }
