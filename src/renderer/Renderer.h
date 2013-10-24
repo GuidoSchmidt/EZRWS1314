@@ -35,7 +35,7 @@ namespace tone {
 			public:
 				//! Returns the singleton instance
 				static Renderer* instance(void);
-				void Renderer::setRenderContext(Context& context);
+                void setRenderContext(Context& context);
 				void renderloop(void);
 
 				//! Input handling

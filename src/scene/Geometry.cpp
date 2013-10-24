@@ -476,15 +476,5 @@ namespace tone {
 		{
 			return glm::vec3(0);
 		}
-		
-		bool containsVertex(std::vector<glm::vec3>& vertexlist, glm::vec3& vertex)
-		{
-			for(auto& p : vertexlist)
-			{
-				if(p == vertex)
-					return true;
-			}
-			return false;
-		}
 	}
 }
