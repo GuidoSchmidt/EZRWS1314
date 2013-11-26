@@ -23,7 +23,7 @@ namespace tone {
 		}
 
 		//! \brief Imports a file from a given filepath
-		void Importer::import(const std::string& pathToFile)
+        void Importer::importFile(const std::string& pathToFile)
 		{
 			m_aiScene = m_aiImporter.ReadFile(pathToFile, 
 				aiProcess_Triangulate | 
@@ -215,15 +215,6 @@ namespace tone {
 				return m_sceneNode_list[i];
 			}
 		}
-
-		//! \brief Copies a scene node
-		void Importer::copySceneNode(unsigned int index)
-		{
-			scene::SceneNode* node = new scene::Geometry( m_sceneNode_list.size() );
-			node = m_sceneNode_list.at(index);
-			m_sceneNode_list.push_back( node );
-		}
-
 
 		//! \brief Loads a texture using Simple-OpenGL-Image-Library (SOIL)
 		void Importer::loadTexture(std::string filename)

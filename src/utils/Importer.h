@@ -20,13 +20,11 @@ namespace tone {
 		{
 			public:
 				static Importer* instance(void);
-				void import(const std::string& pathToFile);
+                void importFile(const std::string& pathToFile);
 				void processScene(void);
 				void processGeometry(const unsigned int& mesh_index, scene::Transform* node_transform);
 				scene::SceneNode* getSceneNode(unsigned int i);
-				std::vector<scene::SceneNode*> m_sceneNode_list; //! \todo make private, implement class "scene"
-				std::vector<GLuint> m_texture_list;
-				void copySceneNode(unsigned int index);
+                scene::SceneNode* getSceneNode(const int index);
 				void loadTexture(std::string filename);
 
 			private:
@@ -34,6 +32,9 @@ namespace tone {
 				~Importer(void);
 				const aiScene* m_aiScene;
 				Assimp::Importer m_aiImporter;
+
+                std::vector<scene::SceneNode*> m_sceneNode_list;
+                std::vector<GLuint> m_texture_list;
 		};
 	}
 }
