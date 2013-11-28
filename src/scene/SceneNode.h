@@ -6,7 +6,7 @@
 #include "../utils/Common.h"
 #include "Transform.h"
 
-namespace tone {
+namespace ezr {
 	namespace scene {
 		enum nodetype {
 			GEOMETRY,

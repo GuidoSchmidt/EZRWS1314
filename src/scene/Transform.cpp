@@ -1,7 +1,7 @@
 //! @file Transform.cpp
 #include "Transform.h"
 
-namespace tone {
+namespace ezr {
 	namespace scene {
 		//! \brief Constructor
 		Transform::Transform(glm::vec3 translate, glm::quat rotate, glm::vec3 scale)

@@ -7,7 +7,7 @@
 #include "SceneNode.h"
 #include <vector>
 
-namespace tone {
+namespace ezr {
 	namespace scene {
 		class Geometry : public SceneNode
 		{
@@ -45,7 +45,7 @@ namespace tone {
 				void drawBoundingBox(void);
 
 				//! Physics
-				void applyTransform(tone::scene::Transform& t);
+                void applyTransform(ezr::scene::Transform& t);
 				std::vector<GLfloat>& getVertices();
 				void alignNormals();
 				void cleanListOfDuplicates();

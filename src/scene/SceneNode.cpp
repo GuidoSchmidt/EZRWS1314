@@ -1,7 +1,7 @@
 //! @file SceneNode.cpp
 #include "SceneNode.h"
 
-namespace tone {
+namespace ezr {
 	namespace scene {
 		SceneNode::SceneNode(unsigned int id)
 		{

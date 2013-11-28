@@ -6,7 +6,7 @@
 
 #include "FrameBufferObject.h"
 
-namespace tone {
+namespace ezr {
     namespace renderer {
 
         //! Constructor

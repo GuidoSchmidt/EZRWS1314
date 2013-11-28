@@ -1,13 +1,13 @@
 //! @file Context.cpp
 #include "Context.h"
 
-namespace tone {
+namespace ezr {
     namespace renderer {
         //! \brief Constructor
         Context::Context(const glm::ivec2& size)
         {
             m_size = size;
-            m_title = "tone";
+            m_title = "EZR";
             init();
         }
 

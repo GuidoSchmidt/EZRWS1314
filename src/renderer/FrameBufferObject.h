@@ -12,7 +12,7 @@
 #include <vector>
 #include <iostream>
 
-namespace tone {
+namespace ezr {
     namespace renderer {
         //! @class FrameBuffeObject
         class FrameBufferObject

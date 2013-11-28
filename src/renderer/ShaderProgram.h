@@ -12,7 +12,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace tone {
+namespace ezr {
 	namespace renderer {
 
 		namespace GLSL{

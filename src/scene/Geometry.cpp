@@ -1,7 +1,7 @@
 //! @file Geometry.cpp
 #include "Geometry.h"
 
-namespace tone {
+namespace ezr {
 	namespace scene {
 		//! \brief Constructor
 		Geometry::Geometry()
@@ -459,7 +459,7 @@ namespace tone {
 		}
 
 		//!
-		void Geometry::applyTransform(tone::scene::Transform& t)
+        void Geometry::applyTransform(ezr::scene::Transform& t)
 		{
 			m_transform.setPosition(t.getTranslation());
 			m_transform.setRotation(t.getRotation());

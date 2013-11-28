@@ -13,7 +13,7 @@
 #include <vector>
 
 //! @class Importer
-namespace tone {
+namespace ezr {
 	namespace utils {
 		//! @class Importer
 		class Importer

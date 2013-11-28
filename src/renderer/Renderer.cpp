@@ -1,7 +1,7 @@
 //! @file Renderer.cpp
 #include "Renderer.h"
 
-namespace tone {
+namespace ezr {
     namespace renderer {
         //! \brief Constructor
         Renderer::Renderer(void)

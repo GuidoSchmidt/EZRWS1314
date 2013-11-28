@@ -2,7 +2,7 @@
 #include "./renderer/Context.h"
 #include "./renderer/Renderer.h"
 
-using namespace tone;
+using namespace ezr;
 
 int main(void)
 {

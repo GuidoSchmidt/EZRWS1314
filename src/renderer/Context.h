@@ -5,7 +5,7 @@
 
 #include "../utils/Common.h"
 
-namespace tone {
+namespace ezr {
     namespace renderer {
         class Context
         {

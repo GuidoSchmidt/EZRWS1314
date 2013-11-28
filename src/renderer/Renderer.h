@@ -7,7 +7,7 @@
 #include "FrameBufferObject.h"
 #include "ShaderProgram.h"
 
-namespace tone {
+namespace ezr {
 	namespace renderer {		
 		//! @class Renderer
 		class Renderer

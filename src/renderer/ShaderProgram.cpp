@@ -6,7 +6,7 @@
 
 #include "ShaderProgram.h"
 
-namespace tone {
+namespace ezr {
 	namespace renderer {
 		namespace GLSL{
 			//! Reads the shader source code from a given file

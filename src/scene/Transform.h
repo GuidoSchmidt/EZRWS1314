@@ -7,7 +7,7 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-namespace tone {
+namespace ezr {
 	namespace scene {
 		//! @class Transform
 		class Transform

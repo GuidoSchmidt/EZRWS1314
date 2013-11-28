@@ -1,7 +1,7 @@
 //! @file Importer.cpp
 #include "Importer.h"
 
-namespace tone {
+namespace ezr {
 	namespace utils {
 	
 		//! \brief Constructor
