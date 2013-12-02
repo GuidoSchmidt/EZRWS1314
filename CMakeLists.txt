@@ -39,6 +39,8 @@ LIST (APPEND CMAKE_PREFIX_PATH "${MAINFOLDER}/ext")
 SET (CMAKE_MODULE_PATH "${MAINFOLDER}/tools/share/cmake")
 INCLUDE_DIRECTORIES("${MAINFOLDER}/ext/include")
 
+SET (RESOURCES_PATH "${MAINFOLDER}/resources" CACHE PATH "Project specific path. Set manually if it was not found.")
+
 #
 # Locate Project Prerequisites 
 #

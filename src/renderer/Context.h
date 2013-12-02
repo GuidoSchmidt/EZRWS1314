@@ -10,16 +10,26 @@ namespace ezr {
         class Context
         {
             public:
-                Context(const glm::ivec2& size);
-                ~Context();
+                //! \brief Constructor
+				Context(const glm::ivec2& size);
+                
+				//!\brief Destructor
+				~Context();
 
+				//! \brief Swaps the back and the front buffer
                 void swapBuffers(void);
+
+				//! \brief Checks if the context is used at the moment
                 bool isLive(void);
+
+				//! \brief Returns the size of the context
                 glm::ivec2 getSize(void);
+
+				//! \brief Returns the window
                 GLFWwindow* getWindow(void);
 
-            protected:
-                void init(void);
+				//! \brief Creates a window
+                void createWindow(std::string title);
 
             private:
                 GLFWwindow* m_window;

@@ -3,25 +3,17 @@
 
 namespace ezr {
     namespace renderer {
-        //! \brief Constructor
         Context::Context(const glm::ivec2& size)
         {
             m_size = size;
-            m_title = "EZR";
-            init();
         }
 
-        //! \brief Destructor
         Context::~Context()
         {
             glfwTerminate();
         }
 
-        //! \brief Initializes the window
-        /*!
-            *
-            */
-        void Context::init()
+		void Context::createWindow(std::string title)
         {
 			FILE *stream ;
 			if((stream = freopen("log.txt", "w", stdout)) == NULL)
@@ -34,7 +26,7 @@ namespace ezr {
                 std::cerr << "ERROR (GLFW): Initialization failed!\n";
             }
 
-            m_window = glfwCreateWindow(m_size.x, m_size.y, m_title.c_str(), 0, 0);
+			m_window = glfwCreateWindow(m_size.x, m_size.y, title.c_str(), 0, 0);
             if(!m_window)
             {
                 //! Error handling
@@ -70,29 +62,22 @@ namespace ezr {
         }
 
 
-        //! \brief Checks if the context still exists
         bool Context::isLive(void)
         {
             return !glfwWindowShouldClose(m_window);
         }
 
-        //! \brief Renders the window to screen
-        /*!
-            *
-            */
         void Context::swapBuffers()
         {
                 glfwSwapBuffers(m_window);
                 glfwPollEvents();
         }
 
-        //!
         glm::ivec2 Context::getSize(void)
         {
             return m_size;
         }
 
-        //! \brief Returns the GLFW-window
         GLFWwindow* Context::getWindow(void)
         {
             return m_window;
