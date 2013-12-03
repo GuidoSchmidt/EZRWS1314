@@ -4,7 +4,7 @@
 #define H_RENDERER
 
 #include <Rocket/Core/Context.h>
-#include "../ui/Shell.h"
+//#include "../ui/Shell.h"
 #include "Context.h"
 #include "FrameBufferObject.h"
 #include "ShaderProgram.h"
@@ -35,7 +35,7 @@ namespace ezr {
 				ShaderProgram* m_shaderProgram_forward;
 
 				Rocket::Core::Context* context;
-				Shell* shell;
+				//Shell* shell;
 
 			public:
 				//! Returns the singleton instance
