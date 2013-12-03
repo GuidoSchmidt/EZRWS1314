@@ -1,4 +1,4 @@
-# Echtzeritrendering/Real time rendering
+# Echtzeitrendering/Real time rendering
 
 ## Uni Koblenz
 
