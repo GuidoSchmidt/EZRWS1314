@@ -54,8 +54,6 @@ namespace ezr {
             {
                 glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-				context->Update();
-				context->Render();
 
                 m_context->swapBuffers();
                 m_framecount++;

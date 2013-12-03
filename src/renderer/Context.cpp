@@ -6,6 +6,7 @@ namespace ezr {
         Context::Context(const glm::ivec2& size)
         {
             m_size = size;
+            createWindow("TEST");
         }
 
         Context::~Context()
