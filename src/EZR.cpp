@@ -2,8 +2,6 @@
 #include "./renderer/Context.h"
 #include "./renderer/Renderer.h"
 
-using namespace ezr;
-
 int main(void)
 {
 	renderer::Context* context = new renderer::Context( glm::ivec2(1024, 768) );

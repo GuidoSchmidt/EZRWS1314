@@ -7,83 +7,131 @@
 #include "SceneNode.h"
 #include <vector>
 
-namespace ezr {
-	namespace scene {
-		class Geometry : public SceneNode
-		{
-			public:
-				Geometry();
-				Geometry(int id);
-				~Geometry(void);
-				Geometry( const Geometry& other );
+namespace scene {
+	//! @class Geometry
+	class Geometry : public SceneNode
+	{
+		private:
+			//! Physics
+			std::vector<glm::vec3> m_verticesVec3;
 
-				void createSinglePoint(void);
-				void createSimpleTriangle(void);
-				void createSimpleQuad(void);
-				void createNormalsGeometry(void);
-				void createBoundingBoxGeometry(void);
+			glm::vec3 bounding_box_min;
+			glm::vec3 bounding_box_max;
 
-				nodetype* getType(void);
-				void addVertex(GLfloat x, GLfloat y, GLfloat z);
-				void addIndex(GLuint index);
-				void addNormal(GLfloat x, GLfloat y, GLfloat z);
-				void addUV(GLfloat u, GLfloat v);
+			//! Geometry itself
+			GLenum m_ErrorCheckMesh;
+			unsigned int index_count;
+			std::vector<GLfloat> m_vertexlist;
+			std::vector<GLuint>  m_indexlist;
+			std::vector<GLfloat> m_normallist;
+			std::vector<GLfloat> m_uvlist;
+			GLuint VAO_id;
+			GLuint VBO_id, IBO_id, NBO_id, UVBO_id;
+			//! Normals geometry
+			bool m_normals_buffers;
+			std::vector<GLfloat> m_normals_vertexlist;
+			GLuint normals_VAO_id;
+			GLuint normals_VBO_id;
+			//! Bounding box geometry
+			bool m_bb_buffers;
+			std::vector<GLfloat> m_bb_vertexlist;
+			std::vector<GLuint>  m_bb_indexlist;
+			GLuint bb_VAO_id;
+			GLuint bb_VBO_id, bb_IBO_id;
 
-				void setBoundingBox(glm::vec3 min, glm::vec3 max);
+		public:
+			//! \brief Constructor
+			Geometry();
 
-				unsigned int vertexCount(void);
-				unsigned int indexCount(void);
-				unsigned int normalCount(void);
-				unsigned int uvCount(void);
-				void createBuffers(void);
-				void createNormalsBuffers(void);
-				void createBoundingBoxBuffers(void);
-				void drawTriangles(void);
-				void drawPoints(void);
-				void drawWireframe(void);
-				void drawNormals(void);
-				void drawBoundingBox(void);
+			//! \brief Constructor
+			Geometry(int id);
 
-				//! Physics
-                void applyTransform(ezr::scene::Transform& t);
-				std::vector<GLfloat>& getVertices();
-				void alignNormals();
-				void cleanListOfDuplicates();
+			//! \brief Copy constructor
+			Geometry( const Geometry& other );
+			
+			//! \brief Destructor
+			~Geometry(void);
+			
+			//! \brief Creates a single point
+			void createSinglePoint(void);
 
-				glm::vec3 getSizeBB();
-				void addFace(std::vector<GLint> indices, glm::vec3 normal, glm::vec3 centroid);
-				void addEdge(GLint a, GLint b);
+			//! \brief Creates a single triangle
+			void createSimpleTriangle(void);
 
-				void buildVerticesVec3();
+			//! \brief Creates a single quad
+			void createSimpleQuad(void);
 
-			private:
-				//! Physics
-				std::vector<glm::vec3> m_verticesVec3;
-				
-				glm::vec3 bounding_box_min;
-				glm::vec3 bounding_box_max;
+			//! \brief Creates normals
+			void createNormalsGeometry(void);
+			
+			//! \brief Creates renderable bounding box geometry
+			void createBoundingBoxGeometry(void);
 
-				//! Geometry itself
-				GLenum m_ErrorCheckMesh;
-				unsigned int index_count;
-				std::vector<GLfloat> m_vertexlist;
-				std::vector<GLuint>  m_indexlist;
-				std::vector<GLfloat> m_normallist;
-				std::vector<GLfloat> m_uvlist;
-				GLuint VAO_id;
-				GLuint VBO_id, IBO_id, NBO_id, UVBO_id;
-				//! Normals geometry
-				bool m_normals_buffers;
-				std::vector<GLfloat> m_normals_vertexlist;
-				GLuint normals_VAO_id;
-				GLuint normals_VBO_id;
-				//! Bounding box geometry
-				bool m_bb_buffers;
-				std::vector<GLfloat> m_bb_vertexlist;
-				std::vector<GLuint>  m_bb_indexlist;
-				GLuint bb_VAO_id;
-				GLuint bb_VBO_id, bb_IBO_id;
-		};
-	}
+			//! \brief Returns the node type
+			nodetype* getType(void);
+
+			//! \brief Adds a vertex
+			void addVertex(GLfloat x, GLfloat y, GLfloat z);
+
+			//! \brief Adds an index point
+			void addIndex(GLuint index);
+
+			//! \brief Adds a normal
+			void addNormal(GLfloat x, GLfloat y, GLfloat z);
+			
+			//! \brief Adds a uv-/texture coordinate
+			void addUV(GLfloat u, GLfloat v);
+
+			//! \brief Sets the bounding box
+			void setBoundingBox(glm::vec3 min, glm::vec3 max);
+
+			//! \brief Returns the count of vertices
+			unsigned int vertexCount(void);
+
+			//! \brief Returns the count of index points
+			unsigned int indexCount(void);
+
+			//! \brief Returns the count of normals
+			unsigned int normalCount(void);
+
+			//! \brief Returns the count of uv-/texture-coordinates
+			unsigned int uvCount(void);
+
+			//! \brief Creates the needed vertex buffers
+			void createBuffers(void);
+
+			//! \brief Creates the vertex buffers for the normals
+			void createNormalsBuffers(void);
+
+			//! \brief Creates the vertex buffers for the bounding box
+			void createBoundingBoxBuffers(void);
+			
+			//! \brief Draws the geometry using triangles
+			void drawTriangles(void);
+
+			//! \brief Draws the geometry using points
+			void drawPoints(void);
+
+			//! \brief Draws the geomety as wireframe
+			void drawWireframe(void);
+
+			//! \brief Draws the normals
+			void drawNormals(void);
+
+			//! \brief Draws the boundign box
+			void drawBoundingBox(void);
+
+			//! Physics
+            void applyTransform(scene::Transform& t);
+			std::vector<GLfloat>& getVertices();
+			void alignNormals();
+			void cleanListOfDuplicates();
+
+			glm::vec3 getSizeBB();
+			void addFace(std::vector<GLint> indices, glm::vec3 normal, glm::vec3 centroid);
+			void addEdge(GLint a, GLint b);
+
+			void buildVerticesVec3();
+	};
 }
 #endif //H_GEOMETRY

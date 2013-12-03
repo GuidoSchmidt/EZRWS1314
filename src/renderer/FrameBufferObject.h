@@ -12,44 +12,65 @@
 #include <vector>
 #include <iostream>
 
-namespace ezr {
-    namespace renderer {
-        //! @class FrameBuffeObject
-        class FrameBufferObject
-        {
-            private:
-                GLuint m_FBO_ID;
-                bool m_isGBuffer;
-                int m_width, m_height;
-                GLsizei m_attachmentCounter;
+namespace renderer {
+    //! @class FrameBuffeObject
+    class FrameBufferObject
+    {
+        private:
+            GLuint	m_FBO_ID;
+            bool	m_isGBuffer;
+            int		m_width, m_height;
+            GLsizei m_attachmentCounter;
 
-                GLuint m_depthBuffer;
-                GLuint m_depthTexture;
-                GLuint m_depthMSTexture;
+            GLuint m_depthBuffer;
+            GLuint m_depthTexture;
+            GLuint m_depthMSTexture;
 
-                std::vector<GLuint> m_renderTargets;
-                std::vector<GLenum> m_drawBuffers;
+            std::vector<GLuint> m_renderTargets;
+            std::vector<GLenum> m_drawBuffers;
 
-            public:
-                FrameBufferObject(int width, int height, bool gBuffer);
-                ~FrameBufferObject();
+        public:
+			//! \brief Constructor
+            FrameBufferObject(int width, int height, bool gBuffer);
+            
+			//! \brief Destructor
+			~FrameBufferObject();
 
-                void AddColorAttachment(int textureUnit);
-                void AddDepthAttachment_Buffer();
-                void AddDepthAttachment_Texture(int textureUnit);
-                void AddDepthAttachment_MultisampleTexture(int textureUnit);
+			//! \brief Adds a color attachment
+            void AddColorAttachment(int textureUnit);
 
-                void CreateGBuffer(void);
-                void CreateBuffers(int count);
+			//! \brief Adds a depth buffer attachment
+			void AddDepthAttachment_Buffer();
 
-                void Use(void);
-                void Unuse(void);
+			//! \brief Adds a depth texture attachment
+            void AddDepthAttachment_Texture(int textureUnit);
 
-                GLuint GetTexture(unsigned int index);
-                GLuint GetDepthTexture(void);
-                GLuint GetDepthMSTexture(void);
-                int GetRenderTargetCound(void);
-        };
-    }
+			//! \brief Adds a multi-sample-texture attachment
+            void AddDepthAttachment_MultisampleTexture(int textureUnit);
+
+			//! \brief Creates a G-Buffer
+            void CreateGBuffer(void);
+
+			//! \brief Creates the needed buffers
+            void CreateBuffers(int count);
+
+			//! \brief Activates the framebuffer object for use
+            void Use(void);
+
+			//! \brief Deactivates the framebuffer object from use
+			void Unuse(void);
+
+			//! \brief Returns a texture handle for a given attachment number
+            GLuint GetTexture(unsigned int index);
+
+			//! \brief Returns a texture handle for the attached depth texture attachment
+			GLuint GetDepthTexture(void);
+
+			//! \brief Returns a texture handle for the given depth multisample texture attachment
+            GLuint GetDepthMSTexture(void);
+
+			//! \brief Returns the count of render targets
+            int GetRenderTargetCount(void);
+    };
 }
 #endif //FRAMEBUFFEROBJECT_H
