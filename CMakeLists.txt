@@ -1,11 +1,12 @@
-# <Copyright Holder>. Copyright (C) <Copyright Year(s)>. <License>.
+CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 
-#
-# Project Properties
-#
+# *** CMake Variables ***
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake CACHE PATH "Project specific path. Set manually if it was not found.")
+set(DEPENDENCIES_PATH ${CMAKE_SOURCE_DIR}/ext CACHE PATH "Project specific path. Set manually if it was not found.")
+set(RESOURCES_PATH ${CMAKE_SOURCE_DIR}/resources CACHE PATH "Project specific path. Set manually if it was not found.")
+
+# *** Project Properties ***
 set(PROJECT_NAME "EZR")
-
-CMAKE_MINIMUM_REQUIRED (VERSION 2.6.2)
 PROJECT ( ${PROJECT_NAME} )
 SET (APPLICATION_NAME "${PROJECT_NAME}")
 SET (APPLICATION_CODENAME "${PROJECT_NAME}")
@@ -14,110 +15,26 @@ SET (APPLICATION_VERSION_MAJOR 0)
 SET (APPLICATION_VERSION_MINOR 1)
 SET (APPLICATION_VERSION_STRING "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.{APPLICATION_VERSION_TYPE}")
 SET (APPLICATION_VENDOR_ID "")
-SET (APPLICATION_VENDOR_NAME "Matthias Bohleber, Andreas Meyer, Markus Solbach, Guido Schmidt")
+SET (APPLICATION_VENDOR_NAME "Andreas Meyer, Matthias Bohleber, Markus Solbach, Guido Schmidt")
 SET (APPLICATION_VENDOR_URL "")
 SET (APPLICATION_ID "${APPLICATION_VENDOR_ID}.${PROJECT_NAME}")
 
-
-#
-# Debugging Options
-#
-SET (CMAKE_VERBOSE_MAKEFILE 0) # Use 1 for debugging, 0 for release
-
-#
-# Project Output Paths
-#
 SET (MAINFOLDER ${PROJECT_SOURCE_DIR})
-SET (EXECUTABLE_OUTPUT_PATH "${MAINFOLDER}/bin")
-SET (LIBRARY_OUTPUT_PATH "${MAINFOLDER}/lib")
+SET (EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR})
 
-#
-# Project Search Paths
-#
-LIST (APPEND CMAKE_PREFIX_PATH "${MAINFOLDER}")
-LIST (APPEND CMAKE_PREFIX_PATH "${MAINFOLDER}/ext")
-SET (CMAKE_MODULE_PATH "${MAINFOLDER}/tools/share/cmake")
-INCLUDE_DIRECTORIES("${MAINFOLDER}/ext/include")
+include(${CMAKE_MODULE_PATH}/doxygen.cmake)
+include(${CMAKE_MODULE_PATH}/macros.cmake)
 
-SET (RESOURCES_PATH "${MAINFOLDER}/resources" CACHE PATH "Project specific path. Set manually if it was not found.")
+set(CMAKE_CONFIGURATION_TYPES Debug; Release)
 
-#
-# Locate Project Prerequisites 
-#
+find_package(OpenGL3 REQUIRED)
+find_package(GLEW REQUIRED)
+find_package(GLFW3 REQUIRED)
+find_package(GLM REQUIRED)
+find_package(ASSIMP REQUIRED)
+if("${CMAKE_SYSTEM}" MATCHES "Linux")
+    find_package(X11)
+    set(ALL_LIBRARIES ${ALL_LIBRARIES} ${X11_LIBRARIES} Xrandr Xxf86vm Xi pthread)
+endif()
 
-# Downloading ext-folder
-#set(MY_URL "http://sourceforge.net/projects/glfw/files/glfw/3.0.3/glfw-3.0.3.zip/download")
-#set(MY_DOWNLOAD_PATH "ext/include/")
-#set(MY_EXTRACTED_FILE "ext/include/extracted")
-
-#if (NOT EXISTS "${MY_DOWNLOAD_PATH}")
-#   file(DOWNLOAD "${MY_URL}" "${MY_DOWNLOAD_PATH}")
-#endif()
-
-#add_custom_command( OUTPUT "${MY_EXTRACTED_FILE}" COMMAND command to unpack DEPENDS "${MY_DOWNLOAD_PATH}")
-
-
-#
-# Special hack for switching to 32-bit mode on Snow
-# Leopard if Qt has been compiled for 32-bit, only.
-#
-IF (APPLE)
-   IF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-      EXECUTE_PROCESS(
-		COMMAND file "${QT_QTCORE_LIBRARY}"
-		COMMAND grep "x86_64" -c
-		OUTPUT_VARIABLE QT4_SUPPORTS_X86_64_OUTPUT
-      )
-      IF (NOT QT4_SUPPORTS_X86_64_OUTPUT MATCHES "0")
-          SET(QT4_SUPPORTS_X86_64 1)
-      ELSE (NOT QT4_SUPPORTS_X86_64_OUTPUT MATCHES "0")
-          SET(QT4_SUPPORTS_X86_64 0)
-      ENDIF (NOT QT4_SUPPORTS_X86_64_OUTPUT MATCHES "0")
-
-      IF (QT4_SUPPORTS_X86_64)
-          SET(CMAKE_OSX_ARCHITECTURES x86_64)
-      ELSE (QT4_SUPPORTS_X86_64)
-          SET(CMAKE_OSX_ARCHITECTURES i386)
-      ENDIF (QT4_SUPPORTS_X86_64)
-   ENDIF(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-ENDIF (APPLE)
-
-
-#
-# Configure Files
-#
-FILE (GLOB_RECURSE CONFIGINPUTS1 include/*.in.h.cmake)
-FILE (GLOB_RECURSE CONFIGINPUTS2 include/*.h.in.cmake)
-FILE (GLOB_RECURSE CONFIGINPUTS3 src/*.in.h.cmake)
-FILE (GLOB_RECURSE CONFIGINPUTS4 src/*.h.in.cmake)
-LIST (APPEND CONFIGINPUTS "${CONFIGINPUTS1}")
-LIST (APPEND CONFIGINPUTS "${CONFIGINPUTS2}")
-LIST (APPEND CONFIGINPUTS "${CONFIGINPUTS3}")
-LIST (APPEND CONFIGINPUTS "${CONFIGINPUTS4}")
-LIST (APPEND CONFIGINPUTS "${CONFIGINPUTS5}")
-LIST (APPEND CONFIGINPUTS "${CONFIGINPUTS6}")
-FOREACH (CONFIGINPUT ${CONFIGINPUTS})
-    STRING (REPLACE ".in.h.cmake" ".h" CONFIGOUTPUT1 "${CONFIGINPUT}")
-    STRING (REPLACE ".h.in.cmake" ".h" CONFIGOUTPUT2 "${CONFIGOUTPUT1}")
-    CONFIGURE_FILE ("${CONFIGINPUT}" "${CONFIGOUTPUT2}")
-ENDFOREACH (CONFIGINPUT ${CONFIGINPUTS})
-
-#
-# Add Build Targets
-#
 ADD_SUBDIRECTORY(src)
-
-#
-# Add Install Targets
-#
-IF (EXISTS "${MAINFOLDER}/include/${PROJECT_NAME}" AND IS_DIRECTORY "${MAINFOLDER}/include/${PROJECT_NAME}")
-    INSTALL(DIRECTORY "${MAINFOLDER}/include/${PROJECT_NAME}" DESTINATION "include")
-ENDIF (EXISTS "${MAINFOLDER}/include/${PROJECT_NAME}" AND IS_DIRECTORY "${MAINFOLDER}/include/${PROJECT_NAME}")
-
-#
-# Add Documentation Targets
-#
-
-#
-# Add Source
-#

@@ -3,7 +3,7 @@
 #ifndef H_RENDERER
 #define H_RENDERER
 
-#include <Rocket/Core/Context.h>
+//#include <Rocket/Core/Context.h>
 //#include "../ui/Shell.h"
 #include "Context.h"
 #include "FrameBufferObject.h"
@@ -34,7 +34,7 @@ namespace ezr {
 				//! Shader programs used
 				ShaderProgram* m_shaderProgram_forward;
 
-				Rocket::Core::Context* context;
+				//Rocket::Core::Context* context;
 				//Shell* shell;
 
 			public:
