@@ -31,6 +31,10 @@ namespace renderer {
 
     void Renderer::init()
     {
+		int WIDTH = 1280;
+		int HEIGHT = 720;
+		//SlimFBO* firstFBO = new SlimFBO(WIDTH,HEIGHT, 2, true);
+
         setupGL();
     }
 
