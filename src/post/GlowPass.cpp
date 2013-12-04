@@ -7,7 +7,7 @@ GlowPass::GlowPass(int scale, SlimQuad* pQuad, int pWidth, int pHeight)
 {
 	width = pWidth;
 	height = pHeight;
-	renderPassShader = new SlimShader("src/Passes/Glow/","post.vert.glsl", "glow.frag.glsl");
+	renderPassShader = new SlimShader("../../resources/shader_source/","post.vert.glsl", "glow.frag.glsl");
 
 	glowColorUniform = glGetUniformLocation(renderPassShader->shaderProgram,"color");
 	glowFactorUniform = glGetUniformLocation(renderPassShader->shaderProgram,"factor");
@@ -16,8 +16,9 @@ GlowPass::GlowPass(int scale, SlimQuad* pQuad, int pWidth, int pHeight)
 	glowScale = scale;
 	quad = pQuad;
 
-//	TwAddSeparator(theBar,"glow","label=Glow");
-//	TwAddVarRW(theBar,"GlowBrightness",TW_TYPE_FLOAT,&params_glow_brightness,"min=1 max=1000 step=1");
+
+	//params
+	params_glow_brightness = 100.0f;
 
 
 }

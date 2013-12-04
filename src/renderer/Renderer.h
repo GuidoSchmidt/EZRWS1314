@@ -7,6 +7,11 @@
 //#include "../ui/Shell.h"
 #include "Context.h"
 #include "FrameBufferObject.h"
+#include "../post/SlimFBO.h"
+#include "../post/SlimShader.h"
+#include "../post/SlimQuad.h"
+#include "../post/Glowpass.h"
+#include "../post/PhongPass.h"
 #include "ShaderProgram.h"
 
 namespace renderer {		
@@ -20,6 +25,14 @@ namespace renderer {
 
 			Context* m_context;
 			ShaderProgram* m_shaderProgram_forward;
+
+			SlimQuad* fsq;
+			SlimFBO* gBuffer;
+			SlimFBO* lightingFBO;
+			SlimFBO* glowFBO;
+
+			PhongPass* phong1; 
+			GlowPass* glowHalf; 
 
 			//Rocket::Core::Context* context;
 			//Shell* shell;

@@ -7,6 +7,7 @@ int main(void)
 	renderer::Context* context = new renderer::Context( glm::ivec2(1280, 720) );
 	renderer::Renderer* main_renderer;
     main_renderer = renderer::Renderer::instance();
+	main_renderer->setRenderContext(*context);
     main_renderer->renderloop();
 
 	return 0;

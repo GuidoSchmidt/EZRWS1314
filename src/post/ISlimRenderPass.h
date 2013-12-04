@@ -3,7 +3,7 @@
 
 
 
-#include "../SlimShader.h"
+#include "SlimShader.h"
 #include "SlimFBO.h"
 #include "SlimQuad.h"
 

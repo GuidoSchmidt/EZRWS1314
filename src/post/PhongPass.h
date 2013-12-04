@@ -2,7 +2,7 @@
 #define PHONGPASS_H_
 
 //#include "../../Globals.h"
-#include "../ISlimRenderPass.h"
+#include "ISlimRenderPass.h"
 
 
 class PhongPass : public ISlimRenderPass
@@ -28,13 +28,13 @@ public:
 	GLuint hdrLightPowerUniform;
 
 
-	GLfloat params_ambient=0.8f;
-	GLfloat params_diffuse=0.3f;
-	GLfloat params_specular=0.2f;
-	GLfloat params_spec_fac=3.0f;
+	GLfloat params_ambient;
+	GLfloat params_diffuse;
+	GLfloat params_specular;
+	GLfloat params_spec_fac;
 	//hdr
-	GLfloat params_hdr_exposure=1;
-	GLfloat params_hdr_lightPower=0.3;
+	GLfloat params_hdr_exposure;
+	GLfloat params_hdr_lightPower;
 //
 //	int mouseX;
 //	int mouseY;

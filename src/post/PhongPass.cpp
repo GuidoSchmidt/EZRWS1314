@@ -8,7 +8,7 @@ PhongPass::PhongPass(SlimQuad* pQuad, glm::vec2 pNearFar,int pWidth, int pHeight
 	width = pWidth;
 	height = pHeight;
 	nearFar = pNearFar;
-	renderPassShader = new SlimShader("src/Passes/Lighting/","post.vert.glsl", "phong.frag.glsl");
+	renderPassShader = new SlimShader("../../resources/shader_source/","post.vert.glsl", "phong.frag.glsl");
 
 	normalUniform = glGetUniformLocation(renderPassShader->shaderProgram,"normals");
 	colorUniform = glGetUniformLocation(renderPassShader->shaderProgram,"diffuse");
@@ -26,14 +26,14 @@ PhongPass::PhongPass(SlimQuad* pQuad, glm::vec2 pNearFar,int pWidth, int pHeight
 	quad = pQuad;
 
 
-//	TwAddSeparator(theBar,"lighting","label=Lighting");
-//	TwAddVarRW(theBar,"Ambient Amount",TW_TYPE_FLOAT,&params_ambient,"min=0 max=1 step=0.1");
-//	TwAddVarRW(theBar,"Diffuse Amount",TW_TYPE_FLOAT,&params_diffuse,"min=0 max=1 step=0.1");
-//	TwAddVarRW(theBar,"Specular Amount",TW_TYPE_FLOAT,&params_specular,"min=0 max=1 step=0.1");
-//	TwAddVarRW(theBar,"Specular Factor",TW_TYPE_FLOAT,&params_spec_fac,"min=1 max=100 step=1");
-//
-//	TwAddVarRW(theBar,"HDR lightPower",TW_TYPE_FLOAT,&params_hdr_lightPower,"min=0 max=10000 step=1");
-//	TwAddVarRW(theBar,"HDR exposure",TW_TYPE_FLOAT,&params_hdr_exposure,"min=0.01 max=1000 step=0.1");
+	//params
+	params_ambient=0.8f;
+	params_diffuse=0.3f;
+	params_specular=0.2f;
+	params_spec_fac=3.0f;
+	
+	params_hdr_exposure=1;
+	params_hdr_lightPower=0.3;
 
 }
 

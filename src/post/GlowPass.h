@@ -2,7 +2,7 @@
 #define GLOWPASS_H_
 
 //#include "../../Globals.h"
-#include "../ISlimRenderPass.h"
+#include "ISlimRenderPass.h"
 
 class GlowPass : public ISlimRenderPass
 {
@@ -19,7 +19,7 @@ public:
 
 
 	GLint glowScale;
-	GLfloat params_glow_brightness = 100.0f;
+	GLfloat params_glow_brightness;
 };
 
 #endif /* GLOWPASS_H_ */

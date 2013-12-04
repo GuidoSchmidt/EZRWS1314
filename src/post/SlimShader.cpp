@@ -1,9 +1,8 @@
-#include <iostream>
-#include <stdlib.h>
-#include <string.h>
-#include <fstream>
 #include <GL/glew.h>
 #include "SlimShader.h"
+#include <string>
+#include <iostream>
+#include <fstream>
 using namespace std;
 
 SlimShader::SlimShader(string root, string vertFileName, string fragFileName)
@@ -181,7 +180,7 @@ string SlimShader::readFile(string fileName)
 		file.close();
 	}
 	else
-		cout << "ERROR: Unable to open file " << fileName << endl;
+		//cout << "ERROR: Unable to open file " << fileName << endl;
 
 	return fileContent;
 }

@@ -4,6 +4,7 @@ CMAKE_MINIMUM_REQUIRED (VERSION 2.8)
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake CACHE PATH "Project specific path. Set manually if it was not found.")
 set(DEPENDENCIES_PATH ${CMAKE_SOURCE_DIR}/ext CACHE PATH "Project specific path. Set manually if it was not found.")
 set(RESOURCES_PATH ${CMAKE_SOURCE_DIR}/resources CACHE PATH "Project specific path. Set manually if it was not found.")
+set(SHADER_SRC_PATH ${CMAKE_SOURCE_DIR}/resources/shader_source CACHE PATH "Project specific path. Set manually if it was not found.")
 
 # *** Project Properties ***
 set(PROJECT_NAME "EZR")
