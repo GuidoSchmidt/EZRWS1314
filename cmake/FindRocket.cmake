@@ -4,7 +4,9 @@
 #
 # ROCKET_FOUND
 # ROCKET_INCLUDE_PATH
-# ROCKET_LIBRARY
+# ROCKET_CORE_LIBRARY
+# ROCKET_CONTROLS_LIBRARY
+# ROCKET_DEBUGGER_LIBRARY
 # 
 
 IF (MINGW)
@@ -28,8 +30,20 @@ ELSEIF (MSVC)
         ${DEPENDENCIES_PATH}/include/
     )
 
-    FIND_LIBRARY( ROCKET_LIBRARY
-        NAMES RocketCore RocketControls RocketDebugger
+    FIND_LIBRARY( ROCKET_CORE_LIBRARY
+        NAMES RocketCore
+        PATHS
+        ${DEPENDENCIES_PATH}/lib/win32/
+    )
+
+    FIND_LIBRARY( ROCKET_CONTROLS_LIBRARY
+        NAMES RocketControls
+        PATHS
+        ${DEPENDENCIES_PATH}/lib/win32/
+    )
+
+    FIND_LIBRARY( ROCKET_DEBUGGER_LIBRARY
+        NAMES RocketDebugger
         PATHS
         ${DEPENDENCIES_PATH}/lib/win32/
     )
