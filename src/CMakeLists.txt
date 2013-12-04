@@ -14,9 +14,9 @@ ADD_EXECUTABLE(${project_BIN} ${project_SRCS} ${project_MOC_SRCS_GENERATED})
 
 SET_TARGET_PROPERTIES(${project_BIN} PROPERTIES VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}" OUTPUT_NAME ${project_BIN} CLEAN_DIRECT_OUTPUT 1)
 
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+SET(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
 
-target_link_libraries(
+TARGET_LINK_LIBRARIES(
     ${project_BIN}
 
     ${GLFW3_LIBRARIES}
@@ -24,3 +24,15 @@ target_link_libraries(
     ${OpenGL3_LIBRARIES}
     ${ASSIMP_LIBRARIES}
 )
+
+IF("${CMAKE_SYSTEM}" MATCHES "Linux")
+        TARGET_LINK_LIBRARIES(
+            ${project_BIN} 
+            X11
+            Xxf86vm
+            Xext
+            Xmu
+            Xrandr
+            Xi
+        )
+ENDIF()
