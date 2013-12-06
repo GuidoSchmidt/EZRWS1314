@@ -32,6 +32,7 @@ namespace renderer {
     void Renderer::init()
     {
         setupGL();
+        setupShaderStages();
     }
 
     void Renderer::setupGL(void)
@@ -41,11 +42,21 @@ namespace renderer {
         glEnable(GL_DEPTH_TEST);
     }
 
+    void Renderer::setupShaderStages()
+    {
+        m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
+                                                    GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl");
+        m_shaderProgram_forward->Link();
+    }
+
     void Renderer::renderloop()
     {
         while (m_context && m_context->isLive())
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+            //! Render calls here
+
 
 
             m_context->swapBuffers();

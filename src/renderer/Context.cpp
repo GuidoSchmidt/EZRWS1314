@@ -19,9 +19,9 @@ namespace renderer {
 
 	void Context::createWindow(std::string title)
     {
-		FILE *stream ;
-		if((stream = freopen("log.txt", "w", stdout)) == NULL)
-			std::cerr << "ERROR (Log): Could not write to file";
+        //FILE *stream ;
+        //if((stream = freopen("log.txt", "w", stdout)) == NULL)
+            //std::cerr << "ERROR (Log): Could not write to file";
 		std::cout << "*** LOG ***" << std::endl;
 
         if(!glfwInit())
