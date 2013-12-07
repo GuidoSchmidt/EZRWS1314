@@ -33,6 +33,9 @@ namespace renderer {
 			//! \brief Returns the size of the context
 			glm::ivec2 getSize(void);
 
+			//! \brief Returns the aspect ratio of the window
+			float getAspectRatio(void);
+
 			//! \brief Returns the window
 			GLFWwindow* getWindow(void);
 

@@ -4,8 +4,11 @@
 #define H_IMPORTER
 
 #include "../utils/Common.h"
+
 #include "../scene/SceneNode.h"
+#include "../scene/Camera.h"
 #include "../scene/Geometry.h"
+
 #include <glm/gtx/quaternion.hpp>
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
@@ -41,9 +44,6 @@ namespace utils {
 
 			//! \brief Processes the readed geometry from assimp scene
 			void processGeometry(const unsigned int& mesh_index, scene::Transform* node_transform);
-
-			//! \brief Returns a scene node by a given number
-			scene::SceneNode* getSceneNode(unsigned int i);
 
 			//! \brief Returns a scene node by index
             scene::SceneNode* getSceneNode(const int index);
