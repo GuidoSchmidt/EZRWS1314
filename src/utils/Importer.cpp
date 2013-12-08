@@ -50,6 +50,7 @@ namespace utils {
 		//! ------ Cameras ------------------------------------------  
 		if (m_aiScene->HasCameras())
 		{
+			scene::Camera* new_camera;
 			//! Process cameras
 			for (unsigned int camera_id = 0; camera_id < m_aiScene->mNumCameras; camera_id++)
 			{	
@@ -59,16 +60,24 @@ namespace utils {
 				aiString name = current_camera->mName;
 					
 				//! Position & orientation
+				aiVector3D position	= current_camera->mPosition;
 				aiVector3D lookat	= current_camera->mLookAt;
-				aiVector3D position = current_camera->mPosition;
 				aiVector3D up		= current_camera->mUp;
 
 				//! Projection
+				float field_of_view	= current_camera->mHorizontalFOV;
 				float aspect		= current_camera->mAspect;
 				float near_plane	= current_camera->mClipPlaneNear;
 				float far_plane		= current_camera->mClipPlaneFar;
-				float field_of_view = current_camera->mHorizontalFOV;
 			
+				//! Create a camera
+				new_camera = new scene::Camera(name.C_Str(),
+							       glm::vec3(position.x, position.y, position.z),
+							       glm::vec3(lookat.x, lookat.y, lookat.z),
+							       glm::vec3(up.x, up.y, up.z),
+							       glm::ivec2(1024, 1024));
+				new_camera->SetProjection(field_of_view, aspect, near_plane, far_plane);
+
 				//! Log
 				std::cout << "\n  * Camera: " << camera_id << std::endl;
 				std::cout << "    Name: " << name.C_Str() << std::endl;
@@ -115,6 +124,7 @@ namespace utils {
 		//! ------ Meshes ------------------------------------------
 		if (m_aiScene->HasMeshes())
 		{
+			scene::Geometry* new_geometry;
 			//! Process meshes
 			for (unsigned int mesh_id = 0; mesh_id < m_aiScene->mNumMeshes; mesh_id++)
 			{
