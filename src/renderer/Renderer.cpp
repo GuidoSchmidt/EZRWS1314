@@ -31,6 +31,7 @@ namespace renderer {
 
     void Renderer::init()
     {
+		std::cout << "Renderer.init() called" << std::endl;
         setupGL();
 	
 		//ToDo Modells laden
@@ -68,11 +69,13 @@ namespace renderer {
         glEnable(GL_DEPTH_TEST);
     }
 
+
     void Renderer::renderloop()
     {
         while (m_context && m_context->isLive())
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
 			//ToDo
 			//render shadow map
@@ -80,15 +83,11 @@ namespace renderer {
 			//Render that sweetAsShit beach geometry
 			//gBuffer->write();
 			//drawBeach();
-			//gBuffer->unbind();
 
 			phong1->doExecute();
-
+			
 			glowHalf->doExecute();
-
-			//ideal pipeline würde so aussehen:
-			//backBuffer << toneMappingPass << glowFBO << glowPass << lightingFBO << gBuffer << geometryPass
-
+			
 			//finalPassWithToneMapping->doExecute();
 
             m_context->swapBuffers();

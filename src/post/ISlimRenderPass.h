@@ -18,7 +18,9 @@ class ISlimRenderPass
 public:
 	virtual ~ISlimRenderPass() {};
 	ISlimRenderPass(SlimQuad* pQuad);
-	virtual void doExecute() = 0;
+	virtual void doExecute();
+
+
 
 	SlimFBO* outputFBO;
 	std::vector<SlimFBO*> inputFBOs;

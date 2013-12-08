@@ -35,6 +35,7 @@ PhongPass::PhongPass(SlimQuad* pQuad, glm::vec2 pNearFar,int pWidth, int pHeight
 	params_hdr_exposure=1;
 	params_hdr_lightPower=0.3;
 
+
 }
 
 PhongPass::~PhongPass()
