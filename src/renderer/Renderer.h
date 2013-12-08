@@ -3,16 +3,15 @@
 #ifndef H_RENDERER
 #define H_RENDERER
 
-//#include <Rocket/Core/Context.h>
-//#include "../ui/Shell.h"
 #include "Context.h"
+#include "ShaderProgram.h"
 #include "FrameBufferObject.h"
 #include "../post/SlimFBO.h"
 #include "../post/SlimShader.h"
 #include "../post/SlimQuad.h"
-#include "../post/Glowpass.h"
+#include "../post/GlowPass.h"
 #include "../post/PhongPass.h"
-#include "ShaderProgram.h"
+#include "../utils/Importer.h"
 
 namespace renderer {		
 	//! @class Renderer
@@ -31,8 +30,8 @@ namespace renderer {
 			SlimFBO* lightingFBO;
 			SlimFBO* glowFBO;
 
-			PhongPass* phong1; 
-			GlowPass* glowHalf; 
+            //PhongPass* phong1;
+            //GlowPass* glowHalf;
 
 			//Rocket::Core::Context* context;
 			//Shell* shell;
@@ -48,6 +47,9 @@ namespace renderer {
 
 			//! \brief Sets needed OpenGL states
 			void setupGL(void);
+
+            //! \brief Sets the needes shader stages and fbos
+            void setupShaderStages(void);
 				
 		public:
 			//! Returns the singleton instance
@@ -58,30 +60,6 @@ namespace renderer {
 
 			//! \brief Calls the render loop
 			void renderloop(void);
-
-			//! Input handling
-			/*
-			//! Mouse callback function
-			void mouseCallback_implementation(int button, int action);
-			static void mouseCallback(GLFWwindow* window, int button, int action, int mods)
-			{
-				static Renderer* renderer = &Renderer::instance();
-				renderer->mouseCallback_implementation(button, action);
-			}
-			//! Keyboard callback function
-			void keyboardCallback_implementation(int key, int action);
-			static void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-			{
-				static Renderer* renderer = &Renderer::instance();
-				renderer->keyboardCallback_implementation(key, action);
-			}
-			void cursorCallback_implementation(double mousex, double mousey);
-			static void cursorCallback(GLFWwindow* window, double mousex, double mousey)
-			{
-				static Renderer* renderer = &Renderer::instance();
-				renderer->cursorCallback_implementation(mousex, mousey);
-			}
-			*/
 	};
 }
 #endif //H_RENDERER

@@ -33,6 +33,7 @@ namespace renderer {
     {
 		std::cout << "Renderer.init() called" << std::endl;
         setupGL();
+        setupShaderStages();
 	
 		//ToDo Modells laden
 		//ToDo Texturen laden
@@ -46,20 +47,20 @@ namespace renderer {
 		
 		//Setup dat slim fboooooos
 
-		gBuffer		= new SlimFBO(WIDTH,HEIGHT, 2, true);
-		lightingFBO = new SlimFBO(WIDTH,HEIGHT, 1, false);
-		glowFBO		= new SlimFBO(WIDTH,HEIGHT, 1, false);
+        //gBuffer		= new SlimFBO(WIDTH,HEIGHT, 2, true);
+        //lightingFBO = new SlimFBO(WIDTH,HEIGHT, 1, false);
+        //glowFBO		= new SlimFBO(WIDTH,HEIGHT, 1, false);
 
 		//now the render passses!
-		fsq = new SlimQuad();
+        //fsq = new SlimQuad();
 
-		phong1 = new PhongPass(fsq, nearFar,WIDTH,HEIGHT);//,mouseX,mouseY);
-		phong1->outputFBO = lightingFBO;
-		phong1->inputFBOs.push_back(gBuffer);
+        //phong1 = new PhongPass(fsq, nearFar,WIDTH,HEIGHT);//,mouseX,mouseY);
+        //phong1->outputFBO = lightingFBO;
+        //phong1->inputFBOs.push_back(gBuffer);
 
-		glowHalf = new GlowPass(1,fsq,WIDTH,HEIGHT);
-		glowHalf->outputFBO = glowFBO;
-		glowHalf->inputFBOs.push_back(lightingFBO);
+        //glowHalf = new GlowPass(1,fsq,WIDTH,HEIGHT);
+        //glowHalf->outputFBO = glowFBO;
+        //glowHalf->inputFBOs.push_back(lightingFBO);
     }
 	
     void Renderer::setupGL(void)
@@ -69,6 +70,12 @@ namespace renderer {
         glEnable(GL_DEPTH_TEST);
     }
 
+    void Renderer::setupShaderStages()
+    {
+        m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, "/shader/forward/forward.vs.glsl",
+                                                    GLSL::FRAGMENT, "/shader/forward/forward.fs.glsl");
+        m_shaderProgram_forward->Link();
+    }
 
     void Renderer::renderloop()
     {
@@ -76,6 +83,7 @@ namespace renderer {
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+            //! Render calls here
 
 			//ToDo
 			//render shadow map
@@ -84,10 +92,17 @@ namespace renderer {
 			//gBuffer->write();
 			//drawBeach();
 
-			phong1->doExecute();
+			//phong1->doExecute();
 			
-			glowHalf->doExecute();
+			//glowHalf->doExecute();
 			
+            //phong1->doExecute();
+
+            //glowHalf->doExecute();
+
+			//ideal pipeline würde so aussehen:
+			//backBuffer << toneMappingPass << glowFBO << glowPass << lightingFBO << gBuffer << geometryPass
+
 			//finalPassWithToneMapping->doExecute();
 
             m_context->swapBuffers();

@@ -3,6 +3,7 @@
 #include <string>
 #include <iostream>
 #include <fstream>
+#include <stdlib.h>
 using namespace std;
 
 SlimShader::SlimShader(string root, string vertFileName, string fragFileName)
@@ -144,7 +145,7 @@ void SlimShader::printShaderInfoLog(GLuint shader)
     char *infoLog;
 
 	glGetShaderiv(shader, GL_INFO_LOG_LENGTH,&infologLength);
-	infoLog = (char *)malloc(infologLength);
+    infoLog = (char *)malloc(infologLength);
 	glGetShaderInfoLog(shader, infologLength, &charsWritten, infoLog);
 	printf("%s\n",infoLog);
 	free(infoLog);

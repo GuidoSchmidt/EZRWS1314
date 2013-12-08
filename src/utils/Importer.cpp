@@ -30,42 +30,36 @@ namespace utils {
 			
 		if(!m_aiScene)
 		{
-			//utils::log() << "ERROR (Importer): Scene was not successfully loaded!\n";
+            std::cerr << "ERROR (Importer): Scene was not successfully loaded!" << std::endl;
 		}
 		else
 		{
 			//! Do the scene processing
-			processScene();
+            processScene();
 		}
 	}
 
 	void Importer::processScene(void)
 	{
 		aiString root_name = m_aiScene->mRootNode->mName;
-		/*
-		utils::log() << "\n--- IMPORTER -------------------------------------------------------------\n";
-		utils::log() << "Root node name: ";
-		utils::log() << root_name.C_Str();
-		utils::log() << "\nNumber of meshes: ";
-		utils::log() << m_aiScene->mNumMeshes;
-		utils::log() << "\nNumber of materials: ";
-		utils::log() << m_aiScene->mNumMaterials;
-		utils::log() << "\nNumber of lights: ";
-		utils::log() << m_aiScene->mNumLights;
-		utils::log() << "\nNumber of cameras: ";
-		utils::log() << m_aiScene->mNumCameras;
-		utils::log() << "\n\n";
 
-		utils::log() << "Nodelist:\n";
-		*/
+        std::cout << "--- IMPORTER -------------------------------------------------------------" << std::endl;
+        std::cout << "Root node name: " << root_name.C_Str() << std::endl;
+        std::cout << "  > Mesh count: " << m_aiScene->mNumMeshes << std::endl;
+        std::cout << "  > Material count: " << m_aiScene->mNumMaterials << std::endl;
+        std::cout << "  > Light count: " << m_aiScene->mNumLights << std::endl;
+        std::cout << "  > Camera count: " << m_aiScene->mNumCameras << std::endl;
+
+        std::cout << "\n  > Nodes:" << std::endl;
+
 		for(unsigned int node = 0; node < m_aiScene->mRootNode->mNumChildren; node++)
 		{
-			//utils::log() << "  > Node name: ";
+            std::cout << "    * Node name: ";
 			aiString node_name = m_aiScene->mRootNode->mChildren[node]->mName;
-			//utils::log() << node_name.C_Str();
+            std::cout << node_name.C_Str() << std::endl;
 			if(m_aiScene->mRootNode->mChildren[node]->mNumMeshes != 0)
 			{
-				//utils::log() << "\n    Node Type: GEOMETRY\n";
+                std::cout << "Node Type: GEOMETRY" << std::endl;
 				unsigned int mesh_id = *(m_aiScene->mRootNode->mChildren[node]->mMeshes);
 
 				//! Get nodes transformation
@@ -97,16 +91,11 @@ namespace utils {
 				utils::log() <<	glm::eulerAngles(node_rotate);
 				utils::log() << "\n";
 				*/
-				processGeometry(mesh_id, &node_transform);
+                processGeometry(mesh_id, &node_transform);
 			}
 			//utils::log() << "\n\n";
 		}
 		//utils::log() << "\n\n";
-
-		//! Load textures
-		loadTexture("../../assets/textures/wood.png");
-		loadTexture("../../assets/textures/particle-01.tga");
-		loadTexture("../../assets/textures/concrete.jpg");
 	}
 
 	void Importer::processGeometry(const unsigned int& mesh_index, scene::Transform* node_transform)
@@ -151,7 +140,8 @@ namespace utils {
 			node_geometry->addIndex(vertex2_index);
 					
 			//! Create face-list for physics and add to geometry
-			std::vector<GLint> indices;
+            /*
+            std::vector<GLint> indices;
 			indices.clear();
 			indices.push_back(vertex0_index);
 			indices.push_back(vertex1_index);
@@ -174,7 +164,7 @@ namespace utils {
 			centroid.x = 1.0f/3.0f * vertex0.x + 1.0f/3.0f * vertex1.x + 1.0f/3.0f * vertex2.x; 
 			centroid.y = 1.0f/3.0f * vertex0.y + 1.0f/3.0f * vertex1.y + 1.0f/3.0f * vertex2.y; 
 			centroid.z = 1.0f/3.0f * vertex0.z + 1.0f/3.0f * vertex1.z + 1.0f/3.0f * vertex2.z; 
-
+            */
 		}
 		//! Log
 		/*
@@ -189,8 +179,8 @@ namespace utils {
 		*/
 
 		node_geometry->createBuffers();
-		node_geometry->createNormalsGeometry();
-		node_geometry->createBoundingBoxGeometry();
+        //node_geometry->createNormalsGeometry();
+        //node_geometry->createBoundingBoxGeometry();
 
 		m_sceneNode_list.push_back(node_geometry);
 	}
