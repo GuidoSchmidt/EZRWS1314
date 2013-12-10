@@ -50,6 +50,7 @@ void SeparatedBlurPass::doExecute() {
 			glViewport(0, 0, width, height);
 			quad->draw();
 
+		renderPassShader->disable();
 	outputFBO->unbind();
 	glViewport(0, 0, width*4, height*4);
 }

@@ -68,6 +68,13 @@ namespace renderer {
 		blurPass->outputFBO = sunlightFBO1;
 		blurPass->inputFBOs.push_back(gBuffer);
 
+		finalPass = new FinalPass(fsq, WIDTH, HEIGHT);
+		finalPass->outputFBO = lightingFBO;
+		finalPass->inputFBOs.push_back(sunlightFBO2);
+		//finalPass->inputFBOs.push_back(sunlightFBO1);
+		//finalPass->inputFBOs.push_back(gBuffer);
+		//finalPass->inputFBOs.push_back(lightingFBO);
+
 
         //phong1 = new PhongPass(fsq, nearFar,WIDTH,HEIGHT);//,mouseX,mouseY);
         //phong1->outputFBO = lightingFBO;
@@ -109,16 +116,6 @@ namespace renderer {
 
 		glm::mat4 projection = camera0->GetProjectionMatrix();
 
-		//Render that sweetAsShit beach geometry
-		//drawBeach();
-
-		//phong1->doExecute();
-			
-		//glowHalf->doExecute();
-			
-        //phong1->doExecute();
-
-        //glowHalf->doExecute();
 
 		glm::vec3 camera_position = glm::vec3(1.0f);
 		float camera_speed = 0.001f;
@@ -171,12 +168,15 @@ namespace renderer {
 
 					node0->drawTriangles();
 
-			   m_shaderProgram_forward->Unuse();
+			    m_shaderProgram_forward->Unuse();
 
-				m_context->swapBuffers();
 				m_framecount++;
 
 				doTheSunlightEffect();
+
+				finalPass->doExecute();
+
+				m_context->swapBuffers();
         }
     }
 

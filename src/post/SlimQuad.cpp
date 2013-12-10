@@ -35,10 +35,10 @@ void SlimQuad::draw()
 {
 	glBindBuffer(GL_ARRAY_BUFFER, quadVertexPointer);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-	glEnableVertexAttribArray(0);  //glVertexPointer(3,GL_FLOAT,0, 0);
+	glEnableVertexAttribArray(0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, quadTexCosPointer);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0); //glVertexPointer(3,GL_FLOAT,0, 0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0); 
 	glEnableVertexAttribArray(1);
 
 	glDrawArrays(GL_QUADS,0,4);
