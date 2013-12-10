@@ -35,7 +35,7 @@ namespace renderer {
         setupShaderStages();
     
         //! \todo Loads models via utils::Importer
-        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/untitled.dae");
+        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
 
         //! \todo Load textures (should be done by the utils::importer-class) using a class that will manage textures and materials
         //! \todo Create user interface
