@@ -12,13 +12,17 @@
 #include <glm/gtx/transform.hpp>
 #include <glm/core/type_gentype.hpp>
 #include <glm/gtx/quaternion.hpp>
+#include <string>
+#include "SceneNode.h"
 
 namespace scene {
 	//! @class Camera
-	class Camera {
-
+	class Camera
+	{
 		private:
 			//! Initial Values
+			std::string m_name;
+
 			glm::vec3 m_initPosition;
 			glm::vec3 m_initLookAt;
 			glm::vec3 m_initUp;
@@ -33,7 +37,7 @@ namespace scene {
 			//! Perspective
 			float m_fieldOfView;
 			float m_aspect;
-			int	  m_width, m_height;
+			int   m_width, m_height;
 			float m_farPlane, m_nearPlane;
 			bool  m_isOrtho;
 
@@ -55,7 +59,7 @@ namespace scene {
 			Camera(glm::ivec2 window_size);
 
 			//! \brief Constructor
-			Camera(glm::vec3 posVec, glm::vec3 lookAtVec, glm::vec3 upVec, glm::ivec2 window_size);
+			Camera(std::string name, glm::vec3 position, glm::vec3 lookAt, glm::vec3 up, glm::ivec2 window_size);
 			
 			//! \brief Destructor
 			virtual ~Camera();
@@ -122,6 +126,9 @@ namespace scene {
 
 			//! \brief Sets the far plane value
 			void SetFarPlane(float far);
+
+			//! \brief Sets the projection model of the camera
+			void SetProjection(float field_of_view, float aspect, float near, float far);
 
 			//! \brief Moves the camera in x axis
 			void MoveX(float speed);

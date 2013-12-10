@@ -50,6 +50,7 @@ namespace utils {
 		//! ------ Cameras ------------------------------------------  
 		if (m_aiScene->HasCameras())
 		{
+			scene::Camera* new_camera;
 			//! Process cameras
 			for (unsigned int camera_id = 0; camera_id < m_aiScene->mNumCameras; camera_id++)
 			{	
@@ -59,16 +60,25 @@ namespace utils {
 				aiString name = current_camera->mName;
 					
 				//! Position & orientation
+				aiVector3D position	= current_camera->mPosition;
 				aiVector3D lookat	= current_camera->mLookAt;
-				aiVector3D position = current_camera->mPosition;
 				aiVector3D up		= current_camera->mUp;
 
 				//! Projection
+				float field_of_view	= current_camera->mHorizontalFOV;
 				float aspect		= current_camera->mAspect;
 				float near_plane	= current_camera->mClipPlaneNear;
 				float far_plane		= current_camera->mClipPlaneFar;
-				float field_of_view = current_camera->mHorizontalFOV;
 			
+				//! Create a camera
+				new_camera = new scene::Camera(name.C_Str(),
+							       glm::vec3(position.x, position.y, position.z),
+							       glm::vec3(lookat.x, lookat.y, lookat.z),
+							       glm::vec3(up.x, up.y, up.z),
+							       glm::ivec2(1024, 1024));
+				new_camera->SetProjection(field_of_view, aspect, near_plane, far_plane);
+				m_camera_node_list.push_back(new_camera);
+
 				//! Log
 				std::cout << "\n  * Camera: " << camera_id << std::endl;
 				std::cout << "    Name: " << name.C_Str() << std::endl;
@@ -115,25 +125,32 @@ namespace utils {
 		//! ------ Meshes ------------------------------------------
 		if (m_aiScene->HasMeshes())
 		{
+			//! Traverse all scene nodes to get transformations of meshes
 			for (unsigned int node = 0; node < m_aiScene->mRootNode->mNumChildren; node++)
 			{
-				aiNode* current_node = m_aiScene->mRootNode->mChildren[node];
-
-				aiString name = current_node->mName;
-
-				//! Transformation
-				aiVector3D current_position, current_scale;
-				aiQuaternion current_rotation;
-				current_node->mTransformation.Decompose(current_scale, current_rotation, current_position);
-
-				//! Geometry
-				for (unsigned int mesh_id = 0; mesh_id < current_node->mNumMeshes; mesh_id++)
+				scene::Geometry* new_geometry;
+				//! Process meshes
+				for (unsigned int mesh_id = 0; mesh_id < m_aiScene->mNumMeshes; mesh_id++)
 				{
+					//! Get current node from assimp scene
+					aiNode* current_node = m_aiScene->mRootNode->mChildren[node];
+
+					aiString name = current_node->mName;
+
+					//! Transformation
+					aiVector3D current_position, current_scale;
+					aiQuaternion current_rotation;
+					current_node->mTransformation.Decompose(current_scale, current_rotation, current_position);
+
+					//! Create new geometry node and set its transform
+					new_geometry = new scene::Geometry(mesh_id, name.C_Str());
+					new_geometry->setTransform(
+						scene::Transform(glm::vec3(current_position.x, current_position.y, current_position.z),
+						glm::quat(current_rotation.w, glm::vec3(current_rotation.x, current_rotation.y, current_rotation.z)),
+						glm::vec3(current_scale.x, current_scale.y, current_scale.z) )
+					);
+
 					aiMesh* current_mesh = m_aiScene->mMeshes[mesh_id];
-
-					//! Name
-					aiString name = current_mesh->mName;
-
 					//! Geometry
 					if (current_mesh->HasPositions())
 					{
@@ -141,17 +158,20 @@ namespace utils {
 						for (unsigned int vertex = 0; vertex <= current_mesh->mNumVertices; vertex++)
 						{
 							aiVector3D* current_vertex = &(current_mesh->mVertices[vertex]);
+							new_geometry->addVertex(current_vertex->x, current_vertex->y, current_vertex->z);
 
 							//! Normals
 							if (current_mesh->HasNormals())
 							{
 								aiVector3D* current_normal = &(current_mesh->mNormals[vertex]);
+								new_geometry->addNormal(current_normal->x, current_normal->y, current_normal->z);
 							}
 
 							//! Texture coordinates
 							if (current_mesh->HasTextureCoords(0))
 							{
 								aiVector3D* current_uv = &(current_mesh->mTextureCoords[0][vertex]);
+								new_geometry->addUV(current_uv->x, current_uv->y);
 							}
 						}
 					}
@@ -163,11 +183,18 @@ namespace utils {
 							aiFace* current_face = &(current_mesh->mFaces[face]);
 
 							//! All three indices of the current triangle face
-							int x = current_mesh->mFaces[face].mIndices[0];
-							int y = current_mesh->mFaces[face].mIndices[1];
-							int z = current_mesh->mFaces[face].mIndices[2];
+							int vertex_index0 = current_mesh->mFaces[face].mIndices[0];
+							int vertex_index1 = current_mesh->mFaces[face].mIndices[1];
+							int vertex_index2 = current_mesh->mFaces[face].mIndices[2];
+
+							new_geometry->addIndex(vertex_index0);
+							new_geometry->addIndex(vertex_index1);
+							new_geometry->addIndex(vertex_index2);
 						}
 					}
+
+					new_geometry->createBuffers();
+					m_geometry_node_list.push_back(new_geometry);
 
 					//! Log
 					std::cout << "\n  * Mesh: " << mesh_id << std::endl;
@@ -186,16 +213,30 @@ namespace utils {
 		}
 	}
 
-	scene::SceneNode* Importer::getSceneNode(const int index)
+	scene::Geometry* Importer::getGeometryNode(const unsigned int index)
 	{
-		if (index > m_sceneNode_list.size())
+		if (index > m_geometry_node_list.size())
 		{
-			//utils::log() << "ERROR (Importer): wrong scene node index\n";
+			std::cerr << "ERROR (Importer): wrong scene node index" << std::endl;
 			return 0;
 		}
 		else
 		{
-			return m_sceneNode_list[index];
+			return m_geometry_node_list[index];
+		}
+	}
+
+
+	scene::Camera* Importer::getCameraNode(const unsigned int index)
+	{
+		if (index > m_geometry_node_list.size())
+		{
+			std::cerr << "ERROR (Importer): wrong scene node index" << std::endl;
+			return 0;
+		}
+		else
+		{
+			return m_camera_node_list[index];
 		}
 	}
 

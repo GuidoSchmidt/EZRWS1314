@@ -12,11 +12,7 @@ namespace scene {
 	class Geometry : public SceneNode
 	{
 		private:
-			//! Physics
-			std::vector<glm::vec3> m_verticesVec3;
-
-			glm::vec3 bounding_box_min;
-			glm::vec3 bounding_box_max;
+			std::string m_name;
 
 			//! Geometry itself
 			GLenum m_ErrorCheckMesh;
@@ -38,13 +34,14 @@ namespace scene {
 			std::vector<GLuint>  m_bb_indexlist;
 			GLuint bb_VAO_id;
 			GLuint bb_VBO_id, bb_IBO_id;
-
-		public:
-			//! \brief Constructor
+			
+			//! \brief Constructor: default
 			Geometry();
 
+		public:
+
 			//! \brief Constructor
-			Geometry(int id);
+			Geometry(int id, std::string name);
 
 			//! \brief Copy constructor
 			Geometry( const Geometry& other );

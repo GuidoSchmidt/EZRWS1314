@@ -81,40 +81,65 @@ namespace renderer {
 
     void Renderer::renderloop()
     {
-        //scene::Geometry* node0 = static_cast<scene::Geometry*>( utils::Importer::instance()->getSceneNode(0) );
-		glm::mat4 model = glm::mat4(1.0f); // node0->getTransform()->getModelMatrix();
-        glm::mat4 projection = glm::perspective(90.0f, m_context->getAspectRatio(), 0.1f, 200.0f);
-        
-        glm::vec3 position(0.0f, 0.0f, 2.0f);
+        scene::Geometry* node0 = utils::Importer::instance()->getGeometryNode(1);
+		glm::mat4 model = node0->getTransform()->getModelMatrix();
+
+		scene::Camera* camera0 = //utils::Importer::instance()->getCameraNode(0);
+		new scene::Camera(m_context->getSize());
+		camera0->SetPosition(glm::vec3(0.0f, 0.0f, -0.9f));
+		camera0->SetLookAt(glm::vec3(0.0f));
+		camera0->SetUp(glm::vec3(0.0f, 0.1f, 0.0f));
+		camera0->SetFOV(60.0f);
+		camera0->SetNearPlane(0.1f);
+		camera0->SetFarPlane(100.0f);
+
+		glm::mat4 projection = camera0->GetProjectionMatrix();
+
+		glm::vec3 camera_position = glm::vec3(1.0f);
+		float camera_speed = 0.0005f;
         while (m_context && m_context->isLive())
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            m_shaderProgram_forward->Use();
-        
-            if ( glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ){
-                position.z -= 0.005f;
-            }
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S)){
-                position.z += 0.005f;
-            }
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D)){
-                position.x += 0.005f;
-            }
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A)){
-                position.x -= 0.005f;
-            }
-            glm::mat4 view = glm::lookAt(position,
-                                         glm::vec3(0.0f, 0.0f, 0.0f),
-                                         glm::vec3(0.0f, 1.0f, 0.0f));
 
+			//! simple camera movement
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
+				glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
+			{
+				camera_position.z += camera_speed;
+				camera0->MoveY( camera_speed);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S) ||
+				glfwGetKey(m_context->getWindow(), GLFW_KEY_DOWN))
+			{
+				camera_position.z -= camera_speed;
+				camera0->MoveY(-camera_speed);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D) ||
+				glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
+			{
+				camera_position.x += camera_speed;
+				camera0->MoveX( camera_speed);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A) ||
+				glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
+			{
+				camera_position.x -= camera_speed;
+				camera0->MoveX(-camera_speed);
+			}
+			glm::mat4 view = glm::lookAt(camera_position, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f)); // camera0->GetViewMatrix();
+
+
+			//! First shader program
+            m_shaderProgram_forward->Use();
+			
                 m_shaderProgram_forward->SetUniform("model", model);
                 m_shaderProgram_forward->SetUniform("view", view);
                 m_shaderProgram_forward->SetUniform("projection", projection);
 
-                //node0->drawTriangles();
+                node0->drawTriangles();
 
-            m_shaderProgram_forward->Unuse();
+           m_shaderProgram_forward->Unuse();
 
             m_context->swapBuffers();
             m_framecount++;

@@ -5,17 +5,20 @@ namespace scene {
 
 	Geometry::Geometry()
 	{
-		Geometry(-1);
+		m_id = -1;
+		m_name = "undefined";
 	}
 
-	Geometry::Geometry(int id)
+	Geometry::Geometry(int id, std::string name)
 	{
-		m_id = id;
+		m_name = name;
+
+		m_id	= id;
 		m_type	= GEOMETRY;
-		VAO_id = 0;
-		VBO_id = 0;
-		IBO_id = 0;
-		NBO_id = 0;
+		VAO_id	= 0;
+		VBO_id	= 0;
+		IBO_id	= 0;
+		NBO_id	= 0;
 		UVBO_id = 0;
 
 		normals_VAO_id = 0;
@@ -38,11 +41,6 @@ namespace scene {
 
 		m_ErrorCheckMesh = 0;
 
-		m_verticesVec3 = other.m_verticesVec3;
-
-		bounding_box_min = other.bounding_box_min;
-		bounding_box_max = other.bounding_box_max;
-
 		index_count = other.index_count;
 		m_vertexlist = other.m_vertexlist;
 		m_indexlist = other.m_indexlist;
@@ -57,7 +55,7 @@ namespace scene {
 		bb_VAO_id = other.bb_VAO_id;
 		bb_VBO_id = other.bb_VBO_id;
 
-		createBuffers();
+		//createBuffers();
 	}
 
 	Geometry::~Geometry(void)
@@ -121,8 +119,9 @@ namespace scene {
 
 	void Geometry::setBoundingBox(glm::vec3 min, glm::vec3 max)
 	{
-		bounding_box_min = min;
-		bounding_box_max = max;
+		//! \todo old, update to the use fo boundign boxes
+		//bounding_box_min = min;
+		//bounding_box_max = max;
 	}
 
 	void Geometry::createNormalsGeometry(void)
@@ -145,6 +144,7 @@ namespace scene {
 
 	void Geometry::createBoundingBoxGeometry(void)
 	{
+		/*
 		std::vector<glm::vec3> points; //= getVerticesVec3();
 		if(points.empty())
 			return;
@@ -236,6 +236,7 @@ namespace scene {
 			
 		//! Create buffers
 		createBoundingBoxBuffers();
+		*/
 	}
 
 	nodetype* Geometry::getType(void)

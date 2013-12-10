@@ -21,10 +21,8 @@ uniform mat4 projection;
 //*** Main *********************************************************************
 void main(void)
 {   
-	mat4 mvp   = projection * view * model;
-    vsPosition = vec3( mvp * vec4(position, 1.0) );
-    vsNormal   = vec3( transpose( inverse(view * model) ) * normalize( vec4(normal, 0.0) ) );
-    vsUV = uv;
-
-    gl_Position = vec4(vsPosition, 1.0);
+	vsPosition = vec3( model * vec4(position, 1.0) );
+	vsNormal = vec3( normalize(model * view * vec4(normal, 0.0)) );
+	vsUV = uv;
+	gl_Position = projection * view * model * vec4(position, 1.0);
 }
