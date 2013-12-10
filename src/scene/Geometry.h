@@ -21,14 +21,18 @@ namespace scene {
 			std::vector<GLuint>  m_indexlist;
 			std::vector<GLfloat> m_normallist;
 			std::vector<GLfloat> m_uvlist;
-			GLuint VAO_id;
-			GLuint VBO_id, IBO_id, NBO_id, UVBO_id;
+			GLuint VAO_handle;
+			GLuint VBO_handle, IBO_handle, NBO_handle, UVBO_handle;
+			
 			//! Normals geometry
+			//! \todo old - rework
 			bool m_normals_buffers;
 			std::vector<GLfloat> m_normals_vertexlist;
 			GLuint normals_VAO_id;
 			GLuint normals_VBO_id;
+
 			//! Bounding box geometry
+			//! \todo old - rework
 			bool m_bb_buffers;
 			std::vector<GLfloat> m_bb_vertexlist;
 			std::vector<GLuint>  m_bb_indexlist;

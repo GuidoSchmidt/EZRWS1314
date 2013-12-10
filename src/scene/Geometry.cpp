@@ -15,11 +15,11 @@ namespace scene {
 
 		m_id	= id;
 		m_type	= GEOMETRY;
-		VAO_id	= 0;
-		VBO_id	= 0;
-		IBO_id	= 0;
-		NBO_id	= 0;
-		UVBO_id = 0;
+		VAO_handle	= 0;
+		VBO_handle	= 0;
+		IBO_handle	= 0;
+		NBO_handle	= 0;
+		UVBO_handle = 0;
 
 		normals_VAO_id = 0;
 		normals_VBO_id = 0;
@@ -30,11 +30,11 @@ namespace scene {
 	Geometry::Geometry( const Geometry& other )
 	{
 		m_id = other.m_id+1;
-		VAO_id = other.VAO_id;
-		VBO_id = other.VBO_id;;
-		IBO_id = other.IBO_id;;
-		NBO_id = other.NBO_id;;
-		UVBO_id = other.UVBO_id;;
+		VAO_handle = other.VAO_handle;
+		VBO_handle = other.VBO_handle;;
+		IBO_handle = other.IBO_handle;;
+		NBO_handle = other.NBO_handle;;
+		UVBO_handle = other.UVBO_handle;;
 
 		normals_VAO_id = other.normals_VAO_id;
 		normals_VBO_id = normals_VBO_id;
@@ -294,30 +294,30 @@ namespace scene {
 		m_ErrorCheckMesh = glGetError();
 
 		//! Create vertex array object
-		glGenVertexArrays(1, &VAO_id);
-		glBindVertexArray(VAO_id);
+		glGenVertexArrays(1, &VAO_handle);
+		glBindVertexArray(VAO_handle);
 
 		//! Create vertex buffer object
-		glGenBuffers(1, &VBO_id);
-		glBindBuffer(GL_ARRAY_BUFFER, VBO_id);
+		glGenBuffers(1, &VBO_handle);
+		glBindBuffer(GL_ARRAY_BUFFER, VBO_handle);
 		glBufferData(GL_ARRAY_BUFFER, m_vertexlist.size() * sizeof(GLfloat), &m_vertexlist.at(0), GL_STATIC_DRAW);
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 		glEnableVertexAttribArray(0);
 		//! Create index buffer
-		glGenBuffers(1, &IBO_id);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO_id);
+		glGenBuffers(1, &IBO_handle);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, IBO_handle);
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_indexlist.size() * sizeof(GLint), &m_indexlist.at(0), GL_STATIC_DRAW);
 		//! Create normal buffer
-		glGenBuffers(1, &NBO_id);
-		glBindBuffer(GL_ARRAY_BUFFER, NBO_id);
+		glGenBuffers(1, &NBO_handle);
+		glBindBuffer(GL_ARRAY_BUFFER, NBO_handle);
 		glBufferData(GL_ARRAY_BUFFER, m_normallist.size() * sizeof(GLfloat), &m_normallist.at(0), GL_STATIC_DRAW);
 		glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 		glEnableVertexAttribArray(1);
 		if(!m_uvlist.empty())
 		{
 			//! Create uv buffer
-			glGenBuffers(1, &UVBO_id);
-			glBindBuffer(GL_ARRAY_BUFFER, UVBO_id);
+			glGenBuffers(1, &UVBO_handle);
+			glBindBuffer(GL_ARRAY_BUFFER, UVBO_handle);
 			glBufferData(GL_ARRAY_BUFFER, m_uvlist.size() * sizeof(GLfloat), &m_uvlist.at(0), GL_STATIC_DRAW);
 			glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
 			glEnableVertexAttribArray(2);
@@ -411,7 +411,7 @@ namespace scene {
 
 	void Geometry::drawTriangles(void)
 	{
-		glBindVertexArray(VAO_id);
+		glBindVertexArray(VAO_handle);
 		glDrawElements(GL_TRIANGLES, m_indexlist.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
@@ -419,14 +419,14 @@ namespace scene {
 	void Geometry::drawWireframe(void)
 	{
 		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
-		glBindVertexArray(VAO_id);
+		glBindVertexArray(VAO_handle);
 		glDrawElements(GL_TRIANGLES, m_indexlist.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
 
 	void Geometry::drawPoints(void)
 	{
-		glBindVertexArray(VAO_id);
+		glBindVertexArray(VAO_handle);
 		glDrawElements(GL_POINTS, m_indexlist.size(), GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 	}
