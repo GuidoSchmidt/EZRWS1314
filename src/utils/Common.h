@@ -10,6 +10,7 @@
 //! C++ includes
     #include <string>
     #include <iostream>
+    #include <stdio.h>
 
 //! Third party includes
     #include <GL/glew.h>
