@@ -110,7 +110,6 @@ namespace renderer {
 		glm::mat4 projection = camera0->GetProjectionMatrix();
 
 		//Render that sweetAsShit beach geometry
-		//gBuffer->write();
 		//drawBeach();
 
 		//phong1->doExecute();
@@ -127,53 +126,57 @@ namespace renderer {
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			//! simple camera movement
-			double mouse_x, mouse_y;
-			float  mouse_correct_x, mouse_correct_y;
-			glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
-			mouse_correct_x = ((mouse_x / m_context->getSize().x) * 2.0f) -1.0f;
-			mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;
-			if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
-			{
-				camera0->Rotate(mouse_correct_x * camera_speed * 100.0f,
-								mouse_correct_y * camera_speed * 100.0f);
-			}
-			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
-				glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
-			{
-				camera0->MoveZ( camera_speed);
-			}
-			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S) ||
-				glfwGetKey(m_context->getWindow(), GLFW_KEY_DOWN))
-			{
-				camera0->MoveZ(-camera_speed);
-			}
-			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D) ||
-				glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
-			{
-				camera0->MoveX( camera_speed);
-			}
-			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A) ||
-				glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
-			{
-				camera0->MoveX(-camera_speed);
-			}
-			glm::mat4 view = camera0->GetViewMatrix();
+			gBuffer->write();
+
+				//! simple camera movement
+				double mouse_x, mouse_y;
+				float  mouse_correct_x, mouse_correct_y;
+				glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
+				mouse_correct_x = ((mouse_x / m_context->getSize().x) * 2.0f) -1.0f;
+				mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;
+				if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
+				{
+					camera0->Rotate(mouse_correct_x * camera_speed * 100.0f,
+									mouse_correct_y * camera_speed * 100.0f);
+				}
+				if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
+					glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
+				{
+					camera0->MoveZ( camera_speed);
+				}
+				if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S) ||
+					glfwGetKey(m_context->getWindow(), GLFW_KEY_DOWN))
+				{
+					camera0->MoveZ(-camera_speed);
+				}
+				if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D) ||
+					glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
+				{
+					camera0->MoveX( camera_speed);
+				}
+				if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A) ||
+					glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
+				{
+					camera0->MoveX(-camera_speed);
+				}
+				glm::mat4 view = camera0->GetViewMatrix();
 
 
-			//! First shader program
-            m_shaderProgram_forward->Use();
+				//! First shader program
+				m_shaderProgram_forward->Use();
 			
-                m_shaderProgram_forward->SetUniform("model", model);
-                m_shaderProgram_forward->SetUniform("view", view);
-                m_shaderProgram_forward->SetUniform("projection", projection);
+					m_shaderProgram_forward->SetUniform("model", model);
+					m_shaderProgram_forward->SetUniform("view", view);
+					m_shaderProgram_forward->SetUniform("projection", projection);
 
-                node0->drawTriangles();
+					node0->drawTriangles();
 
-           m_shaderProgram_forward->Unuse();
+			   m_shaderProgram_forward->Unuse();
 
-            m_context->swapBuffers();
-            m_framecount++;
+				m_context->swapBuffers();
+				m_framecount++;
+
+				doTheSunlightEffect();
         }
     }
 

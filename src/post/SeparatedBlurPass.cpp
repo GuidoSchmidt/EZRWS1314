@@ -21,7 +21,7 @@ SeparatedBlurPass::SeparatedBlurPass(SlimQuad* pQuad, int pWidth, int pHeight)
 
 
 	//params
-	param_glowRange = 0.5;
+	param_glowRange = 5.0;
 	param_glowThreshhold = 0.7;
 	param_glowHorizontal = 1.0;
 	param_glowBrightness = 1.0;
@@ -47,10 +47,10 @@ void SeparatedBlurPass::doExecute() {
 			glUniform1f(horizontalUniform, param_glowHorizontal);
 			glUniform2i(screenSizeUniform, (GLint)width, (GLint)height);
 
-			glViewport(0, 0, width / 4, width / 4);
+			glViewport(0, 0, width, height);
 			quad->draw();
 
 	outputFBO->unbind();
-	glViewport(0, 0, width, width);
+	glViewport(0, 0, width*4, height*4);
 }
 

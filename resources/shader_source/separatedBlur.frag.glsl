@@ -7,22 +7,23 @@ uniform float thresh;
 uniform float range;
 uniform float brightness;
 uniform float horizontal;
-uniform vec2 screenSize;
+uniform ivec2 screenSize;
 
 in vec2 UV;
 
 
 void main() 
 { 
-	vec2 DELTA = vec2(1/float(screenSize.x),1/float(screenSize.y));
-	vec3 sum;
-	float n;
-	vec2 dir = vec2(horizontal,(1-horizontal));
+	vec2 DELTA = vec2(1.0/float(screenSize.x),1.0/float(screenSize.y));
+	vec4 sum=vec4(0);
+	float n=0;
+	vec2 dir = vec2(horizontal,(1.0-horizontal));
+	//float i=10.0;
 	for (float i=0.0;i<=range;i+=1.0)
 	{
-		sum+=texture(color,UV+dir*i*DELTA).rgb;
-		sum+=texture(color,UV-dir*i*DELTA).rgb;
+		sum+=texture(color,UV+dir*i*DELTA);
+		sum+=texture(color,UV-dir*i*DELTA);
 		n+=2.0;
 	}
-	colorOut.rgb = sum/n;
+	colorOut = sum/n;
 }
