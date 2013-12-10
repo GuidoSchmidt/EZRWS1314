@@ -34,14 +34,13 @@ namespace renderer {
         setupGL();
         setupShaderStages();
     
-        //! @todo Loads models via utils::Importer
+        //! \todo Loads models via utils::Importer
         utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/untitled.dae");
 
-        //! @todo Load textures using a class that will manage textures and materials
-        //! @todo Create user interface
+        //! \todo Load textures (should be done by the utils::importer-class) using a class that will manage textures and materials
+        //! \todo Create user interface
 
-
-        //! @todo Use Context::getSize().x and .y!
+        //! \todo Use Context::getSize().x and .y!
         int WIDTH = m_context->getSize().x;
         int HEIGHT = m_context->getSize().y;
         glm::vec2 nearFar = glm::vec2(0.1,60.0);

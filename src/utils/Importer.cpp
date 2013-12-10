@@ -115,123 +115,75 @@ namespace utils {
 		//! ------ Meshes ------------------------------------------
 		if (m_aiScene->HasMeshes())
 		{
-			//! Process meshes
-			for (unsigned int mesh_id = 0; mesh_id < m_aiScene->mNumMeshes; mesh_id++)
+			for (unsigned int node = 0; node < m_aiScene->mRootNode->mNumChildren; node++)
 			{
-				aiMesh* current_mesh = m_aiScene->mMeshes[mesh_id];
+				aiNode* current_node = m_aiScene->mRootNode->mChildren[node];
 
-				//! Name
-				aiString name = current_mesh->mName;
+				aiString name = current_node->mName;
+
+				//! Transformation
+				aiVector3D current_position, current_scale;
+				aiQuaternion current_rotation;
+				current_node->mTransformation.Decompose(current_scale, current_rotation, current_position);
 
 				//! Geometry
-				if (current_mesh->HasPositions())
+				for (unsigned int mesh_id = 0; mesh_id < current_node->mNumMeshes; mesh_id++)
 				{
-					//! Vertices
-					for (unsigned int vertex = 0; vertex <= current_mesh->mNumVertices; vertex++)
+					aiMesh* current_mesh = m_aiScene->mMeshes[mesh_id];
+
+					//! Name
+					aiString name = current_mesh->mName;
+
+					//! Geometry
+					if (current_mesh->HasPositions())
 					{
-						aiVector3D* current_vertex = &(current_mesh->mVertices[vertex]);
-				
-						//! Normals
-						if (current_mesh->HasNormals())
+						//! Vertices
+						for (unsigned int vertex = 0; vertex <= current_mesh->mNumVertices; vertex++)
 						{
-							aiVector3D* current_normal = &(current_mesh->mNormals[vertex]);
-						}
-				
-						//! Texture coordinates
-						if (current_mesh->HasTextureCoords(0))
-						{
-							aiVector3D* current_uv = &(current_mesh->mTextureCoords[0][vertex]);
+							aiVector3D* current_vertex = &(current_mesh->mVertices[vertex]);
+
+							//! Normals
+							if (current_mesh->HasNormals())
+							{
+								aiVector3D* current_normal = &(current_mesh->mNormals[vertex]);
+							}
+
+							//! Texture coordinates
+							if (current_mesh->HasTextureCoords(0))
+							{
+								aiVector3D* current_uv = &(current_mesh->mTextureCoords[0][vertex]);
+							}
 						}
 					}
-				}
-				//! Faces (indices for vertex list)
-				if (current_mesh->HasFaces())
-				{
-					for (unsigned int face = 0; face < current_mesh->mNumFaces; face++)
+					//! Faces (indices for vertex list)
+					if (current_mesh->HasFaces())
 					{
-						aiFace* current_face = &(current_mesh->mFaces[face]);
+						for (unsigned int face = 0; face < current_mesh->mNumFaces; face++)
+						{
+							aiFace* current_face = &(current_mesh->mFaces[face]);
 
-						//! All three indices of the current triangle face
-						int x = current_mesh->mFaces[face].mIndices[0];
-						int y = current_mesh->mFaces[face].mIndices[1];
-						int z = current_mesh->mFaces[face].mIndices[2];
+							//! All three indices of the current triangle face
+							int x = current_mesh->mFaces[face].mIndices[0];
+							int y = current_mesh->mFaces[face].mIndices[1];
+							int z = current_mesh->mFaces[face].mIndices[2];
+						}
 					}
-				}
 
-				//! Log
-				std::cout << "\n  * Mesh: " << mesh_id << std::endl;
-				std::cout << "    Name: " << name.C_Str() << std::endl;
-				std::cout << "    Vertex count: " << current_mesh->mNumVertices << std::endl;
-				std::cout << "    Faces count: " << current_mesh->mNumFaces << std::endl;
-				std::cout << "    Normals count: " << current_mesh->mNumVertices << std::endl;
+					//! Log
+					std::cout << "\n  * Mesh: " << mesh_id << std::endl;
+					std::cout << "    Name: " << name.C_Str() << std::endl;
+					std::cout << "    Vertex count: " << current_mesh->mNumVertices << std::endl;
+					std::cout << "    Faces count: " << current_mesh->mNumFaces << std::endl;
+					std::cout << "    Normals count: " << current_mesh->mNumVertices << std::endl;
+				}
 			}
-
 		}
 
 		//! ------ Materials ------------------------------------------
 		if (m_aiScene->HasMaterials())
 		{
-
+			//! \todo Read materials and textures and organize them: HashMap, Smart-Pointers
 		}
-	}
-
-	void Importer::processGeometry(const unsigned int& mesh_index, scene::Transform* node_transform)
-	{
-		scene::Geometry* node_geometry = new scene::Geometry(mesh_index);
-		node_geometry->setTransform(*node_transform);
-		aiMesh* aimesh = m_aiScene->mMeshes[mesh_index];
-
-			std::cout << "REAL POS " << aimesh->mNumVertices << std::endl;
-		//! Process Vertices
-		for(unsigned int vertex = 0; vertex < aimesh->mNumVertices; vertex++)
-		{
-			std::cout << "vertex # " << vertex << std::endl;
-
-			//! Create vertex list
-			if (aimesh->HasPositions())
-			{
-				node_geometry->addVertex(aimesh->mVertices[vertex].x,
-										 aimesh->mVertices[vertex].y,
-										 aimesh->mVertices[vertex].z);
-			}
-
-			//! Create normals list
-			if(aimesh->HasNormals())
-			{
-				node_geometry->addNormal(aimesh->mNormals[vertex].x,
-										 aimesh->mNormals[vertex].y,
-										 aimesh->mNormals[vertex].z);
-			}
-			//! Create texture coordinate list
-			if(aimesh->HasTextureCoords(0))
-			{
-				node_geometry->addUV(aimesh->mTextureCoords[0][vertex].x,
-									 aimesh->mTextureCoords[0][vertex].y);
-			}
-		}
-	
-		//! Create index list
-		for(unsigned int face = 0; face < aimesh->mNumFaces; face++)
-		{
-			//! Triangle
-			int vertex0_index = aimesh->mFaces[face].mIndices[0];
-			int vertex1_index = aimesh->mFaces[face].mIndices[1];
-			int vertex2_index = aimesh->mFaces[face].mIndices[2];
-
-			node_geometry->addIndex(vertex0_index);
-			node_geometry->addIndex(vertex1_index);
-			node_geometry->addIndex(vertex2_index);
-		}
-		//! Log
-		std::cout << "      Geometry Information:\n";
-		std::cout << "      - Vertex count:        " << node_geometry->vertexCount() << std::endl;
-		std::cout << "      - Index count:         " << node_geometry->indexCount()  << std::endl;
-		std::cout << "      - Normal count:        " << node_geometry->normalCount() << std::endl;
-		std::cout << "      - UV coordinate count: " << node_geometry->uvCount()     << std::endl;
-
-		node_geometry->createBuffers();
-		
-		m_sceneNode_list.push_back(node_geometry);
 	}
 
 	scene::SceneNode* Importer::getSceneNode(const int index)
