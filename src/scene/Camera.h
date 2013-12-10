@@ -39,7 +39,6 @@ namespace scene {
 			float m_aspect;
 			int   m_width, m_height;
 			float m_farPlane, m_nearPlane;
-			bool  m_isOrtho;
 
 			//! Matrices
 			glm::mat4 m_viewMatrix, m_inverseViewMatrix, m_projectionMatrix;
@@ -53,6 +52,9 @@ namespace scene {
 
 			//! \brief Rotates the camera using a quaternion
 			void RotateByQuat(const float angle, const glm::vec3 axis);
+
+			//! \brief Creates view and projection matrix
+			void GenerateMatrices(void);
 
 		public:
 			//! \brief Constructor
