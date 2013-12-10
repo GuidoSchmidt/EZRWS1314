@@ -82,6 +82,11 @@ namespace renderer {
         return m_size;
     }
 
+	float Context::getAspectRatio(void)
+	{
+		return m_size.y / static_cast<float>(m_size.x);
+	}
+
     GLFWwindow* Context::getWindow(void)
     {
         return m_window;

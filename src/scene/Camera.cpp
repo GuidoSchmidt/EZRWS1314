@@ -27,24 +27,23 @@ namespace scene {
 		m_nearPlane   = 0.1f;
 		m_farPlane 	  = 200.0f;
 
-		m_viewMatrix	   	= glm::lookAt(m_initPosition, m_lookAt, m_up);
-		m_inverseViewMatrix = glm::inverse(m_viewMatrix);
-		m_projectionMatrix 	= glm::perspective(m_fieldOfView, m_aspect, m_nearPlane, m_farPlane);
-		m_isOrtho 		   	= false;
+		GenerateMatrices();
 
 		m_speed = 0.05f;
 	}
 
-	Camera::Camera(glm::vec3 positionVec, glm::vec3 lookAtVec, glm::vec3 upVec, glm::ivec2 window_size)
+	Camera::Camera(std::string name, glm::vec3 position, glm::vec3 lookAt, glm::vec3 up, glm::ivec2 window_size)
 	{
-		m_initPosition = positionVec;
-		m_initPosition = positionVec;
+		m_name = name;
 
-		m_initLookAt = lookAtVec;
-		m_lookAt = lookAtVec;
+		m_initPosition = position;
+		m_initPosition = position;
 
-		m_initUp = upVec;
-		m_up = upVec;
+		m_initLookAt = lookAt;
+		m_lookAt = lookAt;
+
+		m_initUp = up;
+		m_up = up;
 
 		m_lookVec 	= m_initLookAt - m_initPosition;
 		m_initSide 	= glm::cross(m_lookVec, m_initUp);
@@ -55,6 +54,7 @@ namespace scene {
 		SetLookAt(m_lookAt);
 		SetPosition(m_initPosition);
 
+
 		m_fieldOfView = 60.0f;
 		m_width 	  = window_size.x;
 		m_height 	  = window_size.y;
@@ -62,16 +62,20 @@ namespace scene {
 		m_nearPlane   = 0.1f;
 		m_farPlane 	  = 200.f;
 
-		m_viewMatrix	   	= glm::lookAt(m_initPosition, m_lookAt, m_up);
-		m_inverseViewMatrix = glm::inverse(m_viewMatrix);
-		m_projectionMatrix  = glm::perspective(m_fieldOfView, m_aspect, m_nearPlane, m_farPlane);
-		m_isOrtho 		    = false;
+		GenerateMatrices();
 
 		m_speed = 0.05f;
 	}
 
 	Camera::~Camera() {
 		// TODO Auto-generated destructor stub
+	}
+
+	void Camera::GenerateMatrices(void)
+	{
+		m_viewMatrix = glm::lookAt(m_initPosition, m_lookAt, m_up);
+		m_inverseViewMatrix = glm::inverse(m_viewMatrix);
+		m_projectionMatrix = glm::perspective(m_fieldOfView, m_aspect, m_nearPlane, m_farPlane);
 	}
 
 	glm::vec3 Camera::GetSide(void)
@@ -165,11 +169,9 @@ namespace scene {
 
 	void Camera::SetFOV(float fov)
 	{
-		m_fieldOfView = fov;
-		if(m_isOrtho)
-			m_projectionMatrix = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, m_nearPlane, m_farPlane);
-		else
-			m_projectionMatrix = glm::perspective(m_fieldOfView, m_aspect, m_nearPlane, m_farPlane);
+		m_fieldOfView = fov;	
+		
+		m_projectionMatrix = glm::perspective(m_fieldOfView, m_aspect, m_nearPlane, m_farPlane);
 	}
 
 	void Camera::SetAspectRatio(float aspect)
@@ -185,6 +187,16 @@ namespace scene {
 	void Camera::SetFarPlane(float far)
 	{
 		m_farPlane = far;
+	}
+
+	void Camera::SetProjection(float field_of_view, float aspect, float near, float far)
+	{
+		m_fieldOfView = field_of_view;
+		m_aspect	= aspect;
+		m_nearPlane	= near;
+		m_farPlane	= far;
+
+		GenerateMatrices();
 	}
 
 	void Camera::MoveZ(float speed)

@@ -6,6 +6,8 @@
 #include "Context.h"
 #include "ShaderProgram.h"
 #include "FrameBufferObject.h"
+#include "../scene/SceneNode.h"
+#include "../scene/Geometry.h"
 #include "../post/SlimFBO.h"
 #include "../post/SlimShader.h"
 #include "../post/SlimQuad.h"
@@ -56,7 +58,7 @@ namespace renderer {
 				
 		public:
 			//! Returns the singleton instance
-			static Renderer* instance(void);
+			static Renderer* instance(Context& context);
 
 			//! \brief Sets the context to render to
             void setRenderContext(Context& context);
