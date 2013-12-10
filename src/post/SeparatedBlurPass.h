@@ -6,16 +6,17 @@
 class SeparatedBlurPass : public ISlimRenderPass
 {
 public:
-	SeparatedBlurPass(int scale, SlimQuad* pQuad, int pWidth, int pHeight);
+	SeparatedBlurPass(SlimQuad* pQuad, int pWidth, int pHeight);
 	virtual ~SeparatedBlurPass();
 
 	virtual void doExecute();
 
-
+	GLint colorUniform;
 	GLint horizontalUniform;
 	GLint glowRangeUniform;
 	GLint glowBrightnessUniform;
 	GLint glowThreshholdUniform;
+	GLint screenSizeUniform;
 
 	GLfloat param_glowRange;
 	GLfloat param_glowThreshhold;
