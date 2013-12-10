@@ -85,7 +85,7 @@ namespace renderer {
 		glm::mat4 model = node0->getTransform()->getModelMatrix();
 
 		scene::Camera* camera0 = new scene::Camera("scene_camera",
-												   glm::vec3(0.0f, 0.5f, 0.5f),
+												   glm::vec3(0.0f, 3.0f, 3.0f),
 												   glm::vec3(0.0f, 0.0f, 0.0f),
 												   glm::vec3(0.0f, 1.0f, 0.0f),
 												   m_context->getSize());
