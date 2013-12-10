@@ -12,7 +12,6 @@ Rocket::Core::Context* context = NULL;
 void GameLoop()
 {
     glClear(GL_COLOR_BUFFER_BIT);
-
     context->Update();
     context->Render();
 
@@ -63,16 +62,17 @@ int main(void)
     Shell::LoadFonts(RESOURCES_PATH "/ui/fonts/Roboto/");
 
     // Load and show the demo document.
-    Rocket::Core::ElementDocument* document = context->LoadDocument(RESOURCES_PATH "/ui/test.rml");
+    Rocket::Core::ElementDocument* document = context->LoadDocument(RESOURCES_PATH "/ui/rocket/tutorial.rml");
     if (document != NULL)
     {
+        std::cout << "la" << std::endl;
         document->Show();
-        document->RemoveReference();
     }
 
     Shell::EventLoop(GameLoop);
 
     // Shutdown Rocket.
+    document->RemoveReference();
     context->RemoveReference();
     Rocket::Core::Shutdown();
 

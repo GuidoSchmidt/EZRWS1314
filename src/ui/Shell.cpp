@@ -327,8 +327,8 @@ float Shell::GetElapsedTime()
 {
     //LARGE_INTEGER counter;
     //QueryPerformanceCounter(&counter);
-
-    return 0; //(float)((counter.QuadPart - time_startup.QuadPart) * time_frequency);
+    std::cout << "TIME: " << glfwGetTime() << std::endl;
+    return (float)glfwGetTime(); //(float)((counter.QuadPart - time_startup.QuadPart) * time_frequency);
 }
 
 static bool AttachOpenGL()
