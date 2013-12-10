@@ -8,7 +8,6 @@ uniform ivec2 screenSize;
 
 in vec2 UV;
 
-
 void main() 
 { 
 	colorOut = texture(color,UV);

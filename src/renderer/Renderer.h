@@ -12,7 +12,7 @@
 #include "../post/SlimShader.h"
 #include "../post/SlimQuad.h"
 #include "../post/GlowPass.h"
-#include "../post/SeparatedBlurPass.h"
+#include "../post/Sunlight/SeparatedBlurPass.h"
 #include "../post/FinalPass.h"
 #include "../post/PhongPass.h"
 #include "../utils/Importer.h"

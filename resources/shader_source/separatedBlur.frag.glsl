@@ -4,11 +4,12 @@ layout(location = 0) out vec4 colorOut;
  
 uniform sampler2D color;
 uniform float thresh;
-uniform float range;
+//uniform float range;
 uniform float brightness;
 uniform float horizontal;
 uniform ivec2 screenSize;
 
+float range = 10.0;
 in vec2 UV;
 vec3 l = vec3(0.2126, 0.7152, 0.0722); 
 

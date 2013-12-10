@@ -1,13 +1,13 @@
-#ifndef SEPARATED_BLUR_H_
-#define SEPARATED_BLUR_H_
+#ifndef RADIAL_GLOW_H_
+#define RADIAL_GLOW_H_
 
-#include "ISlimRenderPass.h"
+#include "../ISlimRenderPass.h"
 
-class SeparatedBlurPass : public ISlimRenderPass
+class RadialGlowMaskPass : public ISlimRenderPass
 {
 public:
-	SeparatedBlurPass(SlimQuad* pQuad, int pWidth, int pHeight);
-	virtual ~SeparatedBlurPass();
+	RadialGlowMaskPass(SlimQuad* pQuad, int pWidth, int pHeight);
+	virtual ~RadialGlowMaskPass();
 
 	virtual void doExecute();
 
@@ -24,4 +24,4 @@ public:
 	GLfloat param_glowBrightness;
 };
 
-#endif /* GLOWPASS_H_ */
+#endif /* RADIAL_GLOW_H_ */
