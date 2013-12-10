@@ -181,7 +181,7 @@ string SlimShader::readFile(string fileName)
 		file.close();
 	}
 	else
-		//cout << "ERROR: Unable to open file " << fileName << endl;
+		cout << "ERROR: Unable to open file " << fileName << endl;
 
 	return fileContent;
 }

@@ -33,7 +33,7 @@ namespace renderer {
     {
 		std::cout << "Renderer.init() called" << std::endl;
         setupGL();
-        setupShaderStages();
+        //setupShaderStages();
 	
 		//ToDo Modells laden
 		//ToDo Texturen laden
@@ -47,12 +47,17 @@ namespace renderer {
 		
 		//Setup dat slim fboooooos
 
-        //gBuffer		= new SlimFBO(WIDTH,HEIGHT, 2, true);
-        //lightingFBO = new SlimFBO(WIDTH,HEIGHT, 1, false);
-        //glowFBO		= new SlimFBO(WIDTH,HEIGHT, 1, false);
+        gBuffer		 = new SlimFBO(WIDTH,HEIGHT, 2, true);
+        lightingFBO  = new SlimFBO(WIDTH,HEIGHT, 1, false);
+		sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+		sunlightFBO2 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 
 		//now the render passses!
-        //fsq = new SlimQuad();
+        fsq = new SlimQuad();
+
+		blurPass = new SeparatedBlurPass(fsq, WIDTH/4, HEIGHT/4);
+		blurPass->outputFBO = sunlightFBO1;
+		blurPass->inputFBOs.push_back(gBuffer);
 
         //phong1 = new PhongPass(fsq, nearFar,WIDTH,HEIGHT);//,mouseX,mouseY);
         //phong1->outputFBO = lightingFBO;
@@ -72,8 +77,8 @@ namespace renderer {
 
     void Renderer::setupShaderStages()
     {
-        m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, "/shader/forward/forward.vs.glsl",
-                                                    GLSL::FRAGMENT, "/shader/forward/forward.fs.glsl");
+        m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
+                                                    GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl");
         m_shaderProgram_forward->Link();
     }
 
@@ -109,4 +114,17 @@ namespace renderer {
             m_framecount++;
         }
     }
+
+	void Renderer::doTheSunlightEffect()
+	{
+		//blur horizontally
+		blurPass->doExecute();
+		//switch fbos
+		blurPass->outputFBO = sunlightFBO2;
+		blurPass->inputFBOs[0] = sunlightFBO1;
+		blurPass->param_glowHorizontal = 0.0f;
+		//blur vertically
+		blurPass->doExecute();
+		//blurredImage in sunLightFBO1;
+	}
 }

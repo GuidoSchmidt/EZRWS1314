@@ -18,7 +18,7 @@ class ISlimRenderPass
 public:
 	virtual ~ISlimRenderPass() {};
 	ISlimRenderPass(SlimQuad* pQuad);
-	virtual void doExecute();
+	virtual void doExecute() = 0;
 
 
 

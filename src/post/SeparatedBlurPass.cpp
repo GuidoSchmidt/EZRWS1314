@@ -8,7 +8,7 @@ SeparatedBlurPass::SeparatedBlurPass(SlimQuad* pQuad, int pWidth, int pHeight)
 	quad = pQuad;
 	width = pWidth;
 	height = pHeight;
-	renderPassShader = new SlimShader("../../resources/shader_source/", "post.vert.glsl", "separatedBlur.frag.glsl");
+	renderPassShader = new SlimShader(RESOURCES_PATH "/shader_source/", "post.vert.glsl", "separatedBlur.frag.glsl");
 
 	colorUniform = glGetUniformLocation(renderPassShader->shaderProgram, "color");
 

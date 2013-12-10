@@ -10,6 +10,7 @@
 #include "../post/SlimShader.h"
 #include "../post/SlimQuad.h"
 #include "../post/GlowPass.h"
+#include "../post/SeparatedBlurPass.h"
 #include "../post/PhongPass.h"
 #include "../utils/Importer.h"
 
@@ -28,8 +29,10 @@ namespace renderer {
 			SlimQuad* fsq;
 			SlimFBO* gBuffer;
 			SlimFBO* lightingFBO;
-			SlimFBO* glowFBO;
+			SlimFBO* sunlightFBO1;
+			SlimFBO* sunlightFBO2;
 
+			SeparatedBlurPass* blurPass;
             //PhongPass* phong1;
             //GlowPass* glowHalf;
 
@@ -60,6 +63,8 @@ namespace renderer {
 
 			//! \brief Calls the render loop
 			void renderloop(void);
+
+			void doTheSunlightEffect(void);
 	};
 }
 #endif //H_RENDERER
