@@ -13,6 +13,7 @@
 #include "../post/SlimQuad.h"
 #include "../post/GlowPass.h"
 #include "../post/Sunlight/SeparatedBlurPass.h"
+#include "../post/Sunlight/RadialGlowMaskPass.h"
 #include "../post/FinalPass.h"
 #include "../post/PhongPass.h"
 #include "../utils/Importer.h"
@@ -34,8 +35,10 @@ namespace renderer {
 			SlimFBO* lightingFBO;
 			SlimFBO* sunlightFBO1;
 			SlimFBO* sunlightFBO2;
+			SlimFBO* sunlightFBO3;
 
 			SeparatedBlurPass* blurPass;
+			RadialGlowMaskPass* maskPass;
 			FinalPass* finalPass;
             //PhongPass* phong1;
             //GlowPass* glowHalf;

@@ -11,7 +11,10 @@ public:
 
 	virtual void doExecute();
 
-	GLint colorUniform;
+	GLint gBuffer1Uniform;
+	GLint sunlight1Uniform;
+	GLint sunlight2Uniform;
+	GLint sunlight3Uniform;
 	GLint screenSizeUniform;
 };
 

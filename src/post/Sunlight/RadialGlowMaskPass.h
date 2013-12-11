@@ -11,17 +11,10 @@ public:
 
 	virtual void doExecute();
 
-	GLint colorUniform;
-	GLint horizontalUniform;
-	GLint glowRangeUniform;
-	GLint glowBrightnessUniform;
-	GLint glowThreshholdUniform;
-	GLint screenSizeUniform;
+	GLint blurUniform;
+	GLint maskUniform;
 
-	GLfloat param_glowRange;
-	GLfloat param_glowThreshhold;
-	GLfloat param_glowHorizontal;
-	GLfloat param_glowBrightness;
+	GLint screenSizeUniform;
 };
 
 #endif /* RADIAL_GLOW_H_ */

@@ -59,6 +59,7 @@ namespace renderer {
         lightingFBO  = new SlimFBO(WIDTH,HEIGHT, 1, false);
 		sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 		sunlightFBO2 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+		sunlightFBO3 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 
 		//now the render passses!
         fsq = new SlimQuad();
@@ -68,12 +69,16 @@ namespace renderer {
 		blurPass->outputFBO = sunlightFBO1;
 		blurPass->inputFBOs.push_back(gBuffer);
 
+		maskPass = new RadialGlowMaskPass(fsq, WIDTH/4, HEIGHT/4);
+		maskPass->outputFBO = sunlightFBO3;
+		maskPass->inputFBOs.push_back(sunlightFBO2);
+
 		finalPass = new FinalPass(fsq, WIDTH, HEIGHT);
 		finalPass->outputFBO = lightingFBO;
+		finalPass->inputFBOs.push_back(gBuffer);
+		finalPass->inputFBOs.push_back(sunlightFBO1);
 		finalPass->inputFBOs.push_back(sunlightFBO2);
-		//finalPass->inputFBOs.push_back(sunlightFBO1);
-		//finalPass->inputFBOs.push_back(gBuffer);
-		//finalPass->inputFBOs.push_back(lightingFBO);
+		finalPass->inputFBOs.push_back(sunlightFBO3);
 
 
         //phong1 = new PhongPass(fsq, nearFar,WIDTH,HEIGHT);//,mouseX,mouseY);
@@ -109,7 +114,7 @@ namespace renderer {
 		glm::mat4 model = node0->getTransform()->getModelMatrix();
 
 		scene::Camera* camera0 = new scene::Camera("scene_camera",
-													glm::vec3(0.0f, 3.0f, 3.0f),
+													glm::vec3(2.0f, 2.0f, 2.0f),
 													glm::vec3(0.0f, 0.0f, 0.0f),
 													glm::vec3(0.0f, 1.0f, 0.0f),
 													m_context->getSize());
@@ -174,6 +179,8 @@ namespace renderer {
 
 				doTheSunlightEffect();
 
+				
+
 				finalPass->doExecute();
 
 				m_context->swapBuffers();
@@ -190,6 +197,8 @@ namespace renderer {
 		blurPass->param_glowHorizontal = 0.0f;
 		//blur vertically
 		blurPass->doExecute();
+		//calculate the radialMask
+		maskPass->doExecute();
 		//blurredImage in sunLightFBO1;
 	}
 }
