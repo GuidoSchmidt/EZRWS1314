@@ -123,7 +123,7 @@ namespace renderer {
 
 
 		glm::vec3 camera_position = glm::vec3(1.0f);
-		float camera_speed = 0.001f;
+		float camera_speed = 1;
         while (m_context && m_context->isLive())
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -197,6 +197,7 @@ namespace renderer {
 		blurPass->param_glowHorizontal = 0.0f;
 		//blur vertically
 		blurPass->doExecute();
+
 		//calculate the radialMask
 		maskPass->doExecute();
 		//blurredImage in sunLightFBO1;

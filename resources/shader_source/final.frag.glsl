@@ -26,4 +26,6 @@ void main()
 		colorOut = vec4(1,0,0,1);
 	if (gl_FragCoord.y > screenSize.y/2-1 && gl_FragCoord.y < screenSize.y/2+1 )
 		colorOut = vec4(1,0,0,1);
+
+	colorOut = texture(sunlight3,UV);
 }

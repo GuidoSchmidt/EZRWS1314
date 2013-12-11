@@ -20,9 +20,5 @@ float lum(vec4 col)
 
 void main() 
 { 
-	vec4 blur = texture(blurSampler,blurUV);
-	//blured*=lum(blured);
-	//vec4 mask= texture(maskSampler,maskUV);
-	colorOut = blur;// * mask;
-	//colorOut.xy = blurUV;
+	colorOut = vec4(0,1,0,1);
 }

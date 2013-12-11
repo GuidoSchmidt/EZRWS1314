@@ -32,6 +32,7 @@ void main()
 
 	//separated direction
 	vec2 dir = vec2(horizontal,(1.0-horizontal));
+	dir = vec2(dir.y,dir.x);
 	//neighbours
 	for (float i=1.0;i<=range;i+=1.0)
 	{
@@ -52,14 +53,17 @@ void main()
 
 		//ohne if abfragen
 		tap = texture(color,UV+dir*i*DELTA);
-		brightEnough = max(0.0,sign(lum(tap)-thresh));
-		sum+=brightEnough*tap;
-		n+=brightEnough;
+		//brightEnough = max(0.0,sign(lum(tap)-thresh));
+		//sum+=brightEnough*tap;
+		sum+=tap;
+		n+=1;
 
 		tap = texture(color,UV-dir*i*DELTA);
-		brightEnough = max(0.0,sign(lum(tap)-thresh));
-		sum+=brightEnough*tap;
-		n+=brightEnough;
+		//brightEnough = max(0.0,sign(lum(tap)-thresh));
+		//sum+=brightEnough*tap;
+		//n+=brightEnough;
+		sum+=tap;
+		n+=1;
 	}
 	colorOut = sum/n;
 }

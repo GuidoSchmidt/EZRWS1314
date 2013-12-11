@@ -28,7 +28,6 @@ FinalPass::~FinalPass() {
 void FinalPass::doExecute() {
 
 	glBindFramebuffer(GL_FRAMEBUFFER, GL_BACK); 
-	//outputFBO->write();
 		renderPassShader->enable();
 
 			glActiveTexture(GL_TEXTURE0);
@@ -52,7 +51,5 @@ void FinalPass::doExecute() {
 			quad->draw();
 		
 		renderPassShader->disable();
-	//outputFBO->unbind();
-	//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
