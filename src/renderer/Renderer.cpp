@@ -97,6 +97,7 @@ namespace renderer {
         //! OpenGL settings
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
+		glEnable(GL_TEXTURE_2D);
     }
 
     void Renderer::setupShaderStages()
@@ -108,6 +109,9 @@ namespace renderer {
 
     void Renderer::renderloop()
     {
+		//! \todo Exclude texture loading to class 'TextureManager'
+		//! Load a texture
+		GLuint texture_handle = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/common/uv_test.jpg");
 
         //! Render calls here
 		scene::Geometry* node0 = utils::Importer::instance()->getGeometryNode(1);
@@ -170,6 +174,7 @@ namespace renderer {
 					m_shaderProgram_forward->SetUniform("model", model);
 					m_shaderProgram_forward->SetUniform("view", view);
 					m_shaderProgram_forward->SetUniform("projection", projection);
+					m_shaderProgram_forward->SetUniformSampler("texture", texture_handle, 0);
 
 					node0->drawTriangles();
 
@@ -178,8 +183,6 @@ namespace renderer {
 				m_framecount++;
 
 				doTheSunlightEffect();
-
-				
 
 				finalPass->doExecute();
 

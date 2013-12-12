@@ -12,9 +12,10 @@ in vec2 vsUV;
 layout (location = 0) out vec4 fragcolor;
 
 //*** Uniforms *****************************************************************
+uniform sampler2D uv_test_texture;
 
 //*** Main *********************************************************************
 void main(void)
 {
-    fragcolor = vec4(vsNormal, 1.0);
+    fragcolor = mix( vec4(0.5, 0.5, 0.5, 1.0), texture(uv_test_texture, vsUV), 0.5 );
 }
