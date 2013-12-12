@@ -123,18 +123,16 @@ namespace renderer {
 
 
 		glm::vec3 camera_position = glm::vec3(1.0f);
-		float camera_speed = 1;
+		float camera_speed = 0.001f;
         while (m_context && m_context->isLive())
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			gBuffer->write();
 
 				//! simple camera movement
 				double mouse_x, mouse_y;
 				float  mouse_correct_x, mouse_correct_y;
 				glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
-				mouse_correct_x = ((mouse_x / m_context->getSize().x) * 2.0f) -1.0f;
+				mouse_correct_x = ((mouse_x / m_context->getSize().x) * 2.0f) - 1.0f;
 				mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;
 				if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
 				{
@@ -175,13 +173,6 @@ namespace renderer {
 
 			    m_shaderProgram_forward->Unuse();
 
-				m_framecount++;
-
-				doTheSunlightEffect();
-
-				
-
-				finalPass->doExecute();
 
 				m_context->swapBuffers();
         }
