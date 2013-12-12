@@ -33,6 +33,7 @@ find_package(GLEW REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(GLM REQUIRED)
 find_package(ASSIMP REQUIRED)
+find_package(SOIL REQUIRED)
 
 #if("${CMAKE_SYSTEM}" MATCHES "Linux")
 #   find_package(X11)
