@@ -56,6 +56,7 @@ namespace renderer {
         //! OpenGL settings
         glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
+		glEnable(GL_TEXTURE_2D);
     }
 
     void Renderer::setupShaderStages()
@@ -75,7 +76,6 @@ namespace renderer {
         m_fullscreen_triangle = new utils::FullscreenTriangle();
     }
 
-
 //! ---- Input Handling --------------------------------------------------------
 /*!
 *  \todo refractor to class
@@ -90,7 +90,6 @@ namespace renderer {
 
     }
 
-<<<<<<< HEAD
     void Renderer::renderloop()
     {
         //! Render calls here
@@ -212,24 +211,6 @@ namespace renderer {
             }
 
             m_shaderProgram_forward->unuse();
-
-            //! Second shader program:
-            //! ### FULLSCREEN TRIANGLE ########################################
-            /*
-            m_shaderProgram_compositing->use();
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
-            //! \todo 15.01.14 FBO-textures does not work yet
-			glBindTexture(GL_TEXTURE_2D, m_fbo->getTexture(0));
-			glActiveTexture(GL_TEXTURE0);
-            m_shaderProgram_compositing->setUniformSampler(compositing_uniform_loc_lightedMap, m_fbo->getTexture(0), 0);
-            m_shaderProgram_compositing->setUniformSampler(compositing_uniform_loc_shadowMap, scene::SceneManager::instance()->getLight(0)->getShadowMap(), 1);
-
-            m_fullscreen_triangle->draw();
-            //m_renderqueue[0]->drawTriangles();
-
-            m_shaderProgram_compositing->unuse();
-            */
 
             //! Swap buffers
             m_context->swapBuffers();
