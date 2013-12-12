@@ -240,27 +240,22 @@ namespace utils {
 		}
 	}
 
-	void Importer::loadTexture(std::string filename)
+	GLuint Importer::loadTexture(std::string filename)
 	{
-		/*
 		GLuint tex_2d;
 			
 		glActiveTexture(GL_TEXTURE0);
 		glGenTextures( 1, &tex_2d );
 		glBindTexture( GL_TEXTURE_2D, tex_2d );
 
-		tex_2d = SOIL_load_OGL_texture(
+		tex_2d = SOIL_load_OGL_texture
+		(
 			filename.c_str(),
 			SOIL_LOAD_AUTO,
 			SOIL_CREATE_NEW_ID,
 			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
 		);
 
-		if( 0 == tex_2d )
-		{
-			std::cout << "SOIL loading error:" << SOIL_last_result() << std::endl;
-		}
-		m_texture_list.push_back(tex_2d);
-		*/
+		return tex_2d;
 	}
 }

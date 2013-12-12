@@ -15,7 +15,7 @@ IF (MINGW)
     FIND_LIBRARY( SOIL_LIBRARY
         NAMES SOIL
         PATHS
-        ${DEPENDENCIES_PATH}/lib/cross/
+        ${DEPENDENCIES_PATH}/lib/mingw/
     )
 
 ELSEIF (MSVC)
@@ -26,7 +26,7 @@ ELSEIF (MSVC)
     FIND_LIBRARY( SOIL_LIBRARY
         NAMES SOIL
         PATHS
-        ${DEPENDENCIES_PATH}/lib/cross/
+        ${DEPENDENCIES_PATH}/lib/win32/
     )
 
 #ELSEIF(APPLE)
