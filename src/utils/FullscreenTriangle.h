@@ -26,6 +26,7 @@ namespace utils
 			//! \brief Returns the singleton instance
 			static FullscreenTriangle* instance(void);
 
+			//! \brief Draws the screen filling triangle
 			static void draw(void);
 	};
 }

@@ -44,6 +44,6 @@ namespace utils
 
 	void FullscreenTriangle::draw(void)
 	{
-
+		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
 }
