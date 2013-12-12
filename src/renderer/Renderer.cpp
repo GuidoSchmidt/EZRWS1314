@@ -90,6 +90,7 @@ namespace renderer {
 
     }
 
+<<<<<<< HEAD
     void Renderer::renderloop()
     {
         //! Render calls here
