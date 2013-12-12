@@ -8,38 +8,26 @@
 # 
 
 IF (MINGW)
-	FIND_PATH( SOIL_INCLUDE_PATH assimp/
+	FIND_PATH( SOIL_INCLUDE_PATH SOIL/
 		${DEPENDENCIES_PATH}/include/
 	)
 
     FIND_LIBRARY( SOIL_LIBRARY
-        NAMES assimp
+        NAMES SOIL
         PATHS
         ${DEPENDENCIES_PATH}/lib/mingw/
     )
 
-    execute_process(COMMAND ${CMAKE_COMMAND}  -E  copy_if_different
-        ${DEPENDENCIES_PATH}/bin/mingw/libassimp.dll
-        ${PROJECT_BINARY_DIR}/bin/
-    )
-
 ELSEIF (MSVC)
-    FIND_PATH( SOIL_INCLUDE_PATH assimp/
+    FIND_PATH( SOIL_INCLUDE_PATH SOIL/
         ${DEPENDENCIES_PATH}/include/
     )
 
     FIND_LIBRARY( SOIL_LIBRARY
-        NAMES assimp
+        NAMES SOIL
         PATHS
         ${DEPENDENCIES_PATH}/lib/win32/
     )
-
-    foreach (CONFIGURATION_TYPE ${CMAKE_CONFIGURATION_TYPES})
-        execute_process(COMMAND ${CMAKE_COMMAND}  -E  copy_if_different
-            ${DEPENDENCIES_PATH}/bin/win/Assimp32.dll
-            ${PROJECT_BINARY_DIR}/bin/${CONFIGURATION_TYPE}/
-        )
-    endforeach()
 
 #ELSEIF(APPLE)
 #
@@ -60,9 +48,10 @@ ELSE()
 ENDIF ()
 
 
+
 SET(SOIL_FOUND "NO")
 IF (SOIL_INCLUDE_PATH AND SOIL_LIBRARY)
-	SET(SOIL_LIBRARY ${SOIL_LIBRARY})
+	SET(SOIL_LIBRARIES ${SOIL_LIBRARY})
 	SET(SOIL_FOUND "YES")
     message("EXTERNAL LIBRARY 'SOIL' FOUND")
     message("SOIL_LIBRARY: " ${SOIL_LIBRARY})
