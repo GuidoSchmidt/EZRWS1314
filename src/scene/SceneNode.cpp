@@ -2,28 +2,17 @@
 #include "SceneNode.h"
 
 namespace scene {
-	SceneNode::SceneNode(unsigned int id)
-	{
-		m_name  = "";
-		m_id	= id;
-		m_transform = Transform();
-	}
 
-	SceneNode::SceneNode(void)
+	SceneNode::SceneNode(nodetype type, unsigned int id, std::string name)
 	{
-		m_name  = "";
-		m_id	= 0;
+		m_type	    = type;
+		m_id	    = id;
+		m_name	    = name;
 		m_transform = Transform();
 	}
 
 	SceneNode::~SceneNode(void)
 	{
-	}
-
-	SceneNode::SceneNode(std::string name, unsigned int id)
-	{
-		m_name	= name;
-		m_id	= id;
 	}
 
 	Transform* SceneNode::getTransform(void)
@@ -42,4 +31,16 @@ namespace scene {
 	{
 		m_transform = transform;
 	}
+
+	unsigned int SceneNode::getID(void)
+	{
+	  return m_id;
+	}
+
+	std::string SceneNode::getName(void)
+	{
+	  return m_name;
+	}
+
+
 }

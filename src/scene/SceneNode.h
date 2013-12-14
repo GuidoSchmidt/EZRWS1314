@@ -16,14 +16,15 @@ namespace scene {
 	//! @class SceneNode
 	class SceneNode
 	{
-		private:
-	
+		protected:
+			nodetype     m_type;
+			std::string  m_name;
+			unsigned int m_id;
+			Transform    m_transform;
+
 		public:
 			//! \brief Constructor
-			SceneNode(unsigned int id);
-			
-			//! \brief Constructor
-			SceneNode(std::string m_name, unsigned int m_id);
+			SceneNode(nodetype type, unsigned int id, std::string name);
 			
 			//! \brief Constructor
 			~SceneNode(void);
@@ -39,15 +40,12 @@ namespace scene {
 
 			//! \brief Returns the node type
 			virtual nodetype* getType(void) = 0;
-		
-		protected:
-			//! \brief Constructor
-			SceneNode(void);
 
-			nodetype m_type;
-			std::string m_name;
-			unsigned  int m_id;
-			Transform m_transform;
+			//! \brief Returns the ID of the node
+			unsigned int getID(void);
+
+			//! \brief Returns the name of the node
+			std::string getName(void);
 	};
 }
 #endif //H_SCENENODE

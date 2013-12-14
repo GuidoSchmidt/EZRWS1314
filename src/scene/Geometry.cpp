@@ -3,18 +3,8 @@
 
 namespace scene {
 
-	Geometry::Geometry()
+	Geometry::Geometry(int id, std::string name) : SceneNode(GEOMETRY, id, name)
 	{
-		m_id = -1;
-		m_name = "undefined";
-	}
-
-	Geometry::Geometry(int id, std::string name)
-	{
-		m_name = name;
-
-		m_id	= id;
-		m_type	= GEOMETRY;
 		VAO_handle	= 0;
 		VBO_handle	= 0;
 		IBO_handle	= 0;
@@ -25,37 +15,6 @@ namespace scene {
 		normals_VBO_id = 0;
 
 		m_ErrorCheckMesh = 0;
-	}
-
-	Geometry::Geometry( const Geometry& other )
-	{
-		m_id = other.m_id+1;
-		VAO_handle = other.VAO_handle;
-		VBO_handle = other.VBO_handle;;
-		IBO_handle = other.IBO_handle;;
-		NBO_handle = other.NBO_handle;;
-		UVBO_handle = other.UVBO_handle;;
-
-		normals_VAO_id = other.normals_VAO_id;
-		normals_VBO_id = normals_VBO_id;
-
-		m_ErrorCheckMesh = 0;
-
-		index_count = other.index_count;
-		m_vertexlist = other.m_vertexlist;
-		m_indexlist = other.m_indexlist;
-		m_normallist = other.m_normallist;
-		m_uvlist = other.m_uvlist;
-
-		m_normals_buffers = other.m_normals_buffers;
-		m_normals_vertexlist = other.m_normals_vertexlist;
-		m_bb_buffers = other.m_bb_buffers;
-		m_bb_vertexlist = other.m_bb_vertexlist;
-		m_bb_indexlist = other.m_bb_indexlist;
-		bb_VAO_id = other.bb_VAO_id;
-		bb_VBO_id = other.bb_VBO_id;
-
-		//createBuffers();
 	}
 
 	Geometry::~Geometry(void)

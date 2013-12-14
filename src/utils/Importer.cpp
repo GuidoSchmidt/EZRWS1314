@@ -71,7 +71,7 @@ namespace utils {
 				float far_plane		= current_camera->mClipPlaneFar;
 			
 				//! Create a camera
-				new_camera = new scene::Camera(name.C_Str(),
+				new_camera = new scene::Camera(camera_id, name.C_Str(),
 							       glm::vec3(position.x, position.y, position.z),
 							       glm::vec3(lookat.x, lookat.y, lookat.z),
 							       glm::vec3(up.x, up.y, up.z),

@@ -8,7 +8,7 @@
 
 namespace scene {
 
-	Camera::Camera(glm::ivec2 window_size)
+	Camera::Camera(unsigned int id, std::string name, glm::ivec2 window_size) : SceneNode(CAMERA, id, name)
 	{
 		m_initPosition = glm::vec3(0.0, 0.0, 1.0);
 		m_lookAt	   = glm::vec3(0.0, 0.0, 0.0);
@@ -32,10 +32,11 @@ namespace scene {
 		m_speed = 0.05f;
 	}
 
-	Camera::Camera(std::string name, glm::vec3 position, glm::vec3 lookAt, glm::vec3 up, glm::ivec2 window_size)
+	Camera::Camera(unsigned int id, std::string name,
+		       glm::vec3 position, glm::vec3 lookAt, glm::vec3 up,
+		       glm::ivec2 window_size)
+	  : SceneNode(CAMERA, id, name)
 	{
-		m_name = name;
-
 		m_initPosition = position;
 		m_initPosition = position;
 
@@ -235,5 +236,10 @@ namespace scene {
 		up = glm::cross(view, side);
 		up = glm::normalize(up);
 		SetOrientation(side, up, view);
+	}
+
+	nodetype* Camera::getType(void)
+	{
+	  return &m_type;
 	}
 }

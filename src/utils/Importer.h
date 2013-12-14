@@ -15,6 +15,7 @@
 #include <assimp/postprocess.h>
 #include <vector>
 #include <SOIL/SOIL.h>
+#include "../scene/SceneManager.h"
 
 namespace utils {
 	//! @class Importer

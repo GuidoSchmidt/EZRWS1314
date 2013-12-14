@@ -12,8 +12,6 @@ namespace scene {
 	class Geometry : public SceneNode
 	{
 		private:
-			std::string m_name;
-
 			//! Geometry itself
 			GLenum m_ErrorCheckMesh;
 			unsigned int index_count;
@@ -46,9 +44,6 @@ namespace scene {
 
 			//! \brief Constructor
 			Geometry(int id, std::string name);
-
-			//! \brief Copy constructor
-			Geometry( const Geometry& other );
 			
 			//! \brief Destructor
 			~Geometry(void);
