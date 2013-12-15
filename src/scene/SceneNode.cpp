@@ -42,5 +42,10 @@ namespace scene {
 	  return m_name;
 	}
 
+	nodetype SceneNode::getType(void)
+	{
+	  return m_type;
+	}
+
 
 }

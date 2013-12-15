@@ -77,7 +77,9 @@ namespace utils {
 							       glm::vec3(up.x, up.y, up.z),
 							       glm::ivec2(1024, 1024));
 				new_camera->SetProjection(field_of_view, aspect, near_plane, far_plane);
-				m_camera_node_list.push_back(new_camera);
+
+				//! Add to scene manager
+				scene::SceneManager::instance()->addSceneNode(new_camera);
 
 				//! Log
 				std::cout << "\n  * Camera: " << camera_id << std::endl;
@@ -194,7 +196,10 @@ namespace utils {
 					}
 
 					new_geometry->createBuffers();
+
+					//! Add to scene manager
 					m_geometry_node_list.push_back(new_geometry);
+					scene::SceneManager::instance()->addSceneNode(new_geometry);
 
 					//! Log
 					std::cout << "\n  * Mesh: " << mesh_id << std::endl;

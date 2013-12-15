@@ -64,7 +64,7 @@ namespace scene {
 			void createBoundingBoxGeometry(void);
 
 			//! \brief Returns the node type
-			nodetype* getType(void);
+			nodetype getType(void);
 
 			//! \brief Adds a vertex
 			void addVertex(GLfloat x, GLfloat y, GLfloat z);

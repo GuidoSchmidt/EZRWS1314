@@ -238,8 +238,8 @@ namespace scene {
 		SetOrientation(side, up, view);
 	}
 
-	nodetype* Camera::getType(void)
+	nodetype Camera::getType(void)
 	{
-	  return &m_type;
+	  return m_type;
 	}
 }

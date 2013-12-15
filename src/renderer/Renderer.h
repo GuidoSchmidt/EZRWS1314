@@ -7,6 +7,7 @@
 #include "ShaderProgram.h"
 #include "FrameBufferObject.h"
 #include "../scene/SceneNode.h"
+#include "../scene/SceneManager.h"
 #include "../scene/Geometry.h"
 #include "../post/SlimFBO.h"
 #include "../post/SlimShader.h"
@@ -30,6 +31,10 @@ namespace renderer {
 			Context* m_context;
 			ShaderProgram* m_shaderProgram_forward;
 
+			scene::Camera* m_scene_camera;
+
+			std::vector<scene::Geometry*> m_renderqueue;
+
 			SlimQuad* fsq;
 			SlimFBO* gBuffer;
 			SlimFBO* lightingFBO;
@@ -40,8 +45,8 @@ namespace renderer {
 			SeparatedBlurPass* blurPass;
 			RadialGlowMaskPass* maskPass;
 			FinalPass* finalPass;
-            //PhongPass* phong1;
-            //GlowPass* glowHalf;
+			//PhongPass* phong1;
+			//GlowPass* glowHalf;
 
 			//Rocket::Core::Context* context;
 			//Shell* shell;
@@ -58,15 +63,15 @@ namespace renderer {
 			//! \brief Sets needed OpenGL states
 			void setupGL(void);
 
-            //! \brief Sets the needes shader stages and fbos
-            void setupShaderStages(void);
+                        //! \brief Sets the needes shader stages and fbos
+                        void setupShaderStages(void);
 				
 		public:
 			//! Returns the singleton instance
 			static Renderer* instance(Context& context);
 
 			//! \brief Sets the context to render to
-            void setRenderContext(Context& context);
+			void setRenderContext(Context& context);
 
 			//! \brief Calls the render loop
 			void renderloop(void);

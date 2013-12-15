@@ -1,6 +1,8 @@
 //! @file Renderer.cpp
 #include "Renderer.h"
 
+double scroll = 80.0;
+
 namespace renderer {
 
     Renderer::Renderer(void)
@@ -42,7 +44,8 @@ namespace renderer {
         setupShaderStages();
     
         //! \todo Loads models via utils::Importer
-        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
+        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/even_more_cube.dae");
+        m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
 
 
         //! \todo Load textures (should be done by the utils::importer-class) using a class that will manage textures and materials
@@ -106,24 +109,23 @@ namespace renderer {
         m_shaderProgram_forward->Link();
     }
 
+    void ScrollCallback(GLFWwindow * window, double xoffset, double yoffset)
+    {
+        scroll += yoffset;
+    }
+
     void Renderer::renderloop()
     {
-
         //! Render calls here
-		scene::Geometry* node0 = utils::Importer::instance()->getGeometryNode(1);
-		glm::mat4 model = node0->getTransform()->getModelMatrix();
 
-		scene::Camera* camera0 = new scene::Camera(0,"scene_camera",
-							   glm::vec3(2.0f, 2.0f, 2.0f),
-							   glm::vec3(0.0f, 0.0f, 0.0f),
-							   glm::vec3(0.0f, 1.0f, 0.0f),
-							   m_context->getSize());
+	m_scene_camera = new scene::Camera(0,"scene_camera",
+					   glm::vec3(2.0f, 2.0f, 2.0f),
+					   glm::vec3(0.0f, 0.0f, 0.0f),
+					   glm::vec3(0.0f, 1.0f, 0.0f),
+					   m_context->getSize());
 
-		glm::mat4 projection = camera0->GetProjectionMatrix();
-
-
-		glm::vec3 camera_position = glm::vec3(1.0f);
-		float camera_speed = 0.001f;
+	glm::vec3 camera_position = glm::vec3(1.0f);
+	float camera_speed = 0.01f;
         while (m_context && m_context->isLive())
         {
           glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -136,40 +138,53 @@ namespace renderer {
           mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;
           if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
           {
-                  camera0->Rotate(mouse_correct_x * camera_speed * 100.0f,
+                  m_scene_camera->Rotate(mouse_correct_x * camera_speed * 100.0f,
                                                   mouse_correct_y * camera_speed * 100.0f);
           }
           if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
                   glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
           {
-                  camera0->MoveZ( camera_speed);
+                  m_scene_camera->MoveZ( camera_speed);
           }
           if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S) ||
                   glfwGetKey(m_context->getWindow(), GLFW_KEY_DOWN))
           {
-                  camera0->MoveZ(-camera_speed);
+                  m_scene_camera->MoveZ(-camera_speed);
           }
           if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D) ||
                   glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
           {
-                  camera0->MoveX( camera_speed);
+                  m_scene_camera->MoveX( camera_speed);
           }
           if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A) ||
                   glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
           {
-                  camera0->MoveX(-camera_speed);
+                  m_scene_camera->MoveX(-camera_speed);
           }
-          glm::mat4 view = camera0->GetViewMatrix();
+          if(glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
+          {
+              scroll = 80.0;
+          }
+          //! Field of view
+          m_scene_camera->SetFOV(scroll);
 
+          glm::mat4 view = m_scene_camera->GetViewMatrix();
+          glm::mat4 projection = m_scene_camera->GetProjectionMatrix();
+          glfwSetScrollCallback(m_context->getWindow(), ScrollCallback);
 
           //! First shader program
           m_shaderProgram_forward->Use();
 
-            m_shaderProgram_forward->SetUniform("model", model);
-            m_shaderProgram_forward->SetUniform("view", view);
-            m_shaderProgram_forward->SetUniform("projection", projection);
+          m_shaderProgram_forward->SetUniform("view", view);
+          m_shaderProgram_forward->SetUniform("projection", projection);
 
-            node0->drawTriangles();
+          for(unsigned int i = 0; i < m_renderqueue.size(); i++)
+          {
+              m_shaderProgram_forward->SetUniform("model", m_renderqueue[i]->getTransform()->getModelMatrix() );
+              m_renderqueue[i]->drawTriangles();
+          }
+
+
 
           m_shaderProgram_forward->Unuse();
 

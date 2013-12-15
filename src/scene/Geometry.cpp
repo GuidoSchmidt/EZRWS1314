@@ -198,9 +198,9 @@ namespace scene {
 		*/
 	}
 
-	nodetype* Geometry::getType(void)
+	nodetype Geometry::getType(void)
 	{
-		return &m_type;
+		return m_type;
 	}
 
 	void Geometry::addVertex(GLfloat x, GLfloat y, GLfloat z)

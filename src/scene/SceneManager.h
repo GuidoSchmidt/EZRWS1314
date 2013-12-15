@@ -14,7 +14,7 @@ namespace scene
   class SceneManager
   {
     private:
-      std::vector<SceneNode*> m_scene_node_list;
+      std::vector<SceneNode*>             m_scene_node_list;
       std::map<unsigned int, SceneNode*>  m_sceneNode_id_map;
       std::map<std::string, unsigned int> m_sceneNode_name_map;
 
@@ -28,8 +28,14 @@ namespace scene
       //! \brief Adds a scene node to the manager
       void addSceneNode(SceneNode* node);
 
-      //! \brief Return a scene node
-      SceneNode* getNode(unsigned int i);
+      //! \brief Return a scene node by its index
+      SceneNode* getNode(unsigned int index);
+
+      //! \brief Return a scene node by its name
+      SceneNode* getNode(std::string name);
+
+      //! \brief Builds a simple render queue
+      std::vector<Geometry*> generateRenderQueue(void);
   };
 }
 

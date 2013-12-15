@@ -8,9 +8,10 @@
 
 namespace scene {
 	enum nodetype {
-		GEOMETRY,
-		CAMERA,
-		LIGHT
+		EMPTY = -1,
+		GEOMETRY = 0,
+		CAMERA = 1,
+		LIGHT = 2,
 	};
 
 	//! @class SceneNode
@@ -24,7 +25,7 @@ namespace scene {
 
 		public:
 			//! \brief Constructor
-			SceneNode(nodetype type, unsigned int id, std::string name);
+			SceneNode(nodetype type, unsigned int id = -1, std::string name = "");
 			
 			//! \brief Constructor
 			~SceneNode(void);
@@ -39,7 +40,7 @@ namespace scene {
 			Transform* getTransform(void);
 
 			//! \brief Returns the node type
-			virtual nodetype* getType(void) = 0;
+			nodetype getType(void);
 
 			//! \brief Returns the ID of the node
 			unsigned int getID(void);

@@ -17,7 +17,7 @@
 
 namespace scene {
 	//! @class Camera
-	class Camera : SceneNode
+	class Camera : public SceneNode
 	{
 		private:
 			//! Initial Values
@@ -145,7 +145,7 @@ namespace scene {
 			void Rotate(float x, float y);
 
 			//! \brief Returns the node type
-			nodetype* getType(void);
+			nodetype getType(void);
 	};
 }
 #endif //H_CAMERA
