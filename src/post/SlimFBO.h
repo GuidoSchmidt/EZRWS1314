@@ -20,6 +20,7 @@ public:
 	void unbind();
 	void update();
 	void write();
+	static void blit(SlimFBO* read, SlimFBO* draw);
 //	void showAttachment(int n);
 
 	GLuint fboPointer;

@@ -9,9 +9,12 @@ RadialGlowMaskPass::RadialGlowMaskPass(SlimQuad* pQuad, int pWidth, int pHeight)
 	height = pHeight;
 	renderPassShader = new SlimShader(RESOURCES_PATH "/shader_source/", "radialGlow.vert.glsl", "radialGlow.frag.glsl");
 
+	maskTexture = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/radialGlowMask.jpg");
+
 	blurUniform = glGetUniformLocation(renderPassShader->shaderProgram, "blurSampler");
 	maskUniform = glGetUniformLocation(renderPassShader->shaderProgram, "maskSampler");
 	screenSizeUniform = glGetUniformLocation(renderPassShader->shaderProgram, "screenSize");
+	ssSunPosUniform = glGetUniformLocation(renderPassShader->shaderProgram, "sunPos");
 
 }
 
@@ -29,11 +32,12 @@ void RadialGlowMaskPass::doExecute() {
 			glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[0]);
 			glUniform1i(blurUniform, 0);
 
-			//glActiveTexture(GL_TEXTURE1);
-			//glBindTexture(GL_TEXTURE_2D, inputFBOs[1]->texPointer[0]); glowMask
-			//glUniform1i(maskUniform, 1);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, maskTexture);
+			glUniform1i(maskUniform, 1);
 
 			glUniform2i(screenSizeUniform, (GLint)width, (GLint)height);
+			glUniform3f(ssSunPosUniform, param_ssSunPos.x,param_ssSunPos.y,param_ssSunPos.z);
 
 			glViewport(0, 0, width, height);
 			quad->draw();

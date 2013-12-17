@@ -47,6 +47,50 @@ namespace renderer {
         int WIDTH = m_context->getSize().x;
         int HEIGHT = m_context->getSize().y;
         glm::vec2 nearFar = glm::vec2(0.1,60.0);
+        
+        //Setup dat slim fboooooos
+
+        gBuffer		 = new SlimFBO(WIDTH,HEIGHT, 2, true);
+        lightingFBO  = new SlimFBO(WIDTH,HEIGHT, 1, false);
+		sunlightFBO0 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+		sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+		sunlightFBO2 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+		sunlightFBO3 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+		sunlightFBO4 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+
+		//now the render passses!
+        fsq = new SlimQuad();
+
+		//now the render passses!
+		blurPass = new SeparatedBlurPass(fsq, WIDTH/4, HEIGHT/4);
+		blurPass->inputFBOs.push_back(gBuffer);
+
+		maskPass = new RadialGlowMaskPass(fsq, WIDTH/4, HEIGHT/4);
+		maskPass->outputFBO = sunlightFBO3;
+		maskPass->inputFBOs.push_back(sunlightFBO2);
+
+		luminancePass =  new RadialLuminancePass(fsq, WIDTH/4, HEIGHT/4);
+		luminancePass->outputFBO = sunlightFBO4;
+		luminancePass->inputFBOs.push_back(sunlightFBO3);
+
+		finalPass = new FinalPass(fsq, WIDTH, HEIGHT);
+		finalPass->outputFBO = lightingFBO;
+		finalPass->inputFBOs.push_back(gBuffer);
+		//finalPass->inputFBOs.push_back(sunlightFBO1);
+		finalPass->inputFBOs.push_back(sunlightFBO2);
+		finalPass->inputFBOs.push_back(sunlightFBO3);
+		finalPass->inputFBOs.push_back(sunlightFBO4);
+
+
+        //phong1 = new PhongPass(fsq, nearFar,WIDTH,HEIGHT);//,mouseX,mouseY);
+        //phong1->outputFBO = lightingFBO;
+        //phong1->inputFBOs.push_back(gBuffer);
+
+        //glowHalf = new GlowPass(1,fsq,WIDTH,HEIGHT);
+        //glowHalf->outputFBO = glowFBO;
+        //glowHalf->inputFBOs.push_back(lightingFBO);
+    
+		wsSunPos = glm::vec4(-15.0,30.0,-15.0,1.0);
 
         renderloop();
     }
@@ -54,7 +98,7 @@ namespace renderer {
     void Renderer::setupGL(void)
     {
         //! OpenGL settings
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_2D);
     }
@@ -84,6 +128,30 @@ namespace renderer {
     {
         scroll += yoffset;
     }
+		//! \todo Exclude texture loading to class 'TextureManager'
+		//! Load a texture
+		
+		//GLuint texture_handle = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/common/uv_test.jpg");
+		GLuint texture_handle1 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Leaf08.png");
+		GLuint texture_handle2 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/sky_test.jpg");
+		GLuint texture_handle3 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Wood01.png");
+
+        //! Render calls here
+		scene::Geometry* node0 = utils::Importer::instance()->getGeometryNode(0);
+		scene::Geometry* node1 = utils::Importer::instance()->getGeometryNode(1); //grauer baum
+		scene::Geometry* node2 = utils::Importer::instance()->getGeometryNode(2); //grauer blätter
+		scene::Geometry* node3 = utils::Importer::instance()->getGeometryNode(3); //uv cube
+		scene::Geometry* node4 = utils::Importer::instance()->getGeometryNode(4); //uv baum
+		scene::Geometry* node5 = utils::Importer::instance()->getGeometryNode(5); //uv blätter
+		//scene::Geometry* node6 = utils::Importer::instance()->getGeometryNode(6); //uv blätter
+
+		glm::mat4 model = node0->getTransform()->getModelMatrix();
+
+		scene::Camera* camera0 = new scene::Camera("scene_camera",
+													glm::vec3(15.0f, 0.0f, 15.0f),
+													glm::vec3(0.0f, 15.0f, 0.0f),
+													glm::vec3(0.0f, 1.0f, 0.0f),
+													m_context->getSize());
 
     void KeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {

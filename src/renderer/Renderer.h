@@ -15,6 +15,7 @@
 #include "../post/GlowPass.h"
 #include "../post/Sunlight/SeparatedBlurPass.h"
 #include "../post/Sunlight/RadialGlowMaskPass.h"
+#include "../post/Sunlight/RadialLuminancePass.h"
 #include "../post/FinalPass.h"
 #include "../post/PhongPass.h"
 #include "../utils/Importer.h"
@@ -44,12 +45,18 @@ namespace renderer {
 			SlimQuad* fsq;
 			SlimFBO* gBuffer;
 			SlimFBO* lightingFBO;
+			SlimFBO* sunlightFBO0;
 			SlimFBO* sunlightFBO1;
 			SlimFBO* sunlightFBO2;
 			SlimFBO* sunlightFBO3;
+			SlimFBO* sunlightFBO4;
 
+			//scene::SceneNode* sun;
+			glm::vec4 wsSunPos;
+			glm::vec4 ssSunPos;
 			SeparatedBlurPass* blurPass;
 			RadialGlowMaskPass* maskPass;
+			RadialLuminancePass* luminancePass;
 			FinalPass* finalPass;
 			//PhongPass* phong1;
 			//GlowPass* glowHalf;
