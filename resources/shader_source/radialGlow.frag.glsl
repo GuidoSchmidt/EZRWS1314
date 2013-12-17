@@ -6,10 +6,11 @@ uniform sampler2D blurSampler;
 uniform sampler2D maskSampler;
 
 uniform ivec2 screenSize;
-
+uniform vec3 sunPos;
 
 in vec2 blurUV;
 in vec2 maskUV;
+in vec2 sunUV;
 
 vec3 l = vec3(0.2126, 0.7152, 0.0722); 
 
@@ -20,9 +21,13 @@ float lum(vec4 col)
 
 void main() 
 { 
+	//vec2 ts = sunUV.xy+0.5;///sunUVPos.z;
 	vec4 blur = texture(blurSampler,blurUV);
 	//blured*=lum(blured);
-	//vec4 mask= texture(maskSampler,maskUV);
-	colorOut = blur;// * mask;
-	//colorOut.xy = blurUV;
+	vec4 mask= texture(maskSampler,maskUV)*1.067-0.669;
+	colorOut =  mask * blur;
+
+	// if (blurUV.x > sunPos.x-0.01 && blurUV.x < sunPos.x+0.01 &&
+	// 	blurUV.y > sunPos.y-0.01 && blurUV.y < sunPos.y+0.01)
+	// 	colorOut = vec4(1,1,0,1);
 }

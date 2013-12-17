@@ -42,7 +42,9 @@ namespace renderer {
         setupShaderStages();
     
         //! \todo Loads models via utils::Importer
-        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
+        //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
+        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/baum_test.obj");
+        //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
 
 
         //! \todo Load textures (should be done by the utils::importer-class) using a class that will manage textures and materials
@@ -57,28 +59,34 @@ namespace renderer {
 
         gBuffer		 = new SlimFBO(WIDTH,HEIGHT, 2, true);
         lightingFBO  = new SlimFBO(WIDTH,HEIGHT, 1, false);
+		sunlightFBO0 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 		sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 		sunlightFBO2 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 		sunlightFBO3 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+		sunlightFBO4 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 
 		//now the render passses!
         fsq = new SlimQuad();
 
 		//now the render passses!
 		blurPass = new SeparatedBlurPass(fsq, WIDTH/4, HEIGHT/4);
-		blurPass->outputFBO = sunlightFBO1;
 		blurPass->inputFBOs.push_back(gBuffer);
 
 		maskPass = new RadialGlowMaskPass(fsq, WIDTH/4, HEIGHT/4);
 		maskPass->outputFBO = sunlightFBO3;
 		maskPass->inputFBOs.push_back(sunlightFBO2);
 
+		luminancePass =  new RadialLuminancePass(fsq, WIDTH/4, HEIGHT/4);
+		luminancePass->outputFBO = sunlightFBO4;
+		luminancePass->inputFBOs.push_back(sunlightFBO3);
+
 		finalPass = new FinalPass(fsq, WIDTH, HEIGHT);
 		finalPass->outputFBO = lightingFBO;
 		finalPass->inputFBOs.push_back(gBuffer);
-		finalPass->inputFBOs.push_back(sunlightFBO1);
+		//finalPass->inputFBOs.push_back(sunlightFBO1);
 		finalPass->inputFBOs.push_back(sunlightFBO2);
 		finalPass->inputFBOs.push_back(sunlightFBO3);
+		finalPass->inputFBOs.push_back(sunlightFBO4);
 
 
         //phong1 = new PhongPass(fsq, nearFar,WIDTH,HEIGHT);//,mouseX,mouseY);
@@ -89,13 +97,14 @@ namespace renderer {
         //glowHalf->outputFBO = glowFBO;
         //glowHalf->inputFBOs.push_back(lightingFBO);
     
+		wsSunPos = glm::vec4(-15.0,30.0,-15.0,1.0);
         renderloop();
     }
     
     void Renderer::setupGL(void)
     {
         //! OpenGL settings
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_2D);
     }
@@ -111,15 +120,26 @@ namespace renderer {
     {
 		//! \todo Exclude texture loading to class 'TextureManager'
 		//! Load a texture
-		GLuint texture_handle = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/common/uv_test.jpg");
+		
+		//GLuint texture_handle = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/common/uv_test.jpg");
+		GLuint texture_handle1 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Leaf08.png");
+		GLuint texture_handle2 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/sky_test.jpg");
+		GLuint texture_handle3 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Wood01.png");
 
         //! Render calls here
-		scene::Geometry* node0 = utils::Importer::instance()->getGeometryNode(1);
+		scene::Geometry* node0 = utils::Importer::instance()->getGeometryNode(0);
+		scene::Geometry* node1 = utils::Importer::instance()->getGeometryNode(1); //grauer baum
+		scene::Geometry* node2 = utils::Importer::instance()->getGeometryNode(2); //grauer blätter
+		scene::Geometry* node3 = utils::Importer::instance()->getGeometryNode(3); //uv cube
+		scene::Geometry* node4 = utils::Importer::instance()->getGeometryNode(4); //uv baum
+		scene::Geometry* node5 = utils::Importer::instance()->getGeometryNode(5); //uv blätter
+		//scene::Geometry* node6 = utils::Importer::instance()->getGeometryNode(6); //uv blätter
+
 		glm::mat4 model = node0->getTransform()->getModelMatrix();
 
 		scene::Camera* camera0 = new scene::Camera("scene_camera",
-													glm::vec3(2.0f, 2.0f, 2.0f),
-													glm::vec3(0.0f, 0.0f, 0.0f),
+													glm::vec3(15.0f, 0.0f, 15.0f),
+													glm::vec3(0.0f, 15.0f, 0.0f),
 													glm::vec3(0.0f, 1.0f, 0.0f),
 													m_context->getSize());
 
@@ -127,7 +147,7 @@ namespace renderer {
 
 
 		glm::vec3 camera_position = glm::vec3(1.0f);
-		float camera_speed = 0.01f;
+		float camera_speed = 1;
         while (m_context && m_context->isLive())
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -142,8 +162,8 @@ namespace renderer {
 				mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;
 				if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
 				{
-					camera0->Rotate(mouse_correct_x * camera_speed * 100.0f,
-									mouse_correct_y * camera_speed * 100.0f);
+					camera0->Rotate(mouse_correct_x * camera_speed * 10.0f,
+									mouse_correct_y * camera_speed * 10.0f);
 				}
 				if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
 					glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
@@ -172,37 +192,60 @@ namespace renderer {
 				m_shaderProgram_forward->Use();
 			
 					m_shaderProgram_forward->SetUniform("model", model);
+					m_shaderProgram_forward->SetUniform("sky", 0.0f);
 					m_shaderProgram_forward->SetUniform("view", view);
 					m_shaderProgram_forward->SetUniform("projection", projection);
-					m_shaderProgram_forward->SetUniformSampler("texture", texture_handle, 0);
+					m_shaderProgram_forward->SetUniformSampler("texture", texture_handle1, 0);
 
-					node0->drawTriangles();
+					node4->drawTriangles();
+					m_shaderProgram_forward->SetUniformSampler("texture", texture_handle3, 0);
+					node3->drawTriangles();
+					//node6->drawTriangles();
+
+					//render sky
+					m_shaderProgram_forward->SetUniform("sky", 1.0f);
+					m_shaderProgram_forward->SetUniformSampler("texture", texture_handle2, 0);
+					node5->drawTriangles();
 
 			    m_shaderProgram_forward->Unuse();
 
-				m_framecount++;
+			m_framecount++;
 
-				doTheSunlightEffect();
+			ssSunPos = projection * view * wsSunPos;
+			ssSunPos.x=(ssSunPos.x/ssSunPos.z)/2.0f+0.5f;
+			ssSunPos.y=(ssSunPos.y/ssSunPos.z)/2.0f+0.5f;
+			doTheSunlightEffect();
 
-				finalPass->doExecute();
+			finalPass->doExecute();
 
-				m_context->swapBuffers();
+			m_context->swapBuffers();
         }
     }
 
 	void Renderer::doTheSunlightEffect()
 	{
+		//downsample gbuffer color
+		SlimFBO::blit(gBuffer,sunlightFBO0);
+		
 		//blur horizontally
+		blurPass->outputFBO = sunlightFBO1;
+		blurPass->inputFBOs[0] = gBuffer;
+		blurPass->param_glowHorizontal = 1.0f;
 		blurPass->doExecute();
+
 		//switch fbos
+		//blur vertically
 		blurPass->outputFBO = sunlightFBO2;
 		blurPass->inputFBOs[0] = sunlightFBO1;
 		blurPass->param_glowHorizontal = 0.0f;
-		//blur vertically
 		blurPass->doExecute();
 
 		//calculate the radialMask
+		maskPass->param_ssSunPos=ssSunPos;
 		maskPass->doExecute();
-		//blurredImage in sunLightFBO1;
+
+		//calculate Luminace
+		luminancePass->param_ssSunPos=ssSunPos;
+		luminancePass->doExecute();
 	}
 }

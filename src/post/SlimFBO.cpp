@@ -50,8 +50,8 @@ SlimFBO::SlimFBO(int x, int y, int n, bool depth)
 		glBindTexture(GL_TEXTURE_2D, texPointer[a]);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP);
 
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, xRes, yRes, 0, GL_RGBA, GL_FLOAT, NULL);
 		// Attach texture to FBO
@@ -98,6 +98,17 @@ void SlimFBO::update()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, fboPointer);
 	glDrawBuffers(nAttachments, buffers);
+}
+
+void SlimFBO::blit(SlimFBO* read, SlimFBO* draw) {
+
+	glBindFramebuffer(GL_READ_FRAMEBUFFER,read->fboPointer);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER,draw->fboPointer);
+	glReadBuffer(GL_COLOR_ATTACHMENT0); 
+	glDrawBuffer(GL_COLOR_ATTACHMENT0);
+	glBlitFramebuffer(0,0,read->xRes,read->yRes,0,0,draw->xRes,draw->yRes,GL_COLOR_BUFFER_BIT,GL_LINEAR);
+	glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0);
+	glBindFramebuffer(GL_READ_FRAMEBUFFER,0);
 }
 
 //void SlimFBO::showAttachment(int n)
