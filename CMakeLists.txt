@@ -29,6 +29,7 @@ include(${CMAKE_MODULE_PATH}/macros.cmake)
 set(CMAKE_CONFIGURATION_TYPES Debug; Release)
 
 find_package(OpenGL3 REQUIRED)
+find_package(FreeImage REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(GLM REQUIRED)

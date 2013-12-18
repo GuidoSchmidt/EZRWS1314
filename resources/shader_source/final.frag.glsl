@@ -27,7 +27,7 @@ void main()
 	if (gl_FragCoord.y > screenSize.y/2-1 && gl_FragCoord.y < screenSize.y/2+1 )
 		colorOut = vec4(1,0,0,1);
 
-	colorOut = texture(lowerRight,UV)+texture(topLeft,UV);
+	colorOut = texture(topLeft,UV);
 
 	//if (gl_FragCoord.x > screenSize.x*0.8-1 && gl_FragCoord.x < screenSize.x*0.8+1 )
 

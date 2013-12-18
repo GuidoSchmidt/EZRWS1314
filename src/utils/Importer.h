@@ -11,6 +11,7 @@
 
 #include <glm/gtx/quaternion.hpp>
 #include <assimp/Importer.hpp>
+#include <FreeImage/FreeImage.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <vector>
@@ -56,6 +57,9 @@ namespace utils {
 
 			//! \brief Loads a texture from a given filepath and returns the texture handle
 			GLuint loadTexture(std::string filename);
+
+			//! \brief Loads a hdr texture from a given filepath and returns the texture handle
+			GLuint loadHDRTexture(std::string filename);
 	};
 }
 #endif // H_IMPORTER

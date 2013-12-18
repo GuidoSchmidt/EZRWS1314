@@ -97,7 +97,7 @@ namespace renderer {
         //glowHalf->outputFBO = glowFBO;
         //glowHalf->inputFBOs.push_back(lightingFBO);
     
-		wsSunPos = glm::vec4(-15.0,30.0,-15.0,1.0);
+		
         renderloop();
     }
     
@@ -120,11 +120,15 @@ namespace renderer {
     {
 		//! \todo Exclude texture loading to class 'TextureManager'
 		//! Load a texture
-		
+		delta = glfwGetTime();
+		sunSpeed = 1000.0;
+		sunRadius = 50.0;
+		sunAngle = 0.0;
 		//GLuint texture_handle = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/common/uv_test.jpg");
 		GLuint texture_handle1 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Leaf08.png");
 		GLuint texture_handle2 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/sky_test.jpg");
 		GLuint texture_handle3 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Wood01.png");
+		GLuint skydome = utils::Importer::instance()->loadHDRTexture(RESOURCES_PATH "/textures/malibou.hdr");
 
         //! Render calls here
 		scene::Geometry* node0 = utils::Importer::instance()->getGeometryNode(0);
@@ -137,7 +141,7 @@ namespace renderer {
 
 		glm::mat4 model = node0->getTransform()->getModelMatrix();
 
-		scene::Camera* camera0 = new scene::Camera("scene_camera",
+		scene::Camera* camera0 = new scene::Camera("scene_camera",	
 													glm::vec3(15.0f, 0.0f, 15.0f),
 													glm::vec3(0.0f, 15.0f, 0.0f),
 													glm::vec3(0.0f, 1.0f, 0.0f),
@@ -150,9 +154,11 @@ namespace renderer {
 		float camera_speed = 1;
         while (m_context && m_context->isLive())
         {
+			delta = glfwGetTime() - delta;
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			gBuffer->write();
+
 
 				//! simple camera movement
 				double mouse_x, mouse_y;
@@ -204,13 +210,17 @@ namespace renderer {
 
 					//render sky
 					m_shaderProgram_forward->SetUniform("sky", 1.0f);
-					m_shaderProgram_forward->SetUniformSampler("texture", texture_handle2, 0);
+					m_shaderProgram_forward->SetUniformSampler("texture", skydome, 0);
 					node5->drawTriangles();
 
 			    m_shaderProgram_forward->Unuse();
 
 			m_framecount++;
 
+			wsSunPos = glm::vec4(0, 50, 0, 1.0);
+			sunAngle += delta / sunSpeed;
+			wsSunPos.x = cos(sunAngle)*sunRadius;
+			wsSunPos.z = sin(sunAngle)*sunRadius;
 			ssSunPos = projection * view * wsSunPos;
 			ssSunPos.x=(ssSunPos.x/ssSunPos.z)/2.0f+0.5f;
 			ssSunPos.y=(ssSunPos.y/ssSunPos.z)/2.0f+0.5f;

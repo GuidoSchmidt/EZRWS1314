@@ -40,9 +40,12 @@ namespace renderer {
 			SlimFBO* sunlightFBO3;
 			SlimFBO* sunlightFBO4;
 
-			//scene::SceneNode* sun;
+			double delta;
+			double sunSpeed;
 			glm::vec4 wsSunPos;
 			glm::vec4 ssSunPos;
+			float sunRadius;
+			double sunAngle;
 			SeparatedBlurPass* blurPass;
 			RadialGlowMaskPass* maskPass;
 			RadialLuminancePass* luminancePass;

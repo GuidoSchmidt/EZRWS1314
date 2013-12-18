@@ -6,6 +6,7 @@ namespace utils {
 	Importer::Importer(void)
 	{
 		m_aiScene = 0;
+		FreeImage_Initialise(false);
 	}
 
 	Importer::~Importer(void)
@@ -238,6 +239,29 @@ namespace utils {
 		{
 			return m_camera_node_list[index];
 		}
+	}
+
+	GLuint Importer::loadHDRTexture(std::string filename) {
+		GLuint tex_2d;
+
+		glActiveTexture(GL_TEXTURE0);
+		glGenTextures(1, &tex_2d);
+		glBindTexture(GL_TEXTURE_2D, tex_2d);
+
+		// load a HDR RGB Float image
+		FIBITMAP *src = FreeImage_Load(FIF_HDR, filename.c_str(), 0);
+		
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, FreeImage_GetWidth(src), FreeImage_GetHeight(src), 0, GL_RGB, GL_FLOAT, (GLvoid*)src->data);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		//glTexParameteri(GL_TEXTURE_2D, GL_GENERATE_MIPMAP, GL_TRUE);
+		//glGenerateMipmap(GL_TEXTURE_2D);
+
+		FreeImage_Unload(src);
+		return tex_2d;
+
 	}
 
 	GLuint Importer::loadTexture(std::string filename)
