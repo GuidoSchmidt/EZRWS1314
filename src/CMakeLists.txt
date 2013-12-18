@@ -40,5 +40,6 @@ IF("${CMAKE_SYSTEM}" MATCHES "Linux")
             Xmu
             Xrandr
             Xi
+            pthread
         )
 ENDIF()
