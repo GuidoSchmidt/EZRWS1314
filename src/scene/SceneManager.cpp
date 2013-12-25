@@ -37,7 +37,6 @@ namespace scene
     std::vector<Geometry*> render_queue;
     for(unsigned int node = 0; node < m_scene_node_list.size(); node++)
     {
-        std::cout << m_scene_node_list.at(node)->getType();
         if(m_scene_node_list.at(node)->getType() == GEOMETRY)
         {
             render_queue.push_back( static_cast<Geometry*>(m_scene_node_list.at(node)) );

@@ -21,7 +21,7 @@ namespace utils {
 	void Importer::importFile(const std::string& pathToFile)
 	{
 		m_aiScene = m_aiImporter.ReadFile(pathToFile,  
-			aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials);
+            aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials);
 			
 		if(!m_aiScene)
 		{
@@ -48,7 +48,7 @@ namespace utils {
 		std::cout << "\nList of Nodes:" << std::endl;
 
 		//! ------ Cameras ------------------------------------------  
-		if (m_aiScene->HasCameras())
+        if (m_aiScene->HasCameras())
 		{
 			scene::Camera* new_camera;
 			//! Process cameras
@@ -127,89 +127,93 @@ namespace utils {
 		//! ------ Meshes ------------------------------------------
 		if (m_aiScene->HasMeshes())
 		{
-			//! Traverse all scene nodes to get transformations of meshes
-			for (unsigned int node = 0; node < m_aiScene->mRootNode->mNumChildren; node++)
-			{
-				scene::Geometry* new_geometry;
-				//! Process meshes
-				for (unsigned int mesh_id = 0; mesh_id < m_aiScene->mNumMeshes; mesh_id++)
-				{
-					//! Get current node from assimp scene
-					aiNode* current_node = m_aiScene->mRootNode->mChildren[node];
+            std::cout << "Number meshes in Root Node: " << m_aiScene->mRootNode->mNumMeshes << std::endl;
+            std::cout << "Number meshes in m_aiScene: " << m_aiScene->mNumMeshes << std::endl;
 
-					aiString name = current_node->mName;
+            //! Get root transformtaion matrix
+            aiMatrix4x4 root_transform = m_aiScene->mRootNode->mTransformation;
 
-					//! Transformation
-					aiVector3D current_position, current_scale;
-					aiQuaternion current_rotation;
-					current_node->mTransformation.Decompose(current_scale, current_rotation, current_position);
+            scene::Geometry* new_geometry;
+            //! Process meshes
+            for (unsigned int mesh_id = 0; mesh_id < m_aiScene->mNumMeshes; mesh_id++)
+            {
+                //! Get current node from assimp scene
+                aiNode* current_node = m_aiScene->mRootNode->mChildren[mesh_id];
 
-					//! Create new geometry node and set its transform
-					new_geometry = new scene::Geometry(mesh_id, name.C_Str());
-					new_geometry->setTransform(
-						scene::Transform(glm::vec3(current_position.x, current_position.y, current_position.z),
-						glm::quat(current_rotation.w, glm::vec3(current_rotation.x, current_rotation.y, current_rotation.z)),
-						glm::vec3(current_scale.x, current_scale.y, current_scale.z) )
-					);
+                aiString name = current_node->mName;
 
-					aiMesh* current_mesh = m_aiScene->mMeshes[mesh_id];
-					//! Geometry
-					if (current_mesh->HasPositions())
-					{
-						//! Vertices
-						for (unsigned int vertex = 0; vertex <= current_mesh->mNumVertices; vertex++)
-						{
-							aiVector3D* current_vertex = &(current_mesh->mVertices[vertex]);
-							new_geometry->addVertex(current_vertex->x, current_vertex->y, current_vertex->z);
+                //! Transformation
+                aiVector3D current_position, current_scale;
+                aiQuaternion current_rotation;
+                aiMatrix4x4 m_transform = current_node->mTransformation;
+                //! The mesh need to be transformed with a general scene transformation matrix first
+                m_transform = root_transform * m_transform;
+                m_transform.Decompose(current_scale, current_rotation, current_position);
 
-							//! Normals
-							if (current_mesh->HasNormals())
-							{
-								aiVector3D* current_normal = &(current_mesh->mNormals[vertex]);
-								new_geometry->addNormal(current_normal->x, current_normal->y, current_normal->z);
-							}
+                //! Create new geometry node and set its transform
+                new_geometry = new scene::Geometry(mesh_id, name.C_Str());
+                new_geometry->setTransform(
+                    scene::Transform(glm::vec3(current_position.x, current_position.y, current_position.z),
+                    glm::quat(current_rotation.w, glm::vec3(current_rotation.x, current_rotation.y, current_rotation.z)),
+                    glm::vec3(current_scale.x, current_scale.y, current_scale.z) )
+                );
 
-							//! Texture coordinates
-							if (current_mesh->HasTextureCoords(0))
-							{
-								aiVector3D* current_uv = &(current_mesh->mTextureCoords[0][vertex]);
-								new_geometry->addUV(current_uv->x, current_uv->y);
-							}
-						}
-					}
-					//! Faces (indices for vertex list)
-					if (current_mesh->HasFaces())
-					{
-						for (unsigned int face = 0; face < current_mesh->mNumFaces; face++)
-						{
-							aiFace* current_face = &(current_mesh->mFaces[face]);
+                aiMesh* current_mesh = m_aiScene->mMeshes[mesh_id];
+                //! Geometry
+                if (current_mesh->HasPositions())
+                {
+                    //! Vertices
+                    for (unsigned int vertex = 0; vertex <= current_mesh->mNumVertices; vertex++)
+                    {
+                        aiVector3D* current_vertex = &(current_mesh->mVertices[vertex]);
+                        new_geometry->addVertex(current_vertex->x, current_vertex->y, current_vertex->z);
 
-							//! All three indices of the current triangle face
-							int vertex_index0 = current_mesh->mFaces[face].mIndices[0];
-							int vertex_index1 = current_mesh->mFaces[face].mIndices[1];
-							int vertex_index2 = current_mesh->mFaces[face].mIndices[2];
+                        //! Normals
+                        if (current_mesh->HasNormals())
+                        {
+                            aiVector3D* current_normal = &(current_mesh->mNormals[vertex]);
+                            new_geometry->addNormal(current_normal->x, current_normal->y, current_normal->z);
+                        }
 
-							new_geometry->addIndex(vertex_index0);
-							new_geometry->addIndex(vertex_index1);
-							new_geometry->addIndex(vertex_index2);
-						}
-					}
+                        //! Texture coordinates
+                        if (current_mesh->HasTextureCoords(0))
+                        {
+                            aiVector3D* current_uv = &(current_mesh->mTextureCoords[0][vertex]);
+                            new_geometry->addUV(current_uv->x, current_uv->y);
+                        }
+                    }
+                }
+                //! Faces (indices for vertex list)
+                if (current_mesh->HasFaces())
+                {
+                    for (unsigned int face = 0; face < current_mesh->mNumFaces; face++)
+                    {
+                        //! All three indices of the current triangle face
+                        int vertex_index0 = current_mesh->mFaces[face].mIndices[0];
+                        int vertex_index1 = current_mesh->mFaces[face].mIndices[1];
+                        int vertex_index2 = current_mesh->mFaces[face].mIndices[2];
 
-					new_geometry->createBuffers();
+                        new_geometry->addIndex(vertex_index0);
+                        new_geometry->addIndex(vertex_index1);
+                        new_geometry->addIndex(vertex_index2);
+                    }
+                }
 
-					//! Add to scene manager
-					m_geometry_node_list.push_back(new_geometry);
-					scene::SceneManager::instance()->addSceneNode(new_geometry);
+                new_geometry->createBuffers();
 
-					//! Log
-					std::cout << "\n  * Mesh: " << mesh_id << std::endl;
-					std::cout << "    Name: " << name.C_Str() << std::endl;
-					std::cout << "    Vertex count: " << current_mesh->mNumVertices << std::endl;
-					std::cout << "    Faces count: " << current_mesh->mNumFaces << std::endl;
-					std::cout << "    Normals count: " << current_mesh->mNumVertices << std::endl;
-				}
-			}
-		}
+                //! Add to scene manager
+                m_geometry_node_list.push_back(new_geometry);
+                scene::SceneManager::instance()->addSceneNode(new_geometry);
+
+                //! Log
+                std::cout << "\n  * Mesh: " << mesh_id << std::endl;
+                std::cout << "    Name: " << name.C_Str() << std::endl;
+                std::cout << "    Vertex count: " << current_mesh->mNumVertices << std::endl;
+                std::cout << "    Faces count: " << current_mesh->mNumFaces << std::endl;
+                std::cout << "    Normals count: " << current_mesh->mNumVertices << std::endl;
+            }
+        }
+
 
 		//! ------ Materials ------------------------------------------
 		if (m_aiScene->HasMaterials())
