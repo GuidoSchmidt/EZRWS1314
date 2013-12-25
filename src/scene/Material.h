@@ -26,6 +26,12 @@ namespace scene
         public:
             //! \brief Constructor: default
             Material();
+
+            //! \brief Constructor
+            Material(glm::vec3 diffuse_color, int diffuse_tex_id,
+                     glm::vec3 sepcular_color, int specular_tex_id,
+                     float specular_highlight_exponent,
+                     int normal_map_id);
     };
 }
 

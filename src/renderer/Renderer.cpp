@@ -44,7 +44,7 @@ namespace renderer {
         setupShaderStages();
     
         //! \todo Loads models via utils::Importer
-        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/even_more_cube.dae");
+        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/beach.dae");
         m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
 
 
