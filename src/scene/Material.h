@@ -44,6 +44,9 @@ namespace scene
 
             //! \brief Returns the materials index
             unsigned int getIndexNumber(void);
+
+            //! \brief Returns the specular exponent
+            float getShininess(void);
     };
 }
 

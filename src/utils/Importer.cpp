@@ -228,22 +228,41 @@ namespace utils {
             {
                 aiMaterial* current_material = m_aiScene->mMaterials[material_id];
 
-                //! Log
-                std::cout << "\n  * Material: " << material_id << std::endl;
 
                 aiString name;
                 current_material->Get(AI_MATKEY_NAME, name);
-                std::cout << name.C_Str() << std::endl;
 
                 aiColor3D diffuse;
                 current_material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
-                std::cout << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << std::endl;
+
+                aiColor3D specular;
+                current_material->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+
+                float shininess;
+                current_material->Get(AI_MATKEY_SHININESS, shininess);
 
                 //! Create new material
-                new_material = new scene::Material(material_id, glm::vec3(diffuse.r, diffuse.g, diffuse.b), 0, glm::vec3(0), 0, 10, 0);
+                new_material = new scene::Material(material_id, // Index-number
+                                                   glm::vec3(diffuse.r, // Diffuse Color
+                                                             diffuse.g,
+                                                             diffuse.b),
+                                                   0,
+                                                   glm::vec3(specular.r,
+                                                             specular.g,
+                                                             specular.b),
+                                                   0,
+                                                   shininess,
+                                                   0);
 
                 //! Add material to scene manager
                 scene::SceneManager::instance()->addMaterial(new_material);
+
+                //! Log
+                std::cout << "\n  * Material: " << material_id << std::endl;
+                std::cout << "      " << name.C_Str() << std::endl;
+                std::cout << "      Diffuse-Color:  (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
+                std::cout << "      Specular-Color: (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
+                std::cout << "      Shininess:      " << shininess << std::endl;
             }
 		}
 	}

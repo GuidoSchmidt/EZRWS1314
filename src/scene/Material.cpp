@@ -36,4 +36,9 @@ namespace scene
     {
         return m_index_number;
     }
+
+    float Material::getShininess(void)
+    {
+        return m_specular_highlight_exponent;
+    }
 }

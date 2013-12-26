@@ -103,7 +103,7 @@ namespace renderer {
           if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
           {
                   m_scene_camera->Rotate(mouse_correct_x * camera_speed * 100.0f,
-                                                  mouse_correct_y * camera_speed * 100.0f);
+                                         mouse_correct_y * camera_speed * 100.0f);
           }
           if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
                   glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
@@ -132,6 +132,12 @@ namespace renderer {
           //! Field of view
           m_scene_camera->SetFOV(scroll);
 
+          //! Other keyboard events
+          if (glfwGetKey(m_context->getWindow(), GLFW_KEY_R) )
+          {
+                  m_shaderProgram_forward->ReloadAllShaders();
+          }
+
           glm::mat4 view = m_scene_camera->GetViewMatrix();
           glm::mat4 projection = m_scene_camera->GetProjectionMatrix();
           glfwSetScrollCallback(m_context->getWindow(), ScrollCallback);
@@ -146,6 +152,8 @@ namespace renderer {
           {
               m_shaderProgram_forward->SetUniform("model", m_renderqueue[i]->getTransform()->getModelMatrix() );
               m_shaderProgram_forward->SetUniform("diffuse_color", *(m_renderqueue[i]->getMaterial()->getDiffuseColor()) );
+              m_shaderProgram_forward->SetUniform("specular_color", *(m_renderqueue[i]->getMaterial()->getSpecularColor()) );
+              m_shaderProgram_forward->SetUniform("shininess", *(m_renderqueue[i]->getMaterial()->getSpecularColor()) );
               m_renderqueue[i]->drawTriangles();
           }
 
