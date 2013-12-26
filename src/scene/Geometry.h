@@ -5,6 +5,7 @@
 
 #include "../utils/Common.h"
 #include "SceneNode.h"
+#include "Material.h"
 #include <vector>
 
 namespace scene {
@@ -14,7 +15,6 @@ namespace scene {
 		private:
 			//! Geometry itself
 			GLenum m_ErrorCheckMesh;
-			unsigned int index_count;
 			std::vector<GLfloat> m_vertexlist;
 			std::vector<GLuint>  m_indexlist;
 			std::vector<GLfloat> m_normallist;
@@ -36,9 +36,10 @@ namespace scene {
 			std::vector<GLuint>  m_bb_indexlist;
 			GLuint bb_VAO_id;
 			GLuint bb_VBO_id, bb_IBO_id;
-			
-			//! \brief Constructor: default
-			Geometry();
+
+            //! Material
+            unsigned int m_material_index;
+            Material* m_material;
 
 		public:
 
@@ -115,19 +116,31 @@ namespace scene {
 			void drawNormals(void);
 
 			//! \brief Draws the boundign box
-			void drawBoundingBox(void);
+            void drawBoundingBox(void);
 
-			//! Physics
+            //! \brief Sets the materials index
+            void setMaterialIndex(unsigned int material_index);
+
+            //! \brief Returns the material index
+            unsigned int getMaterialIndex(void);
+
+            //! \brief Sets material index
+            void setMaterialTo(Material* material);
+
+            //! \brief Get material index
+            Material* getMaterial(void);
+
+            //! Physics
             void applyTransform(scene::Transform& t);
-			std::vector<GLfloat>& getVertices();
-			void alignNormals();
-			void cleanListOfDuplicates();
+            std::vector<GLfloat>& getVertices();
+            void alignNormals();
+            void cleanListOfDuplicates();
 
-			glm::vec3 getSizeBB();
-			void addFace(std::vector<GLint> indices, glm::vec3 normal, glm::vec3 centroid);
-			void addEdge(GLint a, GLint b);
+            glm::vec3 getSizeBB();
+            void addFace(std::vector<GLint> indices, glm::vec3 normal, glm::vec3 centroid);
+            void addEdge(GLint a, GLint b);
 
-			void buildVerticesVec3();
+            void buildVerticesVec3();
 	};
 }
 #endif //H_GEOMETRY

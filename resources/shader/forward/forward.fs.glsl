@@ -12,9 +12,10 @@ in vec2 vsUV;
 layout (location = 0) out vec4 fragcolor;
 
 //*** Uniforms *****************************************************************
+uniform vec3 diffuse_color;
 
 //*** Main *********************************************************************
 void main(void)
 {
-    fragcolor = vec4(vsNormal, 1.0);
+    fragcolor = vec4(diffuse_color, 1.0);
 }

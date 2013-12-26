@@ -390,6 +390,27 @@ namespace scene {
 		glBindVertexArray(0);
 	}
 
+    void Geometry::setMaterialIndex(unsigned int material_index)
+    {
+        m_material_index = material_index;
+    }
+
+    unsigned int Geometry::getMaterialIndex(void)
+    {
+        return m_material_index;
+    }
+
+    void Geometry::setMaterialTo(Material* material)
+    {
+        m_material = material;
+    }
+
+    Material* Geometry::getMaterial(void)
+    {
+        return m_material;
+    }
+
+
     void Geometry::applyTransform(scene::Transform& t)
 	{
 		m_transform.setPosition(t.getTranslation());

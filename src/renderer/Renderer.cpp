@@ -145,6 +145,7 @@ namespace renderer {
           for(unsigned int i = 0; i < m_renderqueue.size(); i++)
           {
               m_shaderProgram_forward->SetUniform("model", m_renderqueue[i]->getTransform()->getModelMatrix() );
+              m_shaderProgram_forward->SetUniform("diffuse_color", *(m_renderqueue[i]->getMaterial()->getDiffuseColor()) );
               m_renderqueue[i]->drawTriangles();
           }
 

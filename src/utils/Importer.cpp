@@ -160,6 +160,7 @@ namespace utils {
 
                 aiMesh* current_mesh = m_aiScene->mMeshes[mesh_id];
                 unsigned int material_index  = current_mesh->mMaterialIndex;
+                new_geometry->setMaterialIndex(material_index);
 
                 //! Geometry
                 if (current_mesh->HasPositions())
@@ -213,6 +214,7 @@ namespace utils {
                 std::cout << "    Vertex count: " << current_mesh->mNumVertices << std::endl;
                 std::cout << "    Faces count: " << current_mesh->mNumFaces << std::endl;
                 std::cout << "    Normals count: " << current_mesh->mNumVertices << std::endl;
+                std::cout << "    Material index: " << material_index << std::endl;
             }
         }
 
@@ -226,7 +228,6 @@ namespace utils {
             {
                 aiMaterial* current_material = m_aiScene->mMaterials[material_id];
 
-
                 //! Log
                 std::cout << "\n  * Material: " << material_id << std::endl;
 
@@ -239,8 +240,10 @@ namespace utils {
                 std::cout << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << std::endl;
 
                 //! Create new material
-                new_material = new scene::Material(glm::vec3(diffuse.r, diffuse.g, diffuse.b), 0, glm::vec3(0), 0, 10, 0);
+                new_material = new scene::Material(material_id, glm::vec3(diffuse.r, diffuse.g, diffuse.b), 0, glm::vec3(0), 0, 10, 0);
 
+                //! Add material to scene manager
+                scene::SceneManager::instance()->addMaterial(new_material);
             }
 		}
 	}

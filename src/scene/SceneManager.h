@@ -17,6 +17,7 @@ namespace scene
       std::vector<SceneNode*>             m_scene_node_list;
       std::map<unsigned int, SceneNode*>  m_sceneNode_id_map;
       std::map<std::string, unsigned int> m_sceneNode_name_map;
+      std::map<unsigned int, Material*>   m_material_index_map;
 
       //! \brief Constructor: default
       SceneManager();
@@ -36,6 +37,9 @@ namespace scene
 
       //! \brief Builds a simple render queue
       std::vector<Geometry*> generateRenderQueue(void);
+
+      //! \brief Adds a material to the scene
+      void addMaterial(Material* material);
   };
 }
 

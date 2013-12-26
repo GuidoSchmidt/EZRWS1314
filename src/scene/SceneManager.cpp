@@ -31,7 +31,11 @@ namespace scene
     return m_sceneNode_id_map[m_sceneNode_name_map.at(name)];
   }
 
-  //! \brief Builds a simple render queue
+  void SceneManager::addMaterial(Material* material)
+  {
+      m_material_index_map[material->getIndexNumber()] = material;
+  }
+
   std::vector<Geometry*> SceneManager::generateRenderQueue(void)
   {
     std::vector<Geometry*> render_queue;
@@ -39,7 +43,9 @@ namespace scene
     {
         if(m_scene_node_list.at(node)->getType() == GEOMETRY)
         {
-            render_queue.push_back( static_cast<Geometry*>(m_scene_node_list.at(node)) );
+            Geometry* current = static_cast<Geometry*>(m_scene_node_list.at(node));
+            current->setMaterialTo(m_material_index_map.at(current->getMaterialIndex()));
+            render_queue.push_back( current );
         }
         else
         {

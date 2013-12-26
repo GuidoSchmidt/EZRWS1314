@@ -12,6 +12,8 @@ namespace scene
     class Material
     {
         private:
+            //! index
+            unsigned int m_index_number;
             //! Diffuse
             glm::vec3 m_diffuse_color;
             int       m_diffuse_map_id;
@@ -28,7 +30,8 @@ namespace scene
             Material();
 
             //! \brief Constructor
-            Material(glm::vec3 diffuse_color, int diffuse_tex_id,
+            Material(unsigned int index,
+                     glm::vec3 diffuse_color, int diffuse_tex_id,
                      glm::vec3 sepcular_color, int specular_tex_id,
                      float specular_highlight_exponent,
                      int normal_map_id);
@@ -38,6 +41,9 @@ namespace scene
 
             //! \brief Returns the specular color
             glm::vec3* getSpecularColor(void);
+
+            //! \brief Returns the materials index
+            unsigned int getIndexNumber(void);
     };
 }
 
