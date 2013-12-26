@@ -159,6 +159,8 @@ namespace utils {
                 );
 
                 aiMesh* current_mesh = m_aiScene->mMeshes[mesh_id];
+                unsigned int material_index  = current_mesh->mMaterialIndex;
+
                 //! Geometry
                 if (current_mesh->HasPositions())
                 {
@@ -214,11 +216,32 @@ namespace utils {
             }
         }
 
-
 		//! ------ Materials ------------------------------------------
 		if (m_aiScene->HasMaterials())
 		{
-			//! \todo Read materials and textures and organize them: HashMap, Smart-Pointers
+            scene::Material* new_material;
+
+            //! Read materials and textures and organize them: HashMap, Smart-Pointers
+            for(unsigned int material_id = 0; material_id < m_aiScene->mNumMaterials; material_id++)
+            {
+                aiMaterial* current_material = m_aiScene->mMaterials[material_id];
+
+
+                //! Log
+                std::cout << "\n  * Material: " << material_id << std::endl;
+
+                aiString name;
+                current_material->Get(AI_MATKEY_NAME, name);
+                std::cout << name.C_Str() << std::endl;
+
+                aiColor3D diffuse;
+                current_material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+                std::cout << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << std::endl;
+
+                //! Create new material
+                new_material = new scene::Material(glm::vec3(diffuse.r, diffuse.g, diffuse.b), 0, glm::vec3(0), 0, 10, 0);
+
+            }
 		}
 	}
 

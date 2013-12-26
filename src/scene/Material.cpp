@@ -19,4 +19,14 @@ namespace scene
         m_specular_highlight_exponent = specular_highlight_exponent;
         m_normal_map_id     = normal_map_id;
     }
+
+    glm::vec3* Material::getDiffuseColor(void)
+    {
+        return &m_diffuse_color;
+    }
+
+    glm::vec3* Material::getSpecularColor(void)
+    {
+        return &m_specular_color;
+    }
 }

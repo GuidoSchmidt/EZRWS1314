@@ -32,6 +32,12 @@ namespace scene
                      glm::vec3 sepcular_color, int specular_tex_id,
                      float specular_highlight_exponent,
                      int normal_map_id);
+
+            //! \brief Returns the diffuse color
+            glm::vec3* getDiffuseColor(void);
+
+            //! \brief Returns the specular color
+            glm::vec3* getSpecularColor(void);
     };
 }
 
