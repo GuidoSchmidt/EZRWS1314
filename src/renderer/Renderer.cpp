@@ -88,6 +88,10 @@ namespace renderer {
 					   glm::vec3(0.0f, 1.0f, 0.0f),
 					   m_context->getSize());
 
+    std::string filename = RESOURCES_PATH;
+    filename.append("/textures/common/uv_test.jpg");
+    GLuint* texture = scene::SceneManager::instance()->loadTexture(filename);
+
 	glm::vec3 camera_position = glm::vec3(1.0f);
 	float camera_speed = 0.01f;
         while (m_context && m_context->isLive())
@@ -153,14 +157,13 @@ namespace renderer {
               m_shaderProgram_forward->SetUniform("model", m_renderqueue[i]->getTransform()->getModelMatrix() );
               m_shaderProgram_forward->SetUniform("diffuse_color", *(m_renderqueue[i]->getMaterial()->getDiffuseColor()) );
               m_shaderProgram_forward->SetUniform("specular_color", *(m_renderqueue[i]->getMaterial()->getSpecularColor()) );
-              m_shaderProgram_forward->SetUniform("shininess", *(m_renderqueue[i]->getMaterial()->getSpecularColor()) );
+              m_shaderProgram_forward->SetUniform("shininess", m_renderqueue[i]->getMaterial()->getShininess() );
+
+              m_shaderProgram_forward->SetUniformSampler("diffuse", *m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
               m_renderqueue[i]->drawTriangles();
           }
 
-
-
           m_shaderProgram_forward->Unuse();
-
 
           m_context->swapBuffers();
         }

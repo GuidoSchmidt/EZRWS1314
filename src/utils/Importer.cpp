@@ -241,12 +241,21 @@ namespace utils {
                 float shininess;
                 current_material->Get(AI_MATKEY_SHININESS, shininess);
 
+
+                //! Textures
+                aiString texture_path_diffuse;
+                aiTextureMapping texture_mapping;
+                unsigned int texture_index;
+
+                current_material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path_diffuse);
+                GLuint* test = scene::SceneManager::instance()->loadTexture(texture_path_diffuse.C_Str());
+
                 //! Create new material
                 new_material = new scene::Material(material_id, // Index-number
                                                    glm::vec3(diffuse.r, // Diffuse Color
                                                              diffuse.g,
                                                              diffuse.b),
-                                                   0,
+                                                   test,
                                                    glm::vec3(specular.r,
                                                              specular.g,
                                                              specular.b),
@@ -260,8 +269,11 @@ namespace utils {
                 //! Log
                 std::cout << "\n  * Material: " << material_id << std::endl;
                 std::cout << "      " << name.C_Str() << std::endl;
-                std::cout << "      Diffuse-Color:  (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
-                std::cout << "      Specular-Color: (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
+                std::cout << "      Diffuse-Color:   (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
+                std::cout << "      Diffuse-Texture: (" << texture_path_diffuse.C_Str() << ")" << std::endl;
+                std::cout << "      Specular-Color:  (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
+                //std::cout << "      Specular-Texture:(" << texture_path_specular.C_Str() << ")" << std::endl;
+
                 std::cout << "      Shininess:      " << shininess << std::endl;
             }
 		}
@@ -292,24 +304,5 @@ namespace utils {
 		{
 			return m_camera_node_list[index];
 		}
-	}
-
-	GLuint Importer::loadTexture(std::string filename)
-	{
-		GLuint tex_2d;
-			
-		glActiveTexture(GL_TEXTURE0);
-		glGenTextures( 1, &tex_2d );
-		glBindTexture( GL_TEXTURE_2D, tex_2d );
-
-		tex_2d = SOIL_load_OGL_texture
-		(
-			filename.c_str(),
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-		);
-
-		return tex_2d;
 	}
 }

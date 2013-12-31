@@ -8,6 +8,7 @@
 #include "Geometry.h"
 #include "Camera.h"
 #include <map>
+#include <SOIL/SOIL.h>
 
 namespace scene
 {
@@ -18,6 +19,7 @@ namespace scene
       std::map<unsigned int, SceneNode*>  m_sceneNode_id_map;
       std::map<std::string, unsigned int> m_sceneNode_name_map;
       std::map<unsigned int, Material*>   m_material_index_map;
+      std::vector<GLuint>                 m_texture_unit_list;
 
       //! \brief Constructor: default
       SceneManager();
@@ -40,6 +42,16 @@ namespace scene
 
       //! \brief Adds a material to the scene
       void addMaterial(Material* material);
+
+      //! \brief Adds a texture
+      void addTexture(GLuint texture_unit);
+
+      //! \brief Returns a texture handle by its index
+      GLuint getTexture(unsigned int index);
+
+      //! \brief Loads a texture from a given filepath
+      //!  @return The index of the texture handle in the texture unit list
+      GLuint* loadTexture(std::string filename);
   };
 }
 

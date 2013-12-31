@@ -16,7 +16,7 @@ namespace scene
             unsigned int m_index_number;
             //! Diffuse
             glm::vec3 m_diffuse_color;
-            int       m_diffuse_map_id;
+            GLuint*   m_diffuse_map_ptr;
             //! Specular
             glm::vec3 m_specular_color;
             int       m_specular_map_id;
@@ -31,13 +31,18 @@ namespace scene
 
             //! \brief Constructor
             Material(unsigned int index,
-                     glm::vec3 diffuse_color, int diffuse_tex_id,
-                     glm::vec3 sepcular_color, int specular_tex_id,
+                     glm::vec3 diffuse_color,
+                     GLuint* diffuse_tex_id,
+                     glm::vec3 sepcular_color,
+                     int specular_tex_id,
                      float specular_highlight_exponent,
                      int normal_map_id);
 
             //! \brief Returns the diffuse color
             glm::vec3* getDiffuseColor(void);
+
+            //! \brief Returns the diffuse texture handle
+            GLuint* getDiffuseTexture(void);
 
             //! \brief Returns the specular color
             glm::vec3* getSpecularColor(void);

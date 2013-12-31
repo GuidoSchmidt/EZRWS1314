@@ -15,7 +15,6 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <vector>
-#include <SOIL/SOIL.h>
 #include "../scene/SceneManager.h"
 
 namespace utils {
@@ -36,6 +35,8 @@ namespace utils {
 			std::vector<scene::Camera*>	  m_camera_node_list;
 			std::vector<GLuint>           m_texture_list;
 
+            GLuint tex_2d;
+
 
 		public:
 			//! \brief Returns the singleton instance
@@ -55,9 +56,6 @@ namespace utils {
 
 			//! \brief Returns a camera of the scene by index
 			scene::Camera* getCameraNode(const unsigned int index);
-
-			//! \brief Loads a texture from a given filepath and returns the texture handle
-			GLuint loadTexture(std::string filename);
 	};
 }
 #endif // H_IMPORTER
