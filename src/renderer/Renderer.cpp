@@ -43,7 +43,9 @@ namespace renderer {
     
         //! \todo Loads models via utils::Importer
         //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
-        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/baum_test.obj");
+		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/baum_test.obj");
+		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/head.obj");
+		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/baum_test.dae");
         //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
 
 
@@ -53,17 +55,18 @@ namespace renderer {
         //! \todo Use Context::getSize().x and .y!
         int WIDTH = m_context->getSize().x;
         int HEIGHT = m_context->getSize().y;
-        glm::vec2 nearFar = glm::vec2(0.1,60.0);
+        //glm::vec2 nearFar = glm::vec2(0.1,.0);
         
         //Setup dat slim fboooooos
 
         gBuffer		 = new SlimFBO(WIDTH,HEIGHT, 2, true);
-        lightingFBO  = new SlimFBO(WIDTH,HEIGHT, 1, false);
 		sunlightFBO0 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 		sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 		sunlightFBO2 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 		sunlightFBO3 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 		sunlightFBO4 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+
+		downsampledExtractionFBO = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 
 		//now the render passses!
         fsq = new SlimQuad();
@@ -80,6 +83,17 @@ namespace renderer {
 		luminancePass->outputFBO = sunlightFBO4;
 		luminancePass->inputFBOs.push_back(sunlightFBO3);
 
+
+		slowExtractionPass = new CPUExtractionPass(fsq, WIDTH, HEIGHT);
+		slowExtractionPass->inputFBOs.push_back(gBuffer);
+		slowExtractionPass->inputFBOs.push_back(downsampledExtractionFBO);
+
+		fastExtractionPass = new MipMapExtractionPass(fsq, WIDTH, HEIGHT);
+		fastExtractionPass->inputFBOs.push_back(gBuffer);
+
+		extractionPass = fastExtractionPass;
+
+		
 		finalPass = new FinalPass(fsq, WIDTH, HEIGHT);
 		finalPass->outputFBO = lightingFBO;
 		finalPass->inputFBOs.push_back(gBuffer);
@@ -87,6 +101,8 @@ namespace renderer {
 		finalPass->inputFBOs.push_back(sunlightFBO2);
 		finalPass->inputFBOs.push_back(sunlightFBO3);
 		finalPass->inputFBOs.push_back(sunlightFBO4);
+
+
 
 
         //phong1 = new PhongPass(fsq, nearFar,WIDTH,HEIGHT);//,mouseX,mouseY);
@@ -120,33 +136,37 @@ namespace renderer {
     {
 		//! \todo Exclude texture loading to class 'TextureManager'
 		//! Load a texture
-		delta = glfwGetTime();
+		delta = glfwGetTime()-delta;
 		sunSpeed = 1000.0;
-		sunRadius = 50.0;
+		sunRadius = 100.0;
 		sunAngle = 0.0;
-		//GLuint texture_handle = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/common/uv_test.jpg");
-		GLuint texture_handle1 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Leaf08.png");
-		GLuint texture_handle2 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/sky_test.jpg");
-		GLuint texture_handle3 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Wood01.png");
-		GLuint skydome = utils::Importer::instance()->loadHDRTexture(RESOURCES_PATH "/textures/malibou.hdr");
+		GLuint textureUV = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/common/uv_test.jpg", true);
+		GLuint leaf_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Leaf08.png", true);
+		GLuint head_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/head.jpg", true);
+		//GLuint texture_handle2 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/sky_test.jpg");
+		GLuint trunk_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Wood01.png",true);
+		GLuint sky_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/beach_small.jpg",true);
+		//GLuint sky_tex = utils::Importer::instance()->loadHDRTexture(RESOURCES_PATH "/textures/beach_small.exr");
+		GLuint ldr_diffuse_cube = utils::Importer::instance()->loadCubeMap(RESOURCES_PATH "/textures/ldr-cross/beach_small_diffuse_cross", false);
+		GLuint ldr_reflective_cube = utils::Importer::instance()->loadCubeMap(RESOURCES_PATH "/textures/ldr-cross/beach_small_reflective_cross", false);
 
         //! Render calls here
-		scene::Geometry* node0 = utils::Importer::instance()->getGeometryNode(0);
-		scene::Geometry* node1 = utils::Importer::instance()->getGeometryNode(1); //grauer baum
-		scene::Geometry* node2 = utils::Importer::instance()->getGeometryNode(2); //grauer blätter
-		scene::Geometry* node3 = utils::Importer::instance()->getGeometryNode(3); //uv cube
-		scene::Geometry* node4 = utils::Importer::instance()->getGeometryNode(4); //uv baum
-		scene::Geometry* node5 = utils::Importer::instance()->getGeometryNode(5); //uv blätter
-		//scene::Geometry* node6 = utils::Importer::instance()->getGeometryNode(6); //uv blätter
+		scene::Geometry* suzanne = utils::Importer::instance()->getGeometryNode(0); // suzanne
+		scene::Geometry* sky = utils::Importer::instance()->getGeometryNode(1);
+		scene::Geometry* trunk = utils::Importer::instance()->getGeometryNode(2);
+		scene::Geometry* trunk2 = utils::Importer::instance()->getGeometryNode(3); 
+		scene::Geometry* leafs = utils::Importer::instance()->getGeometryNode(4);
+		scene::Geometry* head = utils::Importer::instance()->getGeometryNode(25);
 
-		glm::mat4 model = node0->getTransform()->getModelMatrix();
+
+		glm::mat4 model = sky->getTransform()->getModelMatrix();
 
 		scene::Camera* camera0 = new scene::Camera("scene_camera",	
-													glm::vec3(15.0f, 0.0f, 15.0f),
-													glm::vec3(0.0f, 15.0f, 0.0f),
+													glm::vec3(0.0f, 10.0f, -20.0f),
+													glm::vec3(0.0f, 10.0f, 0.0f),
 													glm::vec3(0.0f, 1.0f, 0.0f),
 													m_context->getSize());
-
+		camera0->SetFarPlane(10000.0f);
 		glm::mat4 projection = camera0->GetProjectionMatrix();
 
 
@@ -191,6 +211,10 @@ namespace renderer {
 				{
 					camera0->MoveX(-camera_speed);
 				}
+				if (glfwGetKey(m_context->getWindow(), GLFW_KEY_E))
+				{
+					switchExtractionStrategy();
+				}
 				glm::mat4 view = camera0->GetViewMatrix();
 
 
@@ -201,30 +225,56 @@ namespace renderer {
 					m_shaderProgram_forward->SetUniform("sky", 0.0f);
 					m_shaderProgram_forward->SetUniform("view", view);
 					m_shaderProgram_forward->SetUniform("projection", projection);
-					m_shaderProgram_forward->SetUniformSampler("texture", texture_handle1, 0);
+					m_shaderProgram_forward->SetUniform("wsCamPosition", camera0->GetPosition());
 
-					node4->drawTriangles();
-					m_shaderProgram_forward->SetUniformSampler("texture", texture_handle3, 0);
-					node3->drawTriangles();
-					//node6->drawTriangles();
-
-					//render sky
+					m_shaderProgram_forward->SetUniformCubemap("diffuse_cube", ldr_diffuse_cube, 1);
+					m_shaderProgram_forward->SetUniformCubemap("reflective_cube", ldr_reflective_cube, 2);
+					m_shaderProgram_forward->SetUniformSampler("material_texture", leaf_tex, 0);
+					leafs->drawTriangles();
+					m_shaderProgram_forward->SetUniformSampler("material_texture", trunk_tex, 0);
+					trunk->drawTriangles();
+					trunk2->drawTriangles();
+					suzanne->drawTriangles();
+					//trunk->drawTriangles();
+					m_shaderProgram_forward->SetUniformSampler("material_texture", head_tex, 0);
+					head->drawTriangles();
 					m_shaderProgram_forward->SetUniform("sky", 1.0f);
-					m_shaderProgram_forward->SetUniformSampler("texture", skydome, 0);
-					node5->drawTriangles();
+					m_shaderProgram_forward->SetUniformSampler("material_texture", sky_tex, 0);
+					sky->drawTriangles();
+					//render sky
 
 			    m_shaderProgram_forward->Unuse();
 
 			m_framecount++;
 
-			wsSunPos = glm::vec4(0, 50, 0, 1.0);
+			wsSunPos = glm::vec4(0, 10, 100, 1.0);
 			sunAngle += delta / sunSpeed;
-			wsSunPos.x = cos(sunAngle)*sunRadius;
-			wsSunPos.z = sin(sunAngle)*sunRadius;
+			//wsSunPos.x = cos(sunAngle)*sunRadius;
+			//wsSunPos.z = sin(sunAngle)*sunRadius;
 			ssSunPos = projection * view * wsSunPos;
 			ssSunPos.x=(ssSunPos.x/ssSunPos.z)/2.0f+0.5f;
 			ssSunPos.y=(ssSunPos.y/ssSunPos.z)/2.0f+0.5f;
+			
+			double time1 = glfwGetTime();
 			doTheSunlightEffect();
+			double time2 = glfwGetTime() - time1; //< 1ms naaaiisee
+
+			time1 = glfwGetTime();
+			//fastExtractionPass->inputTexture = textureUV;
+			extractionPass->doExecute();
+			time2 = glfwGetTime() - time1; // 
+
+
+
+			MipMapExtractionPass* ex = dynamic_cast<MipMapExtractionPass*>(extractionPass);
+			if (ex != 0) 
+				finalPass->minAveMaxTexture = ex->outputTexture;
+			else
+			{
+				CPUExtractionPass* ex = dynamic_cast<CPUExtractionPass*>(extractionPass);
+				if (ex != 0)
+					finalPass->param_minAveMax = glm::vec3(ex->image_min, ex->image_average, ex->image_max);	
+			}
 
 			finalPass->doExecute();
 
@@ -257,5 +307,22 @@ namespace renderer {
 		//calculate Luminace
 		luminancePass->param_ssSunPos=ssSunPos;
 		luminancePass->doExecute();
+	}
+
+	void Renderer::switchExtractionStrategy()
+	{
+		MipMapExtractionPass* ex = dynamic_cast<MipMapExtractionPass*>(extractionPass);
+		if (ex != 0) {
+			//extractionPass is MipMap change to CPU
+			extractionPass = slowExtractionPass;
+			finalPass->minAveMaxTexture = 0;
+			finalPass->param_fastExtraction = 0.0f;
+		}
+		else
+		{
+			extractionPass = fastExtractionPass;
+			finalPass->minAveMaxTexture = fastExtractionPass->outputTexture;
+			finalPass->param_fastExtraction = 1.0f;
+		}
 	}
 }

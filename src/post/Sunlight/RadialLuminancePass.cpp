@@ -19,8 +19,8 @@ RadialLuminancePass::RadialLuminancePass(SlimQuad* pQuad, int pWidth, int pHeigh
 
 
 	//params
-	//param_nSamples = 16.0f;
-	param_scale  = -2.5f;
+	param_nSamples = 30.0f;
+	param_scale  = -2.0f;
 }
 
 
@@ -40,6 +40,7 @@ void RadialLuminancePass::doExecute() {
 			//glUniform1f(nSamplesUniform, param_nSamples);
 			glUniform1f(scaleUniform, param_scale);
 			glUniform2i(screenSizeUniform, (GLint)width, (GLint)height);
+			glUniform3f(sunPosUniform, param_ssSunPos.x, param_ssSunPos.y, param_ssSunPos.z);
 
 			glViewport(0, 0, width, height);
 			quad->draw();
@@ -48,4 +49,3 @@ void RadialLuminancePass::doExecute() {
 	outputFBO->unbind();
 	glViewport(0, 0, width*4, height*4);
 }
-

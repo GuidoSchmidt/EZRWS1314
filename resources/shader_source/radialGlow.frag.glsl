@@ -21,6 +21,11 @@ float lum(vec4 col)
 
 void main() 
 { 
+	if (sunPos.z <= 0) 
+	{
+		colorOut = vec4(0,0,0,1);
+		return;
+	}
 	//vec2 ts = sunUV.xy+0.5;///sunUVPos.z;
 	vec4 blur = texture(blurSampler,blurUV);
 	//blured*=lum(blured);
@@ -28,6 +33,6 @@ void main()
 	colorOut =  mask * blur;
 
 	// if (blurUV.x > sunPos.x-0.01 && blurUV.x < sunPos.x+0.01 &&
-	// 	blurUV.y > sunPos.y-0.01 && blurUV.y < sunPos.y+0.01)
-	// 	colorOut = vec4(1,1,0,1);
+	//     blurUV.y > sunPos.y-0.01 && blurUV.y < sunPos.y+0.01)
+	//     colorOut = vec4(1,1,0,1);
 }

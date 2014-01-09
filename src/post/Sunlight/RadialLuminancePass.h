@@ -17,7 +17,7 @@ public:
 	GLuint sunPosUniform;
 	GLint screenSizeUniform;
 
-	//GLfloat param_nSamples;
+	GLfloat param_nSamples;
 	GLfloat param_scale;
 	glm::vec4 param_ssSunPos;
 };

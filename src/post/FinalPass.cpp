@@ -14,9 +14,12 @@ FinalPass::FinalPass(SlimQuad* pQuad, int pWidth, int pHeight)
 	topRightUniform   = glGetUniformLocation(renderPassShader->shaderProgram, "topRight");
 	lowerLeftUniform  = glGetUniformLocation(renderPassShader->shaderProgram, "lowerLeft");
 	lowerRightUniform = glGetUniformLocation(renderPassShader->shaderProgram, "lowerRight");
-
+	minAveMaxTextureUniform = glGetUniformLocation(renderPassShader->shaderProgram, "minAveMaxTexture");
+	
+	fastExtractionUniform = glGetUniformLocation(renderPassShader->shaderProgram, "fastExtraction");
 	screenSizeUniform = glGetUniformLocation(renderPassShader->shaderProgram, "screenSize");
 
+	minAveMaxUniform = glGetUniformLocation(renderPassShader->shaderProgram, "minAveMaxUni");
 	//params
 }
 
@@ -46,8 +49,13 @@ void FinalPass::doExecute() {
 			glBindTexture(GL_TEXTURE_2D, inputFBOs[3]->texPointer[0]);
 			glUniform1i(lowerRightUniform, 3);
 
-			glUniform2i(screenSizeUniform, (GLint)width, (GLint)height);
+			glActiveTexture(GL_TEXTURE4);
+			glBindTexture(GL_TEXTURE_2D, minAveMaxTexture);
+			glUniform1i(minAveMaxTextureUniform, 4);
 
+			glUniform2i(screenSizeUniform, (GLint)width, (GLint)height);
+			glUniform3f(minAveMaxUniform, param_minAveMax.x, param_minAveMax.y, param_minAveMax.z);
+			glUniform1f(fastExtractionUniform, param_fastExtraction);
 			quad->draw();
 		
 		renderPassShader->disable();

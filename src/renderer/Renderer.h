@@ -15,6 +15,8 @@
 #include "../post/Sunlight/SeparatedBlurPass.h"
 #include "../post/Sunlight/RadialGlowMaskPass.h"
 #include "../post/Sunlight/RadialLuminancePass.h"
+#include "../post/ToneMapping/CPUExtractionPass.h"
+#include "../post/ToneMapping/MipMapExtractionPass.h"
 #include "../post/FinalPass.h"
 #include "../post/PhongPass.h"
 #include "../utils/Importer.h"
@@ -40,6 +42,10 @@ namespace renderer {
 			SlimFBO* sunlightFBO3;
 			SlimFBO* sunlightFBO4;
 
+
+			SlimFBO* downsampledExtractionFBO;
+
+
 			double delta;
 			double sunSpeed;
 			glm::vec4 wsSunPos;
@@ -49,9 +55,12 @@ namespace renderer {
 			SeparatedBlurPass* blurPass;
 			RadialGlowMaskPass* maskPass;
 			RadialLuminancePass* luminancePass;
+
+			ISlimRenderPass* extractionPass;
+			CPUExtractionPass* slowExtractionPass;
+			MipMapExtractionPass* fastExtractionPass;
 			FinalPass* finalPass;
-            //PhongPass* phong1;
-            //GlowPass* glowHalf;
+            //PhongPass* phong1
 
 			//Rocket::Core::Context* context;
 			//Shell* shell;
@@ -82,6 +91,8 @@ namespace renderer {
 			void renderloop(void);
 
 			void doTheSunlightEffect(void);
+
+			void switchExtractionStrategy();
 	};
 }
 #endif //H_RENDERER

@@ -56,10 +56,12 @@ namespace utils {
 			scene::Camera* getCameraNode(const unsigned int index);
 
 			//! \brief Loads a texture from a given filepath and returns the texture handle
-			GLuint loadTexture(std::string filename);
+			GLuint loadTexture(std::string filename, bool repeat);
 
 			//! \brief Loads a hdr texture from a given filepath and returns the texture handle
 			GLuint loadHDRTexture(std::string filename);
+
+			GLuint loadCubeMap(std::string filename,bool HDR);
 	};
 }
 #endif // H_IMPORTER

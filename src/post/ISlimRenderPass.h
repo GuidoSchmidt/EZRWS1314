@@ -16,9 +16,9 @@
 class ISlimRenderPass
 {
 public:
-	virtual ~ISlimRenderPass() {};
-	ISlimRenderPass(SlimQuad* pQuad);
+	//virtual ~ISlimRenderPass() {};
 	virtual void doExecute() = 0;
+	ISlimRenderPass(SlimQuad* pQuad);
 
 
 
@@ -29,6 +29,10 @@ public:
 
 	int width;
 	int height;
+
+protected:
+	ISlimRenderPass() {}
+
 };
 
 #endif

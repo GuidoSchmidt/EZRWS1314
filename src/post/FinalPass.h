@@ -16,6 +16,15 @@ public:
 	GLint lowerLeftUniform;
 	GLint lowerRightUniform;
 	GLint screenSizeUniform;
+	GLint minAveMaxTextureUniform;
+
+	GLint fastExtractionUniform;
+
+	GLint minAveMaxUniform;
+
+	GLint minAveMaxTexture;
+	float param_fastExtraction;
+	glm::vec3 param_minAveMax;
 };
 
 #endif /* FINALPASS_H_ */

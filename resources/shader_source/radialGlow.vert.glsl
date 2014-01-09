@@ -4,7 +4,7 @@ layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec2 inTexCos;
 
 //uniform scale;
-float scale = 2;
+float scale = 4;
 out vec2 blurUV;
 out vec2 maskUV;
 out vec2 sunUV;
@@ -16,10 +16,9 @@ void main()
 {
 	gl_Position.xy = inPosition.xy;
 
-	//sunUV = sunPos.xy/sunPos.z);///2+0.5;
-
-	vec2 scaleV = vec2(scale,scale);
+	vec2 scaleV = vec2(scale*9.0/16.0,scale);
 	blurUV = inTexCos;
-	maskUV = (blurUV-sunPos.xy)/scale+0.5;
+	maskUV = (blurUV-sunPos.xy)/scaleV+0.5;
+	
 	// maskUV = ((blurUV+0.5)/scaleV)-sunUV*scaleV-0.5;
 }
