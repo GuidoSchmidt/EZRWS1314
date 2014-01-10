@@ -1,7 +1,7 @@
 //! @file Renderer.cpp
 #include "Renderer.h"
 
-double scroll = 80.0;
+double scroll = 60.0;
 
 namespace renderer {
 
@@ -44,9 +44,8 @@ namespace renderer {
         setupShaderStages();
     
         //! \todo Loads models via utils::Importer
-        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/even_more_cubes.dae");
+        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/head.dae");
         m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
-
 
         //! \todo Load textures (should be done by the utils::importer-class) using a class that will manage textures and materials
         //! \todo Create user interface
@@ -82,106 +81,92 @@ namespace renderer {
     {
         //! Render calls here
 
-	m_scene_camera = new scene::Camera(0,"scene_camera",
-					   glm::vec3(2.0f, 2.0f, 2.0f),
-					   glm::vec3(0.0f, 0.0f, 0.0f),
-					   glm::vec3(0.0f, 1.0f, 0.0f),
-					   m_context->getSize());
+        m_scene_camera = new scene::Camera(0,"scene_camera",
+                           glm::vec3(2.0f, 2.0f, 2.0f),
+                           glm::vec3(0.0f, 0.0f, 0.0f),
+                           glm::vec3(0.0f, 1.0f, 0.0f),
+                           m_context->getSize());
 
-    std::string filename = RESOURCES_PATH;
-    filename.append("/textures/common/uv_test.jpg");
-    GLuint* texture = scene::SceneManager::instance()->loadTexture(filename);
+        //! Uniform setup
+        GLuint uniform_loc_view             = m_shaderProgram_forward->GetUniform("view");
+        GLuint uniform_loc_projection       = m_shaderProgram_forward->GetUniform("projection");
+        GLuint uniform_loc_model            = m_shaderProgram_forward->GetUniform("model");
+        GLuint uniform_loc_diffuse_color    = m_shaderProgram_forward->GetUniform("diffuse_color");
+        GLuint uniform_loc_specular_color   = m_shaderProgram_forward->GetUniform("specular_color");
+        GLuint uniform_loc_shininess        = m_shaderProgram_forward->GetUniform("shininess");
 
-	glm::vec3 camera_position = glm::vec3(1.0f);
-	float camera_speed = 0.01f;
+
+        glm::vec3 camera_position = glm::vec3(1.0f);
+        float camera_speed = 0.01f;
         while (m_context && m_context->isLive())
         {
-          glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-          //! simple camera movement
-          double mouse_x, mouse_y;
-          float  mouse_correct_x, mouse_correct_y;
-          glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
-          mouse_correct_x = ((mouse_x / m_context->getSize().x) * 2.0f) - 1.0f;
-          mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;
-          if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
-          {
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            //! simple camera movement
+            double mouse_x, mouse_y;
+            float  mouse_correct_x, mouse_correct_y;
+            glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
+            mouse_correct_x = ((mouse_x / m_context->getSize().x) * 2.0f) - 1.0f;
+            mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;
+            if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
+            {
                   m_scene_camera->Rotate(mouse_correct_x * camera_speed * 100.0f,
                                          mouse_correct_y * camera_speed * 100.0f);
-          }
-          if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
+            }
+            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
                   glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
-          {
+            {
                   m_scene_camera->MoveZ( camera_speed);
-          }
-          if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S) ||
+            }
+            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S) ||
                   glfwGetKey(m_context->getWindow(), GLFW_KEY_DOWN))
-          {
+            {
                   m_scene_camera->MoveZ(-camera_speed);
-          }
-          if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D) ||
+            }
+            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D) ||
                   glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
-          {
+            {
                   m_scene_camera->MoveX( camera_speed);
-          }
-          if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A) ||
+            }
+            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A) ||
                   glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
-          {
+            {
                   m_scene_camera->MoveX(-camera_speed);
-          }
-          if(glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
-          {
+            }
+            if(glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
+            {
               scroll = 80.0;
-          }
-          //! Field of view
-          m_scene_camera->SetFOV(scroll);
+            }
+            //! Field of view
+            m_scene_camera->SetFOV(scroll);
 
-          //! Other keyboard events
-          if (glfwGetKey(m_context->getWindow(), GLFW_KEY_R) )
-          {
+            //! Other keyboard events
+            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_R) )
+            {
                   m_shaderProgram_forward->ReloadAllShaders();
-          }
+            }
 
-          glm::mat4 view = m_scene_camera->GetViewMatrix();
-          glm::mat4 projection = m_scene_camera->GetProjectionMatrix();
-          glfwSetScrollCallback(m_context->getWindow(), ScrollCallback);
+            glm::mat4 view = m_scene_camera->GetViewMatrix();
+            glm::mat4 projection = m_scene_camera->GetProjectionMatrix();
+            glfwSetScrollCallback(m_context->getWindow(), ScrollCallback);
 
-          //! First shader program
-          m_shaderProgram_forward->Use();
+            //! First shader program
+            m_shaderProgram_forward->Use();
 
-          m_shaderProgram_forward->SetUniform("view", view);
-          m_shaderProgram_forward->SetUniform("projection", projection);
+            m_shaderProgram_forward->SetUniform(uniform_loc_view, view);
+            m_shaderProgram_forward->SetUniform(uniform_loc_projection, projection);
 
-          for(unsigned int i = 0; i < m_renderqueue.size(); i++)
-          {
-              m_shaderProgram_forward->SetUniform("model", m_renderqueue[i]->getTransform()->getModelMatrix() );
-              m_shaderProgram_forward->SetUniform("diffuse_color", *(m_renderqueue[i]->getMaterial()->getDiffuseColor()) );
-              m_shaderProgram_forward->SetUniform("specular_color", *(m_renderqueue[i]->getMaterial()->getSpecularColor()) );
-              m_shaderProgram_forward->SetUniform("shininess", m_renderqueue[i]->getMaterial()->getShininess() );
-
-              m_shaderProgram_forward->SetUniformSampler("diffuse", *m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
+            for(unsigned int i = 0; i < m_renderqueue.size(); i++)
+            {
+              m_shaderProgram_forward->SetUniform(uniform_loc_model, m_renderqueue[i]->getTransform()->getModelMatrix() );
+              m_shaderProgram_forward->SetUniform(uniform_loc_diffuse_color, *(m_renderqueue[i]->getMaterial()->getDiffuseColor()) );
+              m_shaderProgram_forward->SetUniform(uniform_loc_specular_color, *(m_renderqueue[i]->getMaterial()->getSpecularColor()) );
+              m_shaderProgram_forward->SetUniform(uniform_loc_shininess, m_renderqueue[i]->getMaterial()->getShininess() );
+              //m_shaderProgram_forward->SetUniformSampler("diffuse", *m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
               m_renderqueue[i]->drawTriangles();
-          }
+            }
 
-          m_shaderProgram_forward->Unuse();
-
-          m_context->swapBuffers();
+            m_shaderProgram_forward->Unuse();
+            m_context->swapBuffers();
         }
     }
-
-	void Renderer::doTheSunlightEffect()
-	{
-		//blur horizontally
-		blurPass->doExecute();
-		//switch fbos
-		blurPass->outputFBO = sunlightFBO2;
-		blurPass->inputFBOs[0] = sunlightFBO1;
-		blurPass->param_glowHorizontal = 0.0f;
-		//blur vertically
-		blurPass->doExecute();
-
-		//calculate the radialMask
-		maskPass->doExecute();
-		//blurredImage in sunLightFBO1;
-	}
 }

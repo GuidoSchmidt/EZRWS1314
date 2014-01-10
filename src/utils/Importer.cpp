@@ -248,14 +248,14 @@ namespace utils {
                 unsigned int texture_index;
 
                 current_material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path_diffuse);
-                GLuint* test = scene::SceneManager::instance()->loadTexture(texture_path_diffuse.C_Str());
+                int diffuse_texture = scene::SceneManager::instance()->loadTexture(texture_path_diffuse.C_Str());
 
                 //! Create new material
                 new_material = new scene::Material(material_id, // Index-number
                                                    glm::vec3(diffuse.r, // Diffuse Color
                                                              diffuse.g,
                                                              diffuse.b),
-                                                   test,
+                                                   0,
                                                    glm::vec3(specular.r,
                                                              specular.g,
                                                              specular.b),

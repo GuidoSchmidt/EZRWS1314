@@ -27,7 +27,7 @@ vec3 phong(in vec3 position, in vec4 light_positon, in vec3 normal, in vec3 diff
 
 	vec3 ambient_term  = vec3(0.05);
 
-	vec3 diffuse_term  = texture(diffuse, vsUV).rgb * cosin;
+	vec3 diffuse_term  = mix( texture(diffuse, vsUV).rgb, diffuse_color, 0.0) * cosin;
    	diffuse_term = clamp(diffuse_term, 0.0, 1.0);
 
 	vec3 specular_term = specular_color * pow(cosin, shininess);
@@ -40,7 +40,7 @@ vec3 phong(in vec3 position, in vec4 light_positon, in vec3 normal, in vec3 diff
 //*** Main *********************************************************************
 void main(void)
 {
-	vec4 lightPosition = view * vec4( 5.0, 10.0, 0.0 , 0.0);
+	vec4 lightPosition = view * vec4( -5.0, 10.0, 10.0 , 0.0);
 	vec3 shaded = phong(vsPosition, lightPosition, vsNormal, diffuse_color, specular_color, shininess);
     fragcolor = vec4(shaded, 1.0);
 }

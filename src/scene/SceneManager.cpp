@@ -14,6 +14,12 @@ namespace scene
           return &m_scene_manager;
   }
 
+  void SceneManager::init(void)
+  {
+      std::vector<GLuint*> m_texture_unit_list();
+      m_texture_unit_counter = 0;
+  }
+
   void SceneManager::addSceneNode(SceneNode* node)
   {
     m_scene_node_list.push_back(node);
@@ -38,15 +44,12 @@ namespace scene
 
   void SceneManager::addTexture(GLuint texture_unit)
   {
-      m_texture_unit_list.push_back(texture_unit);
+
   }
 
   GLuint SceneManager::getTexture(unsigned int index)
   {
-      if(index < m_texture_unit_list.size())
-      {
-          return m_texture_unit_list.at(index);
-      }
+
   }
 
   std::vector<Geometry*> SceneManager::generateRenderQueue(void)
@@ -69,16 +72,11 @@ namespace scene
     return render_queue;
   }
 
-  GLuint* SceneManager::loadTexture(std::string filename)
+  unsigned int SceneManager::loadTexture(std::string filename)
   {
-      GLuint tex_2d;
       std::cout << "    Loading " << filename << std::endl;
 
-      glActiveTexture(GL_TEXTURE0);
-      glGenTextures( 1, &tex_2d );
-      glBindTexture( GL_TEXTURE_2D, tex_2d );
-
-      tex_2d = SOIL_load_OGL_texture
+      GLuint tex2d = SOIL_load_OGL_texture
       (
           filename.c_str(),
           SOIL_LOAD_AUTO,
@@ -86,7 +84,6 @@ namespace scene
           SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
       );
 
-      m_texture_unit_list.push_back(tex_2d);
-      return &m_texture_unit_list[m_texture_unit_list.size()];
+      return m_texture_unit_counter;
   }
 }
