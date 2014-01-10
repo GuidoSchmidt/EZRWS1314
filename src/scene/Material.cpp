@@ -10,18 +10,24 @@ namespace scene
 
     Material::Material(unsigned int index,
                        glm::vec3 diffuse_color,
-                       GLuint* diffuse_tex_id,
+                       GLuint diffuse_tex_id,
                        glm::vec3 specular_color,
-                       int specular_tex_id,
-                       float specular_highlight_exponent,
-                       int normal_map_id)
+                       GLuint specular_tex_id,
+                       float specular_exponent,
+                       GLuint normal_map_id)
     {
         m_index_number      = index;
         m_diffuse_color     = diffuse_color;
         m_diffuse_map_ptr   = diffuse_tex_id;
         m_specular_color    = specular_color;
-        m_specular_highlight_exponent = specular_highlight_exponent;
-        m_normal_map_id     = normal_map_id;
+        m_specular_map_ptr  = specular_tex_id;
+        m_specular_exponent = specular_exponent;
+        m_normal_map_ptr    = normal_map_id;
+    }
+
+    unsigned int Material::getIndexNumber(void)
+    {
+        return m_index_number;
     }
 
     glm::vec3* Material::getDiffuseColor(void)
@@ -29,7 +35,7 @@ namespace scene
         return &m_diffuse_color;
     }
 
-    GLuint* Material::getDiffuseTexture(void)
+    GLuint Material::getDiffuseTexture(void)
     {
         return m_diffuse_map_ptr;
     }
@@ -39,13 +45,18 @@ namespace scene
         return &m_specular_color;
     }
 
-    unsigned int Material::getIndexNumber(void)
+    GLuint Material::getSpecularTexture(void)
     {
-        return m_index_number;
+        return m_specular_map_ptr;
     }
 
     float Material::getShininess(void)
     {
-        return m_specular_highlight_exponent;
+        return m_specular_exponent;
+    }
+
+    GLuint Material::getNormalTexture(void)
+    {
+        return m_normal_map_ptr;
     }
 }

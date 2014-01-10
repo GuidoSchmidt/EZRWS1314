@@ -19,7 +19,7 @@ namespace scene
       std::map<unsigned int, SceneNode*>  m_sceneNode_id_map;
       std::map<std::string, unsigned int> m_sceneNode_name_map;
       std::map<unsigned int, Material*>   m_material_index_map;
-      std::vector<GLuint*>                m_texture_unit_list;
+      std::vector<GLuint>                 m_texture_unit_list;
       unsigned int                        m_texture_unit_counter;
 
       //! \brief Constructor: default
@@ -53,7 +53,7 @@ namespace scene
 
       //! \brief Loads a texture from a given filepath
       //!  @return The index of the texture handle in the texture unit list
-      unsigned int loadTexture(std::string filename);
+      GLuint loadTexture(std::string filename);
   };
 }
 

@@ -72,11 +72,13 @@ namespace scene
     return render_queue;
   }
 
-  unsigned int SceneManager::loadTexture(std::string filename)
+  GLuint SceneManager::loadTexture(std::string filename)
   {
       std::cout << "    Loading " << filename << std::endl;
+      GLuint new_texture_handle;
+      m_texture_unit_list.push_back(new_texture_handle);
 
-      GLuint tex2d = SOIL_load_OGL_texture
+      m_texture_unit_list[m_texture_unit_counter] = SOIL_load_OGL_texture
       (
           filename.c_str(),
           SOIL_LOAD_AUTO,
@@ -84,6 +86,7 @@ namespace scene
           SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
       );
 
-      return m_texture_unit_counter;
+      m_texture_unit_counter++;
+      return m_texture_unit_list[m_texture_unit_counter-1];
   }
 }

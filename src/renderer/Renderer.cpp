@@ -92,8 +92,11 @@ namespace renderer {
         GLuint uniform_loc_projection       = m_shaderProgram_forward->GetUniform("projection");
         GLuint uniform_loc_model            = m_shaderProgram_forward->GetUniform("model");
         GLuint uniform_loc_diffuse_color    = m_shaderProgram_forward->GetUniform("diffuse_color");
+        GLuint uniform_loc_diffuse_tex      = m_shaderProgram_forward->GetUniform("diffuse_map");
         GLuint uniform_loc_specular_color   = m_shaderProgram_forward->GetUniform("specular_color");
+        GLuint uniform_loc_specular_tex     = m_shaderProgram_forward->GetUniform("specular_map");
         GLuint uniform_loc_shininess        = m_shaderProgram_forward->GetUniform("shininess");
+        GLuint uniform_loc_normal_tex       = m_shaderProgram_forward->GetUniform("normal_map");
 
 
         glm::vec3 camera_position = glm::vec3(1.0f);
@@ -134,7 +137,7 @@ namespace renderer {
             }
             if(glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
             {
-              scroll = 80.0;
+              scroll = 60.0;
             }
             //! Field of view
             m_scene_camera->SetFOV(scroll);
@@ -161,7 +164,9 @@ namespace renderer {
               m_shaderProgram_forward->SetUniform(uniform_loc_diffuse_color, *(m_renderqueue[i]->getMaterial()->getDiffuseColor()) );
               m_shaderProgram_forward->SetUniform(uniform_loc_specular_color, *(m_renderqueue[i]->getMaterial()->getSpecularColor()) );
               m_shaderProgram_forward->SetUniform(uniform_loc_shininess, m_renderqueue[i]->getMaterial()->getShininess() );
-              //m_shaderProgram_forward->SetUniformSampler("diffuse", *m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
+              m_shaderProgram_forward->SetUniformSampler(uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
+              m_shaderProgram_forward->SetUniformSampler(uniform_loc_specular_tex, m_renderqueue[i]->getMaterial()->getSpecularTexture(), 1);
+              m_shaderProgram_forward->SetUniformSampler(uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 2);
               m_renderqueue[i]->drawTriangles();
             }
 

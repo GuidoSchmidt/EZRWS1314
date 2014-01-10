@@ -242,26 +242,29 @@ namespace utils {
                 current_material->Get(AI_MATKEY_SHININESS, shininess);
 
 
-                //! Textures
+                //! --- Textures ---
+                //! Diffuse
                 aiString texture_path_diffuse;
-                aiTextureMapping texture_mapping;
-                unsigned int texture_index;
-
                 current_material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path_diffuse);
-                int diffuse_texture = scene::SceneManager::instance()->loadTexture(texture_path_diffuse.C_Str());
+                //! Specular
+                aiString texture_path_specular;
+                current_material->GetTexture(aiTextureType_SPECULAR, 0, &texture_path_specular);
+                //! Normal
+                aiString texture_path_normal;
+                current_material->GetTexture(aiTextureType_NORMALS, 0, &texture_path_normal);
 
                 //! Create new material
                 new_material = new scene::Material(material_id, // Index-number
                                                    glm::vec3(diffuse.r, // Diffuse Color
                                                              diffuse.g,
                                                              diffuse.b),
-                                                   0,
+                                                   scene::SceneManager::instance()->loadTexture(texture_path_diffuse.C_Str()),
                                                    glm::vec3(specular.r,
                                                              specular.g,
                                                              specular.b),
-                                                   0,
+                                                   scene::SceneManager::instance()->loadTexture(texture_path_specular.C_Str()),
                                                    shininess,
-                                                   0);
+                                                   scene::SceneManager::instance()->loadTexture(texture_path_normal.C_Str()));
 
                 //! Add material to scene manager
                 scene::SceneManager::instance()->addMaterial(new_material);
@@ -272,9 +275,10 @@ namespace utils {
                 std::cout << "      Diffuse-Color:   (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
                 std::cout << "      Diffuse-Texture: (" << texture_path_diffuse.C_Str() << ")" << std::endl;
                 std::cout << "      Specular-Color:  (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
-                //std::cout << "      Specular-Texture:(" << texture_path_specular.C_Str() << ")" << std::endl;
+                std::cout << "      Specular-Texture:(" << texture_path_specular.C_Str() << ")" << std::endl;
+                std::cout << "      Shininess:        " << shininess << std::endl;
+                std::cout << "      Normal-Texture:  (" << texture_path_normal.C_Str() << ")" << std::endl;
 
-                std::cout << "      Shininess:      " << shininess << std::endl;
             }
 		}
 	}
