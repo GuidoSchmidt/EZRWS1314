@@ -193,76 +193,64 @@ namespace renderer
 		glUseProgram(0);
 	}
 
-	void ShaderProgram::SetUniform(std::string name, const glm::mat4 &mat)
+    GLuint ShaderProgram::GetUniform(std::string uniform_name)
+    {
+        GLuint location = glGetUniformLocation(m_shaderProgram_ID, uniform_name.c_str());
+        return location;
+    }
+
+    void ShaderProgram::SetUniform(GLuint uniform_location, const glm::mat4 &mat)
 	{
-		GLint glslMatrixID = glGetUniformLocation(m_shaderProgram_ID, name.c_str());
-		glUniformMatrix4fv(glslMatrixID, 1, GL_FALSE, &mat[0][0]);
+        glUniformMatrix4fv(uniform_location, 1, GL_FALSE, &mat[0][0]);
 	}
 
-	void ShaderProgram::SetUniform(const std::string name, const glm::vec3 &vec)
+    void ShaderProgram::SetUniform(GLuint uniform_location, const glm::vec3 &vec)
 	{
-		GLint glslVectorID = glGetUniformLocation(m_shaderProgram_ID, name.c_str());
-		glUniform3f(glslVectorID, vec[0], vec[1], vec[2]);
+        glUniform3f(uniform_location, vec[0], vec[1], vec[2]);
 	}
 
-	void ShaderProgram::SetUniform(const std::string name, const glm::vec2 &vec)
+    void ShaderProgram::SetUniform(GLuint uniform_location, const glm::vec2 &vec)
 	{
-		GLint glslVectorID = glGetUniformLocation(m_shaderProgram_ID, name.c_str());
-		glUniform2f(glslVectorID, vec[0], vec[1]);
+        glUniform2f(uniform_location, vec[0], vec[1]);
 	}
 
-	void ShaderProgram::SetUniformArray3f(const std::string name, int count, GLfloat* value_ptr)
+    void ShaderProgram::SetUniformArray3f(GLuint uniform_location, int count, GLfloat* value_ptr)
 	{
-		GLint glslVectorID = glGetUniformLocation(m_shaderProgram_ID, name.c_str());
-		glUniform3fv(glslVectorID, count, value_ptr);
+        glUniform3fv(uniform_location, count, value_ptr);
 	}
 
-	void ShaderProgram::SetUniformArrayMatrix4f(const std::string name, int count, GLfloat* value_ptr)
+    void ShaderProgram::SetUniformArrayMatrix4f(GLuint uniform_location, int count, GLfloat* value_ptr)
 	{
-		GLint glslID = glGetUniformLocation(m_shaderProgram_ID, name.c_str());
-		glUniformMatrix4fv(glslID, count, false, value_ptr);
+        glUniformMatrix4fv(uniform_location, count, false, value_ptr);
 	}
 
-	void ShaderProgram::SetUniform(const std::string name, const glm::vec4 &vec)
+    void ShaderProgram::SetUniform(GLuint uniform_location, const glm::vec4 &vec)
 	{
-		GLint glslVectorID = glGetUniformLocation(m_shaderProgram_ID, name.c_str());
-		glUniform4f(glslVectorID, vec[0], vec[1], vec[2], vec[3]);
+        glUniform4f(uniform_location, vec[0], vec[1], vec[2], vec[3]);
 	}
 
-	void ShaderProgram::SetUniform(const std::string name, int val)
+    void ShaderProgram::SetUniform(GLuint uniform_location, int val)
 	{
-		GLint glslIntID = glGetUniformLocation(m_shaderProgram_ID, name.c_str());
-		glUniform1i(glslIntID, val);
+        glUniform1i(uniform_location, val);
 	}
 
-	void ShaderProgram::SetUniform(const std::string name, float val)
+    void ShaderProgram::SetUniform(GLuint uniform_location, float val)
 	{
-		GLint glslFloatID = glGetUniformLocation(m_shaderProgram_ID, name.c_str());
-		glUniform1f(glslFloatID, val);
+        glUniform1f(uniform_location, val);
 	}
 
-	void ShaderProgram::SetUniformSampler(std::string name, GLuint texture, GLint textureUnit)
+    void ShaderProgram::SetUniformSampler(GLuint uniform_location, GLuint texture, GLint textureUnit)
 	{
 		glActiveTexture(GL_TEXTURE0 + textureUnit);
 		glBindTexture(GL_TEXTURE_2D, texture);
-		int loc = glGetUniformLocation(m_shaderProgram_ID, name.c_str());
-		glUniform1i(loc, textureUnit);
+        glUniform1i(uniform_location, textureUnit);
 	}
 
-	void ShaderProgram::SetUniformSampler2DMS(std::string name, GLuint texture, GLint textureUnit)
-	{
-		glActiveTexture(GL_TEXTURE0 + textureUnit);
-		glBindTexture(GL_TEXTURE_2D_MULTISAMPLE, texture);
-		int loc = glGetUniformLocation(m_shaderProgram_ID, name.c_str());
-		glUniform1i(loc, textureUnit);
-	}
-
-	void ShaderProgram::SetUniformCubemap(std::string name, GLuint texture, GLint textureUnit)
+    void ShaderProgram::SetUniformCubemap(GLuint uniform_location, GLuint texture, GLint textureUnit)
 	{
 		glActiveTexture(GL_TEXTURE0 + textureUnit);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
-		int loc = glGetUniformLocation(m_shaderProgram_ID, name.c_str());
-		glUniform1i(loc, textureUnit);
+        glUniform1i(uniform_location, textureUnit);
 	}
 
 	void ShaderProgram::BindAttributeLocation(GLuint location, std::string name)

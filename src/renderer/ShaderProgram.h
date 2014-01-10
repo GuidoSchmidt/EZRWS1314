@@ -88,7 +88,10 @@ namespace renderer {
 			std::string Log(void);
 
 			//! \brief Returns the shader program handle
-			GLint GetHandle(void);
+            GLint GetHandle(void);
+
+            //! \brief Returns a uniform handle by its name used in the prorgam
+            GLuint GetUniform(std::string uniform_name);
 
 			//! \brief Binds an attribute location
 			void BindAttributeLocation(GLuint location, std::string name);
@@ -97,37 +100,34 @@ namespace renderer {
 			void BindFragDataLocation(GLuint location, std::string* name);
 
 			//! \brief Sets a uniform variable for a 2D vector (vec2)
-			void SetUniform(const std::string name, const glm::vec2 &vec);
+            void SetUniform(GLuint uniform_location, const glm::vec2 &vec);
 
 			//! \brief Sets a uniform variable for a 3D vector (vec3)
-			void SetUniform(const std::string name, const glm::vec3 &vec);
+            void SetUniform(GLuint uniform_location, const glm::vec3 &vec);
 
 			//! \brief Sets a uniform variable for a 4D vector (vec4)
-			void SetUniform(const std::string name, const glm::vec4 &vec);
+            void SetUniform(GLuint uniform_location, const glm::vec4 &vec);
 
 			//! \brief Sets a uniform variable for a 4x4 matrix (mat4)
-			void SetUniform(const std::string name, const glm::mat4 &mat);
+            void SetUniform(GLuint uniform_location, const glm::mat4 &mat);
 
 			//! \brief Sets a uniform variable for a float value
-			void SetUniform(const std::string name, float val);
+            void SetUniform(GLuint uniform_location, float val);
 
 			//! \brief Sets a uniform variable for an integer value
-			void SetUniform(const std::string name, int val);
+            void SetUniform(GLuint uniform_location, int val);
 
 			//! \brief Sets a uniform variable for an array of 3D-floats
-			void SetUniformArray3f(const std::string name, int count, GLfloat* value_ptr);
+            void SetUniformArray3f(GLuint uniform_location, int count, GLfloat* value_ptr);
 
 			//! \brief Sets a uniform variable for an array of 4x4 matrices
-			void SetUniformArrayMatrix4f(const std::string name, int count, GLfloat* value_ptr);
+            void SetUniformArrayMatrix4f(GLuint uniform_location, int count, GLfloat* value_ptr);
 
 			//! \brief Sets a uniform variable for a texture sampler
-			void SetUniformSampler(const std::string name, GLuint texture, int textureUnit);
-
-			//! \brief Sets a uniform variable for a texture multisample sampler
-			void SetUniformSampler2DMS(const std::string name, GLuint texture, int textureUnit);
+            void SetUniformSampler(GLuint uniform_location, GLuint texture, int textureUnit);
 
 			//! \brief Sets a uniform variable for a cube map texture
-			void SetUniformCubemap(const std::string name, GLuint texture, int textureUnit);
+            void SetUniformCubemap(GLuint uniform_location, GLuint texture, int textureUnit);
 
 			//! \brief Prints all active uniforms
 			void PrintActiveUniforms(void);
