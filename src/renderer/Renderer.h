@@ -60,6 +60,13 @@ namespace renderer {
 			CPUExtractionPass* slowExtractionPass;
 			MipMapExtractionPass* fastExtractionPass;
 			FinalPass* finalPass;
+
+
+			scene::Geometry* skyNode;
+			scene::Geometry* shipBot;
+			scene::Geometry* shipTop;
+			scene::Geometry* shipSails;
+			scene::Geometry* shipStuff;
             //PhongPass* phong1
 
 			//Rocket::Core::Context* context;

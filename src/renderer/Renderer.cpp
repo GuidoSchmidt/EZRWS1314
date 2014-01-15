@@ -43,8 +43,15 @@ namespace renderer {
     
         //! \todo Loads models via utils::Importer
         //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
-		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/baum_test.obj");
-		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/head.obj");
+		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/baum_test.obj");
+		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/sky.obj");
+		skyNode = utils::Importer::instance()->getGeometryNode(0);
+		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/ship.obj");
+		shipSails = utils::Importer::instance()->getGeometryNode(1);
+		shipBot= utils::Importer::instance()->getGeometryNode(2);
+		shipTop = utils::Importer::instance()->getGeometryNode(3);
+		shipStuff = utils::Importer::instance()->getGeometryNode(4);
+
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/baum_test.dae");
         //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
 
@@ -140,9 +147,13 @@ namespace renderer {
 		sunSpeed = 1000.0;
 		sunRadius = 100.0;
 		sunAngle = 0.0;
-		GLuint textureUV = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/common/uv_test.jpg", true);
+		//GLuint textureUV = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/common/uv_test.jpg", true);
 		GLuint leaf_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Leaf08.png", true);
-		GLuint head_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/head.jpg", true);
+		GLuint sails_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/ship/sails.jpg", true);
+		GLuint bot_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/ship/bot.jpg", true);
+		GLuint top_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/ship/top.jpg", true);
+		GLuint stuff_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/ship/stuff.tga", true);
+		//GLuint head_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/head.jpg", true);
 		//GLuint texture_handle2 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/sky_test.jpg");
 		GLuint trunk_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Wood01.png",true);
 		GLuint sky_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/beach_small.jpg",true);
@@ -151,15 +162,15 @@ namespace renderer {
 		GLuint ldr_reflective_cube = utils::Importer::instance()->loadCubeMap(RESOURCES_PATH "/textures/ldr-cross/beach_small_reflective_cross", false);
 
         //! Render calls here
-		scene::Geometry* suzanne = utils::Importer::instance()->getGeometryNode(0); // suzanne
-		scene::Geometry* sky = utils::Importer::instance()->getGeometryNode(1);
-		scene::Geometry* trunk = utils::Importer::instance()->getGeometryNode(2);
-		scene::Geometry* trunk2 = utils::Importer::instance()->getGeometryNode(3); 
-		scene::Geometry* leafs = utils::Importer::instance()->getGeometryNode(4);
-		scene::Geometry* head = utils::Importer::instance()->getGeometryNode(25);
+		//scene::Geometry* suzanne = utils::Importer::instance()->getGeometryNode(0); // suzanne
+		//scene::Geometry* sky = utils::Importer::instance()->getGeometryNode(1);
+		//scene::Geometry* trunk = utils::Importer::instance()->getGeometryNode(2);
+		//scene::Geometry* trunk2 = utils::Importer::instance()->getGeometryNode(3); 
+		//scene::Geometry* leafs = utils::Importer::instance()->getGeometryNode(4);
+		//scene::Geometry* head = utils::Importer::instance()->getGeometryNode(25);
 
 
-		glm::mat4 model = sky->getTransform()->getModelMatrix();
+		glm::mat4 model = skyNode->getTransform()->getModelMatrix();
 
 		scene::Camera* camera0 = new scene::Camera("scene_camera",	
 													glm::vec3(0.0f, 10.0f, -20.0f),
@@ -230,17 +241,24 @@ namespace renderer {
 					m_shaderProgram_forward->SetUniformCubemap("diffuse_cube", ldr_diffuse_cube, 1);
 					m_shaderProgram_forward->SetUniformCubemap("reflective_cube", ldr_reflective_cube, 2);
 					m_shaderProgram_forward->SetUniformSampler("material_texture", leaf_tex, 0);
-					leafs->drawTriangles();
-					m_shaderProgram_forward->SetUniformSampler("material_texture", trunk_tex, 0);
-					trunk->drawTriangles();
-					trunk2->drawTriangles();
-					suzanne->drawTriangles();
+					//leafs->drawTriangles();
+					m_shaderProgram_forward->SetUniformSampler("material_texture", bot_tex, 0);
+					shipBot->drawTriangles();
+					m_shaderProgram_forward->SetUniformSampler("material_texture", top_tex, 0);
+					shipTop->drawTriangles();
+					m_shaderProgram_forward->SetUniformSampler("material_texture", stuff_tex, 0);
+					shipStuff->drawTriangles();
+					m_shaderProgram_forward->SetUniformSampler("material_texture", sails_tex, 0);
+					shipSails->drawTriangles();
 					//trunk->drawTriangles();
-					m_shaderProgram_forward->SetUniformSampler("material_texture", head_tex, 0);
-					head->drawTriangles();
+					//trunk2->drawTriangles();
+					//suzanne->drawTriangles();
+					//trunk->drawTriangles();
+					//m_shaderProgram_forward->SetUniformSampler("material_texture", head_tex, 0);
+					//head->drawTriangles();
 					m_shaderProgram_forward->SetUniform("sky", 1.0f);
 					m_shaderProgram_forward->SetUniformSampler("material_texture", sky_tex, 0);
-					sky->drawTriangles();
+					skyNode->drawTriangles();
 					//render sky
 
 			    m_shaderProgram_forward->Unuse();

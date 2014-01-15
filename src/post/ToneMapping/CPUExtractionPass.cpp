@@ -1,4 +1,6 @@
 #include "CPUExtractionPass.h"
+#include <math.h>
+#include <stdlib.h>
 
 
 CPUExtractionPass::CPUExtractionPass(SlimQuad* pQuad, int pWidth, int pHeight)
@@ -39,7 +41,7 @@ void CPUExtractionPass::doExecute() {
 	
 	int b;
 	float max = 0;
-	float min = INFINITY;
+	float min = std::numeric_limits<float>::max();
 	float av = 0;
 	GLfloat lum;
 	//TODO pragma 

@@ -74,7 +74,7 @@ void main()
 	//colorOut = reinhard(texture(topLeft,UV)+texture(lowerRight,UV));
 	//colorOut = texture(topLeft,UV);
 	// colorOut = mix(texture(topLefgdt,UV),texture(lowerRight,UV),bloom_luminance);
-	colorOut = reinhard(texture(topLeft,UV));//+texture(topLeft,UV)); 
+	colorOut = reinhard(texture(topLeft,UV))+reinhard(texture(lowerRight,UV)); 
 	//colorOut = texture(lowerRight,UV)+texture(topLeft,UV); 
 
 

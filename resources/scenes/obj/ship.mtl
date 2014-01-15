@@ -1,0 +1,42 @@
+# Blender MTL File: 'ship.blend'
+# Material Count: 4
+
+newmtl material_0.56
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks -1.000000 -1.000000 -1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Andi\\Dropbox\\EZR-Documents\\Test Model Krams Gedöns\\Beach\\tex\\T_BoatTop_D.jpg
+
+newmtl material_1.6
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd C:\\Users\\Andi\\Dropbox\\EZR-Documents\\Test Model Krams Gedöns\\Beach\\tex\\T_Sails_D.jpg
+
+newmtl material_2.5
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks -1.000000 -1.000000 -1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Andi\\Dropbox\\EZR-Documents\\Test Model Krams Gedöns\\Beach\\tex\\MerchantShip_Buoy_D.jpg
+
+newmtl material_3.2
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks -1.000000 -1.000000 -1.000000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\\Users\\Andi\\Dropbox\\EZR-Documents\\Test Model Krams Gedöns\\Beach\\tex\\T_BoatBottom_D.jpg
