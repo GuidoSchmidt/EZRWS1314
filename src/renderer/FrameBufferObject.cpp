@@ -21,7 +21,6 @@ namespace renderer {
         m_attachmentCounter = 0;
         glGenFramebuffers(1, &m_FBO_ID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_FBO_ID);
-        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     FrameBufferObject::~FrameBufferObject()
