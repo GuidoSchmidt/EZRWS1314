@@ -12,7 +12,7 @@ namespace scene {
 	class Transform
 	{
 		private:
-			glm::vec3 m_translation;
+            glm::vec3 m_position;
 			glm::quat m_rotation;
 			glm::vec3 m_scale;
 
@@ -29,7 +29,7 @@ namespace scene {
 			~Transform(void);
 
 			//! \brief Returns the translation
-			glm::vec3 getTranslation(void);
+            glm::vec3 getPosition(void);
 
 			//! \brief Returns the rotation
 			glm::quat getRotation(void);
@@ -48,6 +48,9 @@ namespace scene {
 
 			//! \brief Sets the scale
 			void setScale(const glm::vec3 scale);
+
+            //! \brief Translates the transform
+            void translate(float x, float y, float z);
 
 			static glm::quat axelAngusToQuat (const double angle, const glm::vec3 axis);
 			static double	 angleFromQuat (const glm::quat q);

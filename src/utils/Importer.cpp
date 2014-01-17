@@ -26,6 +26,7 @@ namespace utils {
 		if(!m_aiScene)
 		{
 			std::cerr << "ERROR (Importer): Scene was not successfully loaded!" << std::endl;
+            std::cerr << m_aiImporter.GetErrorString() << std::endl;
 		}
 		else
 		{
@@ -96,6 +97,15 @@ namespace utils {
 		//! ------ Lights ------------------------------------------
 		if (m_aiScene->HasLights())
 		{
+            //! Helper array to print light types to string
+            const char* light_type_str[] = {
+                "UNDEFINED",
+                "DIRECTIONAL",
+                "POINT",
+                "SPOT"
+            };
+
+            scene::Light* new_light;
 			//! Process lights
 			for (unsigned int light_id = 0; light_id < m_aiScene->mNumLights; light_id++)
 			{
@@ -105,22 +115,32 @@ namespace utils {
 				aiString name = current_light->mName;
 
 				//! Position & orientation
-				aiVector3D position  = current_light->mPosition;
-				aiVector3D direction = current_light->mDirection;
+                //! \todo blender currently has problems exporting the lights position
+                aiVector3D position         = current_light->mPosition;
+                position.x                  = 0.0;
+                position.y                  = 4.0;
+                position.z                  = 5.0;
+                aiVector3D direction        = current_light->mDirection;
+                aiLightSourceType lighttype = current_light->mType;
+                aiColor3D color             = current_light->mColorAmbient;
 
-				//! Colors
-				aiColor3D ambient  = current_light->mColorAmbient;
-				aiColor3D diffuse  = current_light->mColorDiffuse;
-				aiColor3D specular = current_light->mColorSpecular;
+                new_light = new scene::Light(light_id,
+                                             name.C_Str(),
+                                             scene::Transform( glm::vec3(position.x, position.y, position.z),
+                                                               glm::quat(1.0f, glm::vec3(direction.x, direction.y, direction.z) ),
+                                                               glm::vec3(1.0) ),
+                                             glm::vec3(color.r, color.g, color.b), 1.0f);
 
-				//! Log
+                //! Add to scene manager
+                scene::SceneManager::instance()->addLight(new_light);
+
+                //! Log
 				std::cout << "\n  * Light: " << light_id << std::endl;
 				std::cout << "    Name: " << name.C_Str() << std::endl;
+                std::cout << "    Type: " << light_type_str[lighttype] << std::endl;
 				std::cout << "    Position  (" << position.x << ", " << position.y << ", " << position.z << ")" << std::endl;
 				std::cout << "    Direction (" << direction.x << ", " << direction.y << ", " << direction.z << ")" << std::endl;
-				std::cout << "    Color Ambient:  (" << ambient.r << ", " << ambient.g << ", " << ambient.b << ")" << std::endl;
-				std::cout << "    Color Diffuse:  (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
-				std::cout << "    Color Specular: (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
+                std::cout << "    Color:    (" << color.r << ", " << color.g << ", " << color.b << ")" << std::endl;
 			}
 		}
 

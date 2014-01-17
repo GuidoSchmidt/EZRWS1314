@@ -18,6 +18,7 @@
 #include "../post/FinalPass.h"
 #include "../post/PhongPass.h"
 #include "../utils/Importer.h"
+#include "../utils/FullscreenTriangle.h"
 
 namespace renderer {		
 	//! @class Renderer
@@ -29,10 +30,15 @@ namespace renderer {
 			double m_current_time, m_previous_time;
 
 			Context* m_context;
-			ShaderProgram* m_shaderProgram_forward;
+            //! Shader programs
+            ShaderProgram* m_shaderProgram_forward;
+            ShaderProgram* m_shaderProgram_compositing;
+            //! Framebuffer objects
+            FrameBufferObject* m_fbo;
 
+            //! Scene
+            utils::FullscreenTriangle* m_fullscreen_triangle;
 			scene::Camera* m_scene_camera;
-
 			std::vector<scene::Geometry*> m_renderqueue;
 
 			SlimQuad* fsq;

@@ -31,46 +31,46 @@ namespace renderer {
 
         public:
 			//! \brief Constructor
-            FrameBufferObject(int width, int height, bool gBuffer);
+            FrameBufferObject(int width, int height);
             
 			//! \brief Destructor
 			~FrameBufferObject();
 
 			//! \brief Adds a color attachment
-            void AddColorAttachment(int textureUnit);
+            void addColorAttachment(int textureUnit);
 
 			//! \brief Adds a depth buffer attachment
-			void AddDepthAttachment_Buffer();
+            void addDepthAttachment_Buffer();
 
 			//! \brief Adds a depth texture attachment
-            void AddDepthAttachment_Texture(int textureUnit);
+            void addDepthAttachment_Texture(int textureUnit);
 
 			//! \brief Adds a multi-sample-texture attachment
-            void AddDepthAttachment_MultisampleTexture(int textureUnit);
+            void addDepthAttachment_MultisampleTexture(int textureUnit);
 
 			//! \brief Creates a G-Buffer
-            void CreateGBuffer(void);
+            void createGBuffer(void);
 
 			//! \brief Creates the needed buffers
-            void CreateBuffers(int count);
+            void createBuffers(int count);
 
 			//! \brief Activates the framebuffer object for use
-            void Use(void);
+            void use(void);
 
 			//! \brief Deactivates the framebuffer object from use
-			void Unuse(void);
+            void unuse(void);
 
 			//! \brief Returns a texture handle for a given attachment number
-            GLuint GetTexture(unsigned int index);
+            GLuint getTexture(unsigned int index);
 
 			//! \brief Returns a texture handle for the attached depth texture attachment
-			GLuint GetDepthTexture(void);
+            GLuint getDepthTexture(void);
 
 			//! \brief Returns a texture handle for the given depth multisample texture attachment
-            GLuint GetDepthMSTexture(void);
+            GLuint getDepthMSTexture(void);
 
 			//! \brief Returns the count of render targets
-            int GetRenderTargetCount(void);
+            int getRenderTargetCount(void);
     };
 }
 #endif //FRAMEBUFFEROBJECT_H

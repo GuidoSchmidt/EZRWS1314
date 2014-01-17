@@ -42,14 +42,14 @@ namespace scene
       m_material_index_map[material->getIndexNumber()] = material;
   }
 
-  void SceneManager::addTexture(GLuint texture_unit)
+  void SceneManager::addLight(Light* light)
   {
-
+      m_light_index_map[light->getID()] = light;
   }
 
-  GLuint SceneManager::getTexture(unsigned int index)
+  Light* SceneManager::getLight(unsigned int id)
   {
-
+      return m_light_index_map.at(id);
   }
 
   std::vector<Geometry*> SceneManager::generateRenderQueue(void)

@@ -9,6 +9,7 @@
 #include "../scene/Camera.h"
 #include "../scene/Geometry.h"
 #include "../scene/Material.h"
+#include "../scene/Light.h"
 
 #include <glm/gtx/quaternion.hpp>
 #include <assimp/Importer.hpp>

@@ -413,7 +413,7 @@ namespace scene {
 
     void Geometry::applyTransform(scene::Transform& t)
 	{
-		m_transform.setPosition(t.getTranslation());
+        m_transform.setPosition(t.getPosition());
 		m_transform.setRotation(t.getRotation());
 	}
 

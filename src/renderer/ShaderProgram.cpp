@@ -93,11 +93,11 @@ namespace renderer
 
 		std::cout << "\n-- SHADER PROGRAMM LOG --------------------------------------------------\n";
 
-		AddShader(shaderType0, m_shader_sources[0]);
-		AddShader(shaderType1, m_shader_sources[1]);
+		addShader(shaderType0, m_shader_sources[0]);
+		addShader(shaderType1, m_shader_sources[1]);
 		glAttachShader(m_shaderProgram_ID, m_shader_IDs[0]);
 		glAttachShader(m_shaderProgram_ID, m_shader_IDs[1]);
-		Link();
+		link();
 
 		std::cout << "\n";
 	}
@@ -107,7 +107,7 @@ namespace renderer
 
 	}
 
-	void ShaderProgram::AddShader(GLSL::GLSLShaderType shaderType, std::string filename)
+	void ShaderProgram::addShader(GLSL::GLSLShaderType shaderType, std::string filename)
 	{
 		GLint Shader_ID;
 
@@ -138,7 +138,7 @@ namespace renderer
 		m_shader_IDs.push_back(Shader_ID);
 	}
 
-	void ShaderProgram::ReloadAllShaders(void)
+	void ShaderProgram::reloadAllShaders(void)
 	{
 		for(unsigned int i=0; i < m_shader_sources.size(); i++)
 		{
@@ -148,20 +148,20 @@ namespace renderer
 			glCompileShader(m_shader_IDs[i]);
 			GLSL::PrintShaderInfoLog(m_shader_IDs[i]);
 		}
-		Link();
+		link();
 	}
 
-	void ShaderProgram::ReloadShader(int i)
+	void ShaderProgram::reloadShader(int i)
 	{
 		std::string shaderSource = GLSL::ReadShaderSource(m_shader_sources[i]);
 		const char* shaderSourcePointer = shaderSource.c_str();
 		glShaderSource(m_shader_IDs[i], 1, &shaderSourcePointer, NULL);
 		glCompileShader(m_shader_IDs[i]);
 		GLSL::PrintShaderInfoLog(m_shader_IDs[i]);
-		Link();
+		link();
 	}
 
-	void ShaderProgram::Link(void)
+	void ShaderProgram::link(void)
 	{
 		glLinkProgram(m_shaderProgram_ID);
 
@@ -174,91 +174,91 @@ namespace renderer
 		}
 		else{
 			std::cout << "Successfully linked shader program." << std::endl;
-			PrintActiveUniforms();
+			printActiveUniforms();
 			m_islinked = true;
 		}
 	}
 
-	bool ShaderProgram::IsLinked(void)
+	bool ShaderProgram::isLinked(void)
 	{
 		return m_islinked;
 	}
 
-	void ShaderProgram::Use(void)
+	void ShaderProgram::use(void)
 	{
 		glUseProgram(m_shaderProgram_ID);
 	}
 
-	void ShaderProgram::Unuse(void){
+	void ShaderProgram::unuse(void){
 		glUseProgram(0);
 	}
 
-    GLuint ShaderProgram::GetUniform(std::string uniform_name)
+    GLuint ShaderProgram::getUniform(std::string uniform_name)
     {
         GLuint location = glGetUniformLocation(m_shaderProgram_ID, uniform_name.c_str());
         return location;
     }
 
-    void ShaderProgram::SetUniform(GLuint uniform_location, const glm::mat4 &mat)
+    void ShaderProgram::setUniform(GLuint uniform_location, const glm::mat4 &mat)
 	{
         glUniformMatrix4fv(uniform_location, 1, GL_FALSE, &mat[0][0]);
 	}
 
-    void ShaderProgram::SetUniform(GLuint uniform_location, const glm::vec3 &vec)
+    void ShaderProgram::setUniform(GLuint uniform_location, const glm::vec3 &vec)
 	{
         glUniform3f(uniform_location, vec[0], vec[1], vec[2]);
 	}
 
-    void ShaderProgram::SetUniform(GLuint uniform_location, const glm::vec2 &vec)
+    void ShaderProgram::setUniform(GLuint uniform_location, const glm::vec2 &vec)
 	{
         glUniform2f(uniform_location, vec[0], vec[1]);
 	}
 
-    void ShaderProgram::SetUniformArray3f(GLuint uniform_location, int count, GLfloat* value_ptr)
+    void ShaderProgram::setUniformArray3f(GLuint uniform_location, int count, GLfloat* value_ptr)
 	{
         glUniform3fv(uniform_location, count, value_ptr);
 	}
 
-    void ShaderProgram::SetUniformArrayMatrix4f(GLuint uniform_location, int count, GLfloat* value_ptr)
+    void ShaderProgram::setUniformArrayMatrix4f(GLuint uniform_location, int count, GLfloat* value_ptr)
 	{
         glUniformMatrix4fv(uniform_location, count, false, value_ptr);
 	}
 
-    void ShaderProgram::SetUniform(GLuint uniform_location, const glm::vec4 &vec)
+    void ShaderProgram::setUniform(GLuint uniform_location, const glm::vec4 &vec)
 	{
         glUniform4f(uniform_location, vec[0], vec[1], vec[2], vec[3]);
 	}
 
-    void ShaderProgram::SetUniform(GLuint uniform_location, int val)
+    void ShaderProgram::setUniform(GLuint uniform_location, int val)
 	{
         glUniform1i(uniform_location, val);
 	}
 
-    void ShaderProgram::SetUniform(GLuint uniform_location, float val)
+    void ShaderProgram::setUniform(GLuint uniform_location, float val)
 	{
         glUniform1f(uniform_location, val);
 	}
 
-    void ShaderProgram::SetUniformSampler(GLuint uniform_location, GLuint texture, GLint textureUnit)
+    void ShaderProgram::setUniformSampler(GLuint uniform_location, GLuint texture, GLint textureUnit)
 	{
 		glActiveTexture(GL_TEXTURE0 + textureUnit);
 		glBindTexture(GL_TEXTURE_2D, texture);
         glUniform1i(uniform_location, textureUnit);
 	}
 
-    void ShaderProgram::SetUniformCubemap(GLuint uniform_location, GLuint texture, GLint textureUnit)
+    void ShaderProgram::setUniformCubemap(GLuint uniform_location, GLuint texture, GLint textureUnit)
 	{
 		glActiveTexture(GL_TEXTURE0 + textureUnit);
 		glBindTexture(GL_TEXTURE_CUBE_MAP, texture);
         glUniform1i(uniform_location, textureUnit);
 	}
 
-	void ShaderProgram::BindAttributeLocation(GLuint location, std::string name)
+	void ShaderProgram::bindAttributeLocation(GLuint location, std::string name)
 	{
 		glBindAttribLocation(m_shaderProgram_ID, location, name.c_str());
 	}
 
-	void ShaderProgram::PrintActiveAttributes(void)
+	void ShaderProgram::printActiveAttributes(void)
 	{
 		if(!m_activeAttributesWritten){
 			GLint maxLength, nAttributes;
@@ -281,7 +281,7 @@ namespace renderer
 		}
 	}
 
-	void ShaderProgram::PrintActiveUniforms(void)
+	void ShaderProgram::printActiveUniforms(void)
 	{
 		if(!m_activeUniformsWritten){
 			GLint maxLength, nUniforms;
@@ -304,7 +304,7 @@ namespace renderer
 		}
 	}
 
-	GLint ShaderProgram::GetHandle(void)
+	GLint ShaderProgram::getHandle(void)
 	{
 		return m_shaderProgram_ID;
 	}

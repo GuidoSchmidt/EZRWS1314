@@ -1,5 +1,5 @@
 //FRAGMENT SHADER
-#version 400
+#version 330
 
 //*** Uniform block definitions ************************************************
 
@@ -20,6 +20,9 @@ uniform vec3 specular_color;
 uniform sampler2D specular_map;
 uniform float shininess;
 uniform sampler2D normal_map;
+uniform vec3 light_positon;
+uniform vec3 light_color;
+uniform vec2 mouse;
 
 //*** Functions ****************************************************************
 // Normal mapping: calculate cotangents
@@ -62,10 +65,10 @@ vec3 phong(in vec3 position, in vec4 light_positon, in vec3 normal, in vec3 diff
 
 	vec3 ambient_term  = vec3(0.05);
 
-	vec3 diffuse_term  = texture(diffuse_map, vsUV).rgb * diffuse_color * cosin;
+	vec3 diffuse_term  = texture(diffuse_map, vsUV).rgb * cosin;
    	diffuse_term = clamp(diffuse_term, 0.0, 1.0);
 
-	vec3 specular_term = texture(specular_map, vsUV).rgb * specular_color * pow(cosin, shininess);
+	vec3 specular_term = texture(specular_map, vsUV).rgb * pow(cosin, shininess);
    	specular_term = clamp(specular_term, 0.0, 1.0); 
 
 	vec3 shaded = ambient_term + diffuse_term + specular_term;
@@ -80,7 +83,9 @@ void main(void)
   	vec3 vsPN = perturb_normal(vsN, vsV, vsUV);
 	vec3 normal = vsPN;
 	
-	vec4 lightPosition = view * vec4( 0.0, 10.0, 5.0 , 0.0);
+	vec3 lightpos = light_positon;
+	lightpos.y += mouse.y * 100.0;
+	vec4 lightPosition = view * vec4( lightpos , 1.0);
 	vec3 shaded = phong(vsPosition, lightPosition, normal, diffuse_color, specular_color, shininess);
 
     fragcolor = vec4(shaded, 1.0);

@@ -5,8 +5,10 @@
 #define SCENEMANAGER_H
 
 #include "SceneNode.h"
-#include "Geometry.h"
 #include "Camera.h"
+#include "Geometry.h"
+#include "Light.h"
+
 #include <map>
 #include <SOIL/SOIL.h>
 
@@ -21,6 +23,7 @@ namespace scene
       std::map<unsigned int, Material*>   m_material_index_map;
       std::vector<GLuint>                 m_texture_unit_list;
       unsigned int                        m_texture_unit_counter;
+      std::map<unsigned int, Light*>      m_light_index_map;
 
       //! \brief Constructor: default
       SceneManager();
@@ -47,6 +50,12 @@ namespace scene
 
       //! \brief Adds a texture
       void addTexture(GLuint texture_unit);
+
+      //! \brief Adds a light source
+      void addLight(Light* light);
+
+      //! \brief Returns a light source by its id
+      Light* getLight(unsigned int id);
 
       //! \brief Returns a texture handle by its index
       GLuint getTexture(unsigned int index);
