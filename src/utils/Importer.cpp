@@ -117,9 +117,9 @@ namespace utils {
 				//! Position & orientation
                 //! \todo blender currently has problems exporting the lights position
                 aiVector3D position         = current_light->mPosition;
-                position.x                  = 0.0;
-                position.y                  = 4.0;
-                position.z                  = 5.0;
+                position.x                  =   0.0;
+                position.y                  =   4.0;
+                position.z                  = -15.0;
                 aiVector3D direction        = current_light->mDirection;
                 aiLightSourceType lighttype = current_light->mType;
                 aiColor3D color             = current_light->mColorAmbient;

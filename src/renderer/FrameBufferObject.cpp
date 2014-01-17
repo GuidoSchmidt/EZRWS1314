@@ -8,6 +8,12 @@
 
 namespace renderer {
 
+	//! \todo overwork framebuffer object class
+	/*!
+		texture settings?
+		better attachment handling?
+		draw buffers?
+	*/
     FrameBufferObject::FrameBufferObject(int width, int height)
     {
         m_width = width;
@@ -15,7 +21,7 @@ namespace renderer {
         m_attachmentCounter = 0;
         glGenFramebuffers(1, &m_FBO_ID);
         glBindFramebuffer(GL_FRAMEBUFFER, m_FBO_ID);
-        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+        //glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     FrameBufferObject::~FrameBufferObject()
@@ -61,7 +67,7 @@ namespace renderer {
         glActiveTexture(GL_TEXTURE0 + textureUnit);
         glGenTextures(1, &renderTexture);
         glBindTexture(GL_TEXTURE_2D, renderTexture);
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, m_width, m_height, 0, GL_RGBA, GL_FLOAT, NULL);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, m_width, m_height, 0, GL_RGBA, GL_FLOAT, NULL);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         //! Bind texture to color attachment point
@@ -121,7 +127,7 @@ namespace renderer {
     void FrameBufferObject::use(void)
     {
         glBindFramebuffer(GL_FRAMEBUFFER, m_FBO_ID);
-        glDrawBuffers(1, &m_drawBuffers.at(0));
+        glDrawBuffers(3, &m_drawBuffers.at(0));
         glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, m_depthTexture, 0);
     }
 

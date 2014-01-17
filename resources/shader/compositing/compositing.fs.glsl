@@ -2,6 +2,10 @@
 #version 330
 
 //*** Uniform block definitions ************************************************
+uniform lightBlock {
+    vec3      lightPosition;
+    sampler2D shadowMap;
+}
 
 //*** Input ********************************************************************
 in vec2 vsUV;
@@ -18,5 +22,5 @@ uniform sampler2D lightedMap;
 //*** Main *********************************************************************
 void main(void)
 {
-    fragcolor = texture(shadowMap, vsUV) * texture(lightedMap, vsUV);
+    fragcolor = texture(lightedMap, vsUV);
 }

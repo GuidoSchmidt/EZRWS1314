@@ -219,8 +219,10 @@ namespace renderer {
             //! ### FULLSCREEN TRIANGLE ########################################
             m_shaderProgram_compositing->use();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+			
             //! \todo 15.01.14 FBO-textures does not work yet
+			glBindTexture(GL_TEXTURE_2D, m_fbo->getTexture(0));
+			glActiveTexture(GL_TEXTURE0);
             m_shaderProgram_compositing->setUniformSampler(compositing_uniform_loc_lightedMap, m_fbo->getTexture(0), 0);
             m_shaderProgram_compositing->setUniformSampler(compositing_uniform_loc_shadowMap, scene::SceneManager::instance()->getLight(0)->getShadowMap(), 1);
 
