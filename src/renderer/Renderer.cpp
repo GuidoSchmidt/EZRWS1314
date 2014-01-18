@@ -189,7 +189,6 @@ namespace renderer {
             //! First shader program:
             //! ### GEOMETRY RENDER ############################################
             m_shaderProgram_forward->use();
-            m_fbo->use();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             glViewport(0, 0, m_context->getSize().x, m_context->getSize().y);
@@ -212,11 +211,10 @@ namespace renderer {
             }
 
             m_shaderProgram_forward->unuse();
-            m_fbo->unuse();
-
 
             //! Second shader program:
             //! ### FULLSCREEN TRIANGLE ########################################
+            /*
             m_shaderProgram_compositing->use();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			
@@ -230,6 +228,7 @@ namespace renderer {
             //m_renderqueue[0]->drawTriangles();
 
             m_shaderProgram_compositing->unuse();
+            */
 
             //! Swap buffers
             m_context->swapBuffers();
