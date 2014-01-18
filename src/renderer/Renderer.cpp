@@ -73,6 +73,8 @@ namespace renderer {
 		sunlightFBO3 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 		sunlightFBO4 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 
+		compositingFBO = new SlimFBO(WIDTH, HEIGHT, 1, false);
+
 		downsampledExtractionFBO = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 
 		//now the render passses!
@@ -90,13 +92,18 @@ namespace renderer {
 		luminancePass->outputFBO = sunlightFBO4;
 		luminancePass->inputFBOs.push_back(sunlightFBO3);
 
+		compositingPass = new CompositingPass(fsq, WIDTH, HEIGHT);
+		compositingPass->outputFBO = compositingFBO;
+		compositingPass->inputFBOs.push_back(gBuffer);
+		compositingPass->inputFBOs.push_back(sunlightFBO4);
+
 
 		slowExtractionPass = new CPUExtractionPass(fsq, WIDTH, HEIGHT);
-		slowExtractionPass->inputFBOs.push_back(gBuffer);
+		slowExtractionPass->inputFBOs.push_back(compositingFBO);
 		slowExtractionPass->inputFBOs.push_back(downsampledExtractionFBO);
 
 		fastExtractionPass = new MipMapExtractionPass(fsq, WIDTH, HEIGHT);
-		fastExtractionPass->inputFBOs.push_back(gBuffer);
+		fastExtractionPass->inputFBOs.push_back(compositingFBO);
 
 		extractionPass = fastExtractionPass;
 
@@ -227,7 +234,7 @@ namespace renderer {
 					switchExtractionStrategy();
 				}
 				glm::mat4 view = camera0->GetViewMatrix();
-
+				
 
 				//! First shader program
 				m_shaderProgram_forward->Use();
@@ -277,6 +284,8 @@ namespace renderer {
 			doTheSunlightEffect();
 			double time2 = glfwGetTime() - time1; //< 1ms naaaiisee
 
+			compositingPass->doExecute();
+
 			time1 = glfwGetTime();
 			//fastExtractionPass->inputTexture = textureUV;
 			extractionPass->doExecute();
@@ -284,15 +293,10 @@ namespace renderer {
 
 
 
-			MipMapExtractionPass* ex = dynamic_cast<MipMapExtractionPass*>(extractionPass);
-			if (ex != 0) 
-				finalPass->minAveMaxTexture = ex->outputTexture;
+			if (finalPass->param_fastExtraction == 0.0f)
+				finalPass->param_minAveMax = glm::vec3(slowExtractionPass->image_min, slowExtractionPass->image_average, slowExtractionPass->image_max);
 			else
-			{
-				CPUExtractionPass* ex = dynamic_cast<CPUExtractionPass*>(extractionPass);
-				if (ex != 0)
-					finalPass->param_minAveMax = glm::vec3(ex->image_min, ex->image_average, ex->image_max);	
-			}
+				finalPass->minAveMaxTexture = fastExtractionPass->outputTexture;
 
 			finalPass->doExecute();
 

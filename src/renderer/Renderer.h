@@ -16,6 +16,7 @@
 #include "../post/Sunlight/RadialGlowMaskPass.h"
 #include "../post/Sunlight/RadialLuminancePass.h"
 #include "../post/ToneMapping/CPUExtractionPass.h"
+#include "../post/CompositingPass.h"
 #include "../post/ToneMapping/MipMapExtractionPass.h"
 #include "../post/FinalPass.h"
 #include "../post/PhongPass.h"
@@ -42,6 +43,8 @@ namespace renderer {
 			SlimFBO* sunlightFBO3;
 			SlimFBO* sunlightFBO4;
 
+			SlimFBO* compositingFBO;
+
 
 			SlimFBO* downsampledExtractionFBO;
 
@@ -55,6 +58,7 @@ namespace renderer {
 			SeparatedBlurPass* blurPass;
 			RadialGlowMaskPass* maskPass;
 			RadialLuminancePass* luminancePass;
+			CompositingPass* compositingPass;
 
 			ISlimRenderPass* extractionPass;
 			CPUExtractionPass* slowExtractionPass;

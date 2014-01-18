@@ -56,14 +56,14 @@ void main()
 	else
 		minAveMax = texture(minAveMaxTexture,vec2(0.0,0.0)).rgb; 
 
-	// if (gl_FragCoord.x < screenSize.x/2 && gl_FragCoord.y > screenSize.y/2 )
-	// 	colorOut = reinhard(texture(topLeft,UV*2-vec2(0,1)));
-	// else if (gl_FragCoord.x > screenSize.x/2 && gl_FragCoord.y > screenSize.y/2 )
-	// 	colorOut = reinhard(texture(topRight,UV*2-vec2(1,1)));
-	// else if (gl_FragCoord.x > screenSize.x/2 && gl_FragCoord.y < screenSize.y/2 )
-	// 	colorOut = reinhard(texture(lowerRight,UV*2-vec2(1,0)));
-	// else if (gl_FragCoord.x < screenSize.x/2 && gl_FragCoord.y < screenSize.y/2 )
-	// 	colorOut = reinhard(texture(lowerLeft,UV*2));
+	if (gl_FragCoord.x < screenSize.x/2 && gl_FragCoord.y > screenSize.y/2 )
+		colorOut = reinhard(texture(topLeft,UV*2-vec2(0,1)));
+	else if (gl_FragCoord.x > screenSize.x/2 && gl_FragCoord.y > screenSize.y/2 )
+		colorOut = reinhard(texture(topRight,UV*2-vec2(1,1)));
+	else if (gl_FragCoord.x > screenSize.x/2 && gl_FragCoord.y < screenSize.y/2 )
+		colorOut = reinhard(texture(lowerRight,UV*2-vec2(1,0)));
+	else if (gl_FragCoord.x < screenSize.x/2 && gl_FragCoord.y < screenSize.y/2 )
+		colorOut = reinhard(texture(lowerLeft,UV*2));
 
 	// if (gl_FragCoord.x > screenSize.x/2-1 && gl_FragCoord.x < screenSize.x/2 )
 	// 	colorOut = vec4(1,0,0,1);
@@ -74,7 +74,7 @@ void main()
 	//colorOut = reinhard(texture(topLeft,UV)+texture(lowerRight,UV));
 	//colorOut = texture(topLeft,UV);
 	// colorOut = mix(texture(topLefgdt,UV),texture(lowerRight,UV),bloom_luminance);
-	colorOut = reinhard(texture(topLeft,UV))+reinhard(texture(lowerRight,UV)); 
+	// colorOut = reinhard(texture(topLeft,UV))+reinhard(texture(lowerRight,UV)); 
 	//colorOut = texture(lowerRight,UV)+texture(topLeft,UV); 
 
 

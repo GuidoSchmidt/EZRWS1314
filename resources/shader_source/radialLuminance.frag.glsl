@@ -33,9 +33,11 @@ void main()
 	colorOut = vec4(0,0,0,1);
 	for (int i=0;i<nSamples/2;i++)
 	{
-		colorOut += texture(maskSampler,radialUV1[i]) * lum;
+		vec4 tap = texture(maskSampler,radialUV1[i]);
+		colorOut += tap * tap.a * lum;
 		lum-=STEP;
-		colorOut += texture(maskSampler,radialUV2[i]) * lum;
+		tap = texture(maskSampler,radialUV2[i]);
+		colorOut += tap * tap.a * lum;
 		lum-=STEP;
 	}
 	colorOut*=0.25;
