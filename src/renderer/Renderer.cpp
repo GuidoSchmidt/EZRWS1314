@@ -128,30 +128,6 @@ namespace renderer {
     {
         scroll += yoffset;
     }
-		//! \todo Exclude texture loading to class 'TextureManager'
-		//! Load a texture
-		
-		//GLuint texture_handle = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/common/uv_test.jpg");
-		GLuint texture_handle1 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Leaf08.png");
-		GLuint texture_handle2 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/sky_test.jpg");
-		GLuint texture_handle3 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Wood01.png");
-
-        //! Render calls here
-		scene::Geometry* node0 = utils::Importer::instance()->getGeometryNode(0);
-		scene::Geometry* node1 = utils::Importer::instance()->getGeometryNode(1); //grauer baum
-		scene::Geometry* node2 = utils::Importer::instance()->getGeometryNode(2); //grauer blätter
-		scene::Geometry* node3 = utils::Importer::instance()->getGeometryNode(3); //uv cube
-		scene::Geometry* node4 = utils::Importer::instance()->getGeometryNode(4); //uv baum
-		scene::Geometry* node5 = utils::Importer::instance()->getGeometryNode(5); //uv blätter
-		//scene::Geometry* node6 = utils::Importer::instance()->getGeometryNode(6); //uv blätter
-
-		glm::mat4 model = node0->getTransform()->getModelMatrix();
-
-		scene::Camera* camera0 = new scene::Camera("scene_camera",
-													glm::vec3(15.0f, 0.0f, 15.0f),
-													glm::vec3(0.0f, 15.0f, 0.0f),
-													glm::vec3(0.0f, 1.0f, 0.0f),
-													m_context->getSize());
 
     void KeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
     {
