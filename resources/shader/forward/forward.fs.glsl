@@ -48,4 +48,6 @@ void main(void)
     else	
     	fragcolor.rgb = lighting_term*material_color.rgb;
     fragcolor.a = sky;
+
+    // fragcolor.rgb = vsNormal;
 }

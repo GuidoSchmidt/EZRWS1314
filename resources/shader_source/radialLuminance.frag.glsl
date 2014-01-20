@@ -1,6 +1,6 @@
 #version 330
 
-#define nSamples 32
+#define nSamples 50
 
 layout(location = 0) out vec4 colorOut;
  
@@ -42,4 +42,5 @@ void main()
 	}
 	colorOut*=0.25;
 	colorOut=max(colorOut,0.0);
+	//colorOut*=vec4(0.3,1.7,0.2,1);
 }

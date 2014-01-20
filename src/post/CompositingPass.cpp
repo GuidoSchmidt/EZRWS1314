@@ -26,7 +26,7 @@ CompositingPass::~CompositingPass() {
 
 void CompositingPass::doExecute() {
 
-	glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+	outputFBO->write();
 		renderPassShader->enable();
 
 			glActiveTexture(GL_TEXTURE0);

@@ -29,7 +29,7 @@ void main()
 	//vec2 ts = sunUV.xy+0.5;///sunUVPos.z;
 	vec4 blur = texture(blurSampler,blurUV);
 	//blured*=lum(blured);
-	vec4 mask= texture(maskSampler,maskUV)*1.067-0.669;
+	vec4 mask= texture(maskSampler,maskUV)*1.067-0.0669;
 	colorOut =  mask * blur;
 
 	// if (blurUV.x > sunPos.x-0.01 && blurUV.x < sunPos.x+0.01 &&

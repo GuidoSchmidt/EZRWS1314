@@ -111,10 +111,9 @@ namespace renderer {
 		finalPass = new FinalPass(fsq, WIDTH, HEIGHT);
 		finalPass->outputFBO = lightingFBO;
 		finalPass->inputFBOs.push_back(gBuffer);
-		//finalPass->inputFBOs.push_back(sunlightFBO1);
-		finalPass->inputFBOs.push_back(sunlightFBO2);
 		finalPass->inputFBOs.push_back(sunlightFBO3);
 		finalPass->inputFBOs.push_back(sunlightFBO4);
+		finalPass->inputFBOs.push_back(compositingFBO);
 
 
 
@@ -236,6 +235,7 @@ namespace renderer {
 				glm::mat4 view = camera0->GetViewMatrix();
 				
 
+				double forwardTime1 = glfwGetTime();
 				//! First shader program
 				m_shaderProgram_forward->Use();
 			
@@ -270,6 +270,8 @@ namespace renderer {
 
 			    m_shaderProgram_forward->Unuse();
 
+			double forwardTime2 = glfwGetTime() - forwardTime1; //ca 1-10ms
+
 			m_framecount++;
 
 			wsSunPos = glm::vec4(0, 10, 100, 1.0);
@@ -282,14 +284,15 @@ namespace renderer {
 			
 			double time1 = glfwGetTime();
 			doTheSunlightEffect();
-			double time2 = glfwGetTime() - time1; //< 1ms naaaiisee
+			double time2 = glfwGetTime() - time1; //ca 1,3*e-5 
 
 			compositingPass->doExecute();
 
 			time1 = glfwGetTime();
 			//fastExtractionPass->inputTexture = textureUV;
 			extractionPass->doExecute();
-			time2 = glfwGetTime() - time1; // 
+			time2 = glfwGetTime() - time1; // bla*e-6
+			//der langsame mode dauert 10-20ms
 
 
 
