@@ -9,6 +9,8 @@ RadialGlowMaskPass::RadialGlowMaskPass(SlimQuad* pQuad, int pWidth, int pHeight)
 	height = pHeight;
 	renderPassShader = new SlimShader(RESOURCES_PATH "/shader_source/", "radialGlow.vert.glsl", "radialGlow.frag.glsl");
 
+	maskTexture = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/radialGlowMask.jpg");
+
 	blurUniform = glGetUniformLocation(renderPassShader->shaderProgram, "blurSampler");
 	maskUniform = glGetUniformLocation(renderPassShader->shaderProgram, "maskSampler");
 	screenSizeUniform = glGetUniformLocation(renderPassShader->shaderProgram, "screenSize");

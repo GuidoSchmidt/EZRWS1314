@@ -78,6 +78,7 @@ vec3 phong(in vec3 position, in vec4 light_positon, in vec3 normal, in vec3 diff
 //*** Main *********************************************************************
 void main(void)
 {
+
 	vec3 vsN = vsNormal;
   	vec3 vsV = normalize(vsPosition);
   	vec3 vsPN = perturb_normal(vsN, vsV, vsUV);

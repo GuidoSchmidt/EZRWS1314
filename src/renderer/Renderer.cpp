@@ -38,7 +38,8 @@ namespace renderer {
         setupShaderStages();
     
         //! \todo Loads models via utils::Importer
-        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/sibenik.dae");
+
+        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/head.dae");
         m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
 
         //! \todo Create user interface
@@ -91,7 +92,6 @@ namespace renderer {
         //glowHalf->inputFBOs.push_back(lightingFBO);
     
 		wsSunPos = glm::vec4(-15.0,30.0,-15.0,1.0);
-
         renderloop();
     }
     
@@ -168,7 +168,7 @@ namespace renderer {
         while (m_context && m_context->isLive() && !glfwGetKey(m_context->getWindow(), GLFW_KEY_ESCAPE) )
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+            
             //! simple camera movement
             double mouse_x, mouse_y;
             float  mouse_correct_x, mouse_correct_y;
@@ -260,4 +260,32 @@ namespace renderer {
             m_context->swapBuffers();
         }
     }
+
+	void Renderer::doTheSunlightEffect()
+	{
+		//downsample gbuffer color
+		SlimFBO::blit(gBuffer,sunlightFBO0);
+		
+		//blur horizontally
+		blurPass->outputFBO = sunlightFBO1;
+		blurPass->inputFBOs[0] = gBuffer;
+		blurPass->param_glowHorizontal = 1.0f;
+		blurPass->doExecute();
+
+		//switch fbos
+		//blur vertically
+		blurPass->outputFBO = sunlightFBO2;
+		blurPass->inputFBOs[0] = sunlightFBO1;
+		blurPass->param_glowHorizontal = 0.0f;
+		blurPass->doExecute();
+
+		//calculate the radialMask
+		maskPass->param_ssSunPos=ssSunPos;
+		maskPass->doExecute();
+
+		//calculate Luminace
+		luminancePass->param_ssSunPos=ssSunPos;
+		luminancePass->doExecute();
+	}
+>>>>>>> 5c5c6de33681c6539c1fc44a1094507797b4ba5c
 }

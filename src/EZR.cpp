@@ -4,6 +4,7 @@
 
 int main(void)
 {
+
     renderer::Context* context = new renderer::Context( glm::ivec2(1024, 768) );
     renderer::Renderer* main_renderer;
     main_renderer = renderer::Renderer::instance(*context);
