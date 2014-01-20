@@ -142,6 +142,7 @@ namespace renderer {
                   m_scene_camera->Rotate(mouse_correct_x * camera_speed * 100.0f,
                                          mouse_correct_y * camera_speed * 100.0f);
             }
+            //!  Moving camera
             if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
                   glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
             {
@@ -162,6 +163,25 @@ namespace renderer {
             {
                   m_scene_camera->MoveX(-camera_speed);
             }
+
+            //!  Moving light source
+            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_J) )
+            {
+                scene::SceneManager::instance()->getLight(0)->getTransform()->translate(0.05, 0.0, 0.0);
+            }
+            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_L) )
+            {
+                scene::SceneManager::instance()->getLight(0)->getTransform()->translate(-0.05, 0.0, 0.0);
+            }
+            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_I) )
+            {
+                    scene::SceneManager::instance()->getLight(0)->getTransform()->translate(0.0, 0.05, 0.0);
+            }
+            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_K) )
+            {
+                scene::SceneManager::instance()->getLight(0)->getTransform()->translate(0.0, -0.05, 0.0);
+            }
+
             if(glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
             {
               scroll = 60.0;
