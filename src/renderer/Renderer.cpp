@@ -48,50 +48,7 @@ namespace renderer {
         int WIDTH = m_context->getSize().x;
         int HEIGHT = m_context->getSize().y;
         glm::vec2 nearFar = glm::vec2(0.1,60.0);
-        
-        //Setup dat slim fboooooos
 
-        gBuffer		 = new SlimFBO(WIDTH,HEIGHT, 2, true);
-        lightingFBO  = new SlimFBO(WIDTH,HEIGHT, 1, false);
-		sunlightFBO0 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO2 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO3 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO4 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-
-		//now the render passses!
-        fsq = new SlimQuad();
-
-		//now the render passses!
-		blurPass = new SeparatedBlurPass(fsq, WIDTH/4, HEIGHT/4);
-		blurPass->inputFBOs.push_back(gBuffer);
-
-		maskPass = new RadialGlowMaskPass(fsq, WIDTH/4, HEIGHT/4);
-		maskPass->outputFBO = sunlightFBO3;
-		maskPass->inputFBOs.push_back(sunlightFBO2);
-
-		luminancePass =  new RadialLuminancePass(fsq, WIDTH/4, HEIGHT/4);
-		luminancePass->outputFBO = sunlightFBO4;
-		luminancePass->inputFBOs.push_back(sunlightFBO3);
-
-		finalPass = new FinalPass(fsq, WIDTH, HEIGHT);
-		finalPass->outputFBO = lightingFBO;
-		finalPass->inputFBOs.push_back(gBuffer);
-		//finalPass->inputFBOs.push_back(sunlightFBO1);
-		finalPass->inputFBOs.push_back(sunlightFBO2);
-		finalPass->inputFBOs.push_back(sunlightFBO3);
-		finalPass->inputFBOs.push_back(sunlightFBO4);
-
-
-        //phong1 = new PhongPass(fsq, nearFar,WIDTH,HEIGHT);//,mouseX,mouseY);
-        //phong1->outputFBO = lightingFBO;
-        //phong1->inputFBOs.push_back(gBuffer);
-
-        //glowHalf = new GlowPass(1,fsq,WIDTH,HEIGHT);
-        //glowHalf->outputFBO = glowFBO;
-        //glowHalf->inputFBOs.push_back(lightingFBO);
-    
-		wsSunPos = glm::vec4(-15.0,30.0,-15.0,1.0);
         renderloop();
     }
     
@@ -101,6 +58,8 @@ namespace renderer {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glEnable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_2D);
+        glEnable(GL_CULL_FACE);
+        glEnable(GL_POLYGON_OFFSET_FILL);
     }
 
     void Renderer::setupShaderStages()
@@ -156,14 +115,17 @@ namespace renderer {
         GLuint forward_uniform_loc_normal_tex       = m_shaderProgram_forward->getUniform("normal_map");
         GLuint forward_uniform_loc_light_position   = m_shaderProgram_forward->getUniform("light_position");
         GLuint forward_uniform_loc_mouse            = m_shaderProgram_forward->getUniform("mouse");
+        GLuint forward_uniform_loc_shadowMap        = m_shaderProgram_forward->getUniform("shadow_map");
+        GLuint forward_uniform_loc_shadowModel      = m_shaderProgram_forward->getUniform("light_model");
+        GLuint forward_uniform_loc_shadowView       = m_shaderProgram_forward->getUniform("light_view");
+        GLuint forward_uniform_loc_shadowProjection = m_shaderProgram_forward->getUniform("light_projection");
         //! Compositing
         GLuint compositing_uniform_loc_shadowMap    = m_shaderProgram_compositing->getUniform("shadowMap");
-        GLuint compositing_uniform_loc_lightedMap   = m_shaderProgram_compositing->getUniform("lightedMap");
+        //GLuint compositing_uniform_loc_lightedMap   = m_shaderProgram_compositing->getUniform("lightedMap");
 
-        glm::vec3 camera_position = glm::vec3(1.0f);
         float camera_speed = 0.01f;
 
-        scene::SceneManager::instance()->getLight(0)->setupShadowMapping(glm::vec2(512));
+        scene::SceneManager::instance()->getLight(0)->setupShadowMapping(glm::vec2(1024.0));
 
         while (m_context && m_context->isLive() && !glfwGetKey(m_context->getWindow(), GLFW_KEY_ESCAPE) )
         {
@@ -200,14 +162,11 @@ namespace renderer {
             {
                   m_scene_camera->MoveX(-camera_speed);
             }
-            if(glfwGetKey(m_context->getWindow(), GLFW_KEY_I))
-            {
-                scene::SceneManager::instance()->getLight(0)->getTransform()->translate(0.0, 1.0f, 0.0f);
-            }
             if(glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
             {
               scroll = 60.0;
             }
+
             //! Field of view
             m_scene_camera->SetFOV(scroll);
 
@@ -221,10 +180,22 @@ namespace renderer {
                 m_shaderProgram_compositing->reloadAllShaders();
             }
 
-            //! Normal camera mode
+
+
             glm::mat4 view       = m_scene_camera->GetViewMatrix();
             glm::mat4 projection = m_scene_camera->GetProjectionMatrix();
+            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_0) )
+            {
+                view       = m_scene_camera->GetViewMatrix();
+                projection = m_scene_camera->GetProjectionMatrix();
+            }
+            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_9) )
+            {
+                view       = scene::SceneManager::instance()->getLight(0)->getViewMatrix();
+                projection = scene::SceneManager::instance()->getLight(0)->getProjectionMatrix();
+            }
 
+            //! Normal camera mode
             glfwSetScrollCallback(m_context->getWindow(), ScrollCallback);
             glfwSetKeyCallback(m_context->getWindow(), KeyboardCallback);
 
@@ -234,13 +205,21 @@ namespace renderer {
             //! ### GEOMETRY RENDER ############################################
             m_shaderProgram_forward->use();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            glCullFace(GL_BACK);
+            glPolygonOffset(0.9, 1.0);
 
             glViewport(0, 0, m_context->getSize().x, m_context->getSize().y);
 
-            //m_shaderProgram_forward->SetUniform(uniform_loc_light_position, scene::SceneManager::instance()->getLight(0)->getTransform()->getPosition() );
+            m_shaderProgram_forward->setUniform(forward_uniform_loc_light_position, scene::SceneManager::instance()->getLight(0)->getTransform()->getPosition() );
             m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(mouse_correct_x, mouse_correct_y) );
             m_shaderProgram_forward->setUniform(forward_uniform_loc_view, view);
             m_shaderProgram_forward->setUniform(forward_uniform_loc_projection, projection);
+            //! shadow mapping
+            m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_shadowMap, scene::SceneManager::instance()->getLight(0)->getShadowMap(), 3);
+            m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowModel, scene::SceneManager::instance()->getLight(0)->getTransform()->getModelMatrix());
+            m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowView, scene::SceneManager::instance()->getLight(0)->getViewMatrix());
+            m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowProjection, scene::SceneManager::instance()->getLight(0)->getProjectionMatrix());
+
 
             for(unsigned int i = 0; i < m_renderqueue.size(); i++)
             {
@@ -254,7 +233,19 @@ namespace renderer {
               m_renderqueue[i]->drawTriangles();
             }
 
+
+
             m_shaderProgram_forward->unuse();
+
+
+            m_shaderProgram_compositing->use();
+
+            glViewport(0, 0, 300, 300);
+
+            m_shaderProgram_compositing->setUniformSampler(compositing_uniform_loc_shadowMap, scene::SceneManager::instance()->getLight(0)->getShadowMap(), 0);
+            m_fullscreen_triangle->draw();
+
+            m_shaderProgram_compositing->unuse();
 
             //! Swap buffers
             m_context->swapBuffers();
@@ -287,5 +278,4 @@ namespace renderer {
 		luminancePass->param_ssSunPos=ssSunPos;
 		luminancePass->doExecute();
 	}
->>>>>>> 5c5c6de33681c6539c1fc44a1094507797b4ba5c
 }

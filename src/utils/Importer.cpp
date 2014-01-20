@@ -117,9 +117,9 @@ namespace utils {
 				//! Position & orientation
                 //! \todo blender currently has problems exporting the lights position
                 aiVector3D position         = current_light->mPosition;
-                position.x                  =   0.0;
-                position.y                  =   4.0;
-                position.z                  = -15.0;
+                position.x                  =   1.0;
+                position.y                  =   5.0;
+                position.z                  =   8.0;
                 aiVector3D direction        = current_light->mDirection;
                 aiLightSourceType lighttype = current_light->mType;
                 aiColor3D color             = current_light->mColorAmbient;
@@ -127,7 +127,7 @@ namespace utils {
                 new_light = new scene::Light(light_id,
                                              name.C_Str(),
                                              scene::Transform( glm::vec3(position.x, position.y, position.z),
-                                                               glm::quat(1.0f, glm::vec3(direction.x, direction.y, direction.z) ),
+                                                               glm::quat(1.0f, glm::vec3(0, 0, 0) ),
                                                                glm::vec3(1.0) ),
                                              glm::vec3(color.r, color.g, color.b), 1.0f);
 

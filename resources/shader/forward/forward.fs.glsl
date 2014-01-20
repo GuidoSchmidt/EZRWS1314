@@ -4,6 +4,7 @@
 //*** Uniform block definitions ************************************************
 
 //*** Input ********************************************************************
+in vec3 wsPosition;
 in vec3 vsPosition;
 in vec3 vsNormal;
 in vec2 vsUV;
@@ -23,6 +24,15 @@ uniform sampler2D normal_map;
 uniform vec3 light_positon;
 uniform vec3 light_color;
 uniform vec2 mouse;
+
+uniform sampler2D shadow_map;
+uniform mat4 light_model;
+uniform mat4 light_view;
+uniform mat4 light_projection;
+mat4 bias = mat4(0.5, 0.0, 0.0, 0.0,
+                 0.0, 0.5, 0.0, 0.0,
+                 0.0, 0.0, 0.5, 0.0,
+                 0.5, 0.5, 0.5, 1.0);
 
 //*** Functions ****************************************************************
 // Normal mapping: calculate cotangents
@@ -58,36 +68,39 @@ vec3 perturb_normal( vec3 N, vec3 V, vec2 texcoord )
     return normalize(TBN * map);
 }
 
-vec3 phong(in vec3 position, in vec4 light_positon, in vec3 normal, in vec3 diffuse_color, in vec3 specular_color, in float shininess)
+vec3 ads(in vec3 Position, in vec3 Normal, in vec3 LightPosition, in float Shininess)
 {
-	vec3 light_vector = normalize(light_positon.xyz - position);
-	float cosin = max( dot( normalize(normal), light_vector), 0.0);
-
-	vec3 ambient_term  = vec3(0.05);
-
-	vec3 diffuse_term  = texture(diffuse_map, vsUV).rgb * cosin;
-   	diffuse_term = clamp(diffuse_term, 0.0, 1.0);
-
-	vec3 specular_term = texture(specular_map, vsUV).rgb * pow(cosin, shininess);
-   	specular_term = clamp(specular_term, 0.0, 1.0); 
-
-	vec3 shaded = ambient_term + diffuse_term + specular_term;
-	return clamp(shaded, 0.0, 1.0);
+    vec3 n = normalize( Normal );
+    vec3 s = normalize( vec3(LightPosition) - Position );
+    vec3 v = normalize(vec3(-Position));
+    vec3 r = reflect( -s, n );
+    return 1.0 * (texture(diffuse_map, vsUV).rgb * max( dot(s, n), 0.0 ) + texture(specular_map, vsUV).rgb * pow( max( dot(v,r), 0.0 ), Shininess ) );
 }
 
 //*** Main *********************************************************************
 void main(void)
 {
-
-	vec3 vsN = vsNormal;
+	vec3 vsN = normalize(vsNormal);
   	vec3 vsV = normalize(vsPosition);
   	vec3 vsPN = perturb_normal(vsN, vsV, vsUV);
 	vec3 normal = vsPN;
-	
-	vec3 lightpos = light_positon;
-	lightpos.y += mouse.y * 100.0;
-	vec4 lightPosition = view * vec4( lightpos , 1.0);
-	vec3 shaded = phong(vsPosition, lightPosition, normal, diffuse_color, specular_color, shininess);
 
-    fragcolor = vec4(shaded, 1.0);
+    //! shadow mapping
+    vec4 shadowcoord = bias * light_projection * light_view * model * vec4(wsPosition, 1.0); 
+    vec4 projShadowcoord = shadowcoord / shadowcoord.w;
+
+    float distanceFromLight = texture(shadow_map, projShadowcoord.st).z;
+
+	vec4 lightPosition = vec4( vec3(0.0, 2.0, 5.0) , 1.0);
+
+	float shadow = 1.0;
+    if (distanceFromLight < projShadowcoord.z)
+    {
+        shadow = 0.2;
+    }
+
+    vec3 shaded = ads(vsV, normal, lightPosition.xyz, shininess);
+    vec3 ambient = 0.2 * texture(diffuse_map, vsUV).rgb;
+
+    fragcolor = vec4(ambient + shadow * vec3(shaded), 1.0);
 }
