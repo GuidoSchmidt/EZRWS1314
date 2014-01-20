@@ -38,7 +38,7 @@ namespace renderer {
         setupShaderStages();
     
         //! \todo Loads models via utils::Importer
-        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/head.dae");
+        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/sibenik.dae");
         m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
 
         //! \todo Create user interface
