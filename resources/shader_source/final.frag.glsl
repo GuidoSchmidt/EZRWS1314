@@ -75,7 +75,7 @@ void main()
 	//colorOut = texture(topLeft,UV);
 	// colorOut = mix(texture(topLefgdt,UV),texture(lowerRight,UV),bloom_luminance);
 	// colorOut = reinhard(texture(topLeft,UV))+reinhard(texture(lowerRight,UV)); 
-	colorOut = reinhard(texture(lowerRight,UV));
+	//colorOut = reinhard(texture(lowerRight,UV));
 	//colorOut = vec4(1,0,0,1);
 
 	//if (gl_FragCoord.x < screenSize.x/4 && gl_FragCoord.y < screenSize.y/4 )

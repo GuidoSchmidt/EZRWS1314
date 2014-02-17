@@ -46,11 +46,17 @@ namespace renderer {
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/baum_test.obj");
 		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/sky.obj");
 		skyNode = utils::Importer::instance()->getGeometryNode(0);
-		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/ship.obj");
+		/*utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/ship.obj");
 		shipSails = utils::Importer::instance()->getGeometryNode(1);
 		shipBot= utils::Importer::instance()->getGeometryNode(2);
 		shipTop = utils::Importer::instance()->getGeometryNode(3);
-		shipStuff = utils::Importer::instance()->getGeometryNode(4);
+		shipStuff = utils::Importer::instance()->getGeometryNode(4);*/
+
+		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/house 5.1.obj");
+		shipSails = utils::Importer::instance()->getGeometryNode(4);
+		shipBot = utils::Importer::instance()->getGeometryNode(2);
+		shipTop = utils::Importer::instance()->getGeometryNode(3);
+		shipStuff = utils::Importer::instance()->getGeometryNode(1);
 
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/baum_test.dae");
         //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
@@ -154,14 +160,14 @@ namespace renderer {
 		sunRadius = 100.0;
 		sunAngle = 0.0;
 		//GLuint textureUV = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/common/uv_test.jpg", true);
-		GLuint leaf_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Leaf08.png", true);
-		GLuint sails_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/ship/sails.jpg", true);
-		GLuint bot_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/ship/bot.jpg", true);
-		GLuint top_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/ship/top.jpg", true);
-		GLuint stuff_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/ship/stuff.tga", true);
+		//GLuint leaf_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/house/house.tga", true);
+		GLuint sails_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/house/roof.tga", true);
+		GLuint bot_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Ground.jpg", true);
+		GLuint top_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/house/house.tga", true);
+		GLuint stuff_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/house/stuff.tga", true);
 		//GLuint head_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/head.jpg", true);
 		//GLuint texture_handle2 = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/sky_test.jpg");
-		GLuint trunk_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Wood01.png",true);
+		//GLuint trunk_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/Wood01.png",true);
 		GLuint sky_tex = utils::Importer::instance()->loadTexture(RESOURCES_PATH "/textures/beach_small.jpg",true);
 		//GLuint sky_tex = utils::Importer::instance()->loadHDRTexture(RESOURCES_PATH "/textures/beach_small.exr");
 		GLuint ldr_diffuse_cube = utils::Importer::instance()->loadCubeMap(RESOURCES_PATH "/textures/ldr-cross/beach_small_diffuse_cross", false);
@@ -247,7 +253,7 @@ namespace renderer {
 
 					m_shaderProgram_forward->SetUniformCubemap("diffuse_cube", ldr_diffuse_cube, 1);
 					m_shaderProgram_forward->SetUniformCubemap("reflective_cube", ldr_reflective_cube, 2);
-					m_shaderProgram_forward->SetUniformSampler("material_texture", leaf_tex, 0);
+					//m_shaderProgram_forward->SetUniformSampler("material_texture", leaf_tex, 0);
 					//leafs->drawTriangles();
 					m_shaderProgram_forward->SetUniformSampler("material_texture", bot_tex, 0);
 					shipBot->drawTriangles();
@@ -264,6 +270,7 @@ namespace renderer {
 					//m_shaderProgram_forward->SetUniformSampler("material_texture", head_tex, 0);
 					//head->drawTriangles();
 					m_shaderProgram_forward->SetUniform("sky", 1.0f);
+					//blend von der sonne holen und übergeben
 					m_shaderProgram_forward->SetUniformSampler("material_texture", sky_tex, 0);
 					skyNode->drawTriangles();
 					//render sky
