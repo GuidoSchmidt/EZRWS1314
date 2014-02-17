@@ -11,5 +11,5 @@ in vec2 UV;
 
 void main() 
 { 
-	colorOut = texture(color,UV)+bloomAmount*texture(bloom,UV);
+	colorOut = texture(color,UV)*0.5+bloomAmount*texture(bloom,UV)*0.5;
 }

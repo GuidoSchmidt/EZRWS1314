@@ -1,17 +1,27 @@
 # Blender MTL File: 'ship.blend'
-# Material Count: 4
+# Material Count: 6
 
-newmtl material_0.56
+newmtl Material.002
 Ns 96.078431
 Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.640000 0.640000
-Ks -1.000000 -1.000000 -1.000000
+Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd C:\\Users\\Andi\\Dropbox\\EZR-Documents\\Test Model Krams Gedöns\\Beach\\tex\\T_BoatTop_D.jpg
+map_Kd C:\\Users\\Andi\\Documents\\GitHub\\EZRWS1314\\resources\\textures\\ship\\sails.jpg
 
-newmtl material_1.6
+newmtl Material.003
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\common\water.jpg
+
+newmtl bot
 Ns 96.078431
 Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.640000 0.640000
@@ -19,24 +29,35 @@ Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
 illum 1
-map_Kd C:\\Users\\Andi\\Dropbox\\EZR-Documents\\Test Model Krams Gedöns\\Beach\\tex\\T_Sails_D.jpg
+map_Disp C:\\Users\\Andi\\Documents\\GitHub\\EZRWS1314\\resources\\textures\\ship\\normalBot.png
+map_Kd C:\\Users\\Andi\\Documents\\GitHub\\EZRWS1314\\resources\\textures\\ship\\bot.jpg
+
+newmtl material_0.56
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd C:\\Users\\Andi\\Documents\\GitHub\\EZRWS1314\\resources\\textures\\ship\\top.jpg
+
+newmtl material_0.59
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.000000 0.000000 0.000000
+Ks 0.000000 0.000000 0.000000
+Ni 1.000000
+d 1.000000
+illum 1
+map_Kd C:\\Users\\Andi\\Dropbox\\EZR-Documents\\Test Model Krams Gedöns\\Beach\\tex\\T_MapSky08.jpg
 
 newmtl material_2.5
 Ns 96.078431
 Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.640000 0.640000
-Ks -1.000000 -1.000000 -1.000000
+Ks 0.000000 0.000000 0.000000
 Ni 1.000000
 d 1.000000
-illum 2
-map_Kd C:\\Users\\Andi\\Dropbox\\EZR-Documents\\Test Model Krams Gedöns\\Beach\\tex\\MerchantShip_Buoy_D.jpg
-
-newmtl material_3.2
-Ns 96.078431
-Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.640000 0.640000
-Ks -1.000000 -1.000000 -1.000000
-Ni 1.000000
-d 1.000000
-illum 2
-map_Kd C:\\Users\\Andi\\Dropbox\\EZR-Documents\\Test Model Krams Gedöns\\Beach\\tex\\T_BoatBottom_D.jpg
+illum 1
+map_Kd C:\\Users\\Andi\\Documents\\GitHub\\EZRWS1314\\resources\\textures\\ship\\stuff.tga

@@ -7,7 +7,9 @@
 #include "ShaderProgram.h"
 #include "FrameBufferObject.h"
 #include "../scene/SceneNode.h"
+#include "../scene/SceneManager.h"
 #include "../scene/Geometry.h"
+#include "../scene/Sun.h"
 #include "../post/SlimFBO.h"
 #include "../post/SlimShader.h"
 #include "../post/SlimQuad.h"
@@ -21,6 +23,8 @@
 #include "../post/FinalPass.h"
 #include "../post/PhongPass.h"
 #include "../utils/Importer.h"
+#include "../utils/FullscreenTriangle.h"
+
 
 namespace renderer {		
 	//! @class Renderer
@@ -32,7 +36,17 @@ namespace renderer {
 			double m_current_time, m_previous_time;
 
 			Context* m_context;
-			ShaderProgram* m_shaderProgram_forward;
+            //! Shader programs
+            ShaderProgram* m_shaderProgram_forward;
+			ShaderProgram* m_shaderProgram_sky;
+            ShaderProgram* m_shaderProgram_compositing;
+            //! Framebuffer objects
+            FrameBufferObject* m_fbo;
+
+            //! Scene
+            utils::FullscreenTriangle* m_fullscreen_triangle;
+			scene::Camera* m_scene_camera;
+			std::vector<scene::Geometry*> m_renderqueue;
 
 			SlimQuad* fsq;
 			SlimFBO* gBuffer;
@@ -45,16 +59,8 @@ namespace renderer {
 
 			SlimFBO* compositingFBO;
 
-
 			SlimFBO* downsampledExtractionFBO;
 
-
-			double delta;
-			double sunSpeed;
-			glm::vec4 wsSunPos;
-			glm::vec4 ssSunPos;
-			float sunRadius;
-			double sunAngle;
 			SeparatedBlurPass* blurPass;
 			RadialGlowMaskPass* maskPass;
 			RadialLuminancePass* luminancePass;
@@ -66,12 +72,10 @@ namespace renderer {
 			FinalPass* finalPass;
 
 
+			glm::mat4 skyScale;
+			scene::Sun* sun;
 			scene::Geometry* skyNode;
-			scene::Geometry* shipBot;
-			scene::Geometry* shipTop;
-			scene::Geometry* shipSails;
-			scene::Geometry* shipStuff;
-            //PhongPass* phong1
+
 
 			//Rocket::Core::Context* context;
 			//Shell* shell;
@@ -88,15 +92,15 @@ namespace renderer {
 			//! \brief Sets needed OpenGL states
 			void setupGL(void);
 
-            //! \brief Sets the needes shader stages and fbos
-            void setupShaderStages(void);
+                        //! \brief Sets the needes shader stages and fbos
+                        void setupShaderStages(void);
 				
 		public:
 			//! Returns the singleton instance
 			static Renderer* instance(Context& context);
 
 			//! \brief Sets the context to render to
-            void setRenderContext(Context& context);
+			void setRenderContext(Context& context);
 
 			//! \brief Calls the render loop
 			void renderloop(void);

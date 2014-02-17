@@ -8,22 +8,24 @@
 
 namespace scene {
 	enum nodetype {
-		GEOMETRY,
-		CAMERA,
-		LIGHT
+		EMPTY = -1,
+		GEOMETRY = 0,
+		CAMERA = 1,
+		LIGHT = 2,
 	};
 
 	//! @class SceneNode
 	class SceneNode
 	{
-		private:
-	
+		protected:
+			nodetype     m_type;
+			std::string  m_name;
+			unsigned int m_id;
+			Transform    m_transform;
+
 		public:
 			//! \brief Constructor
-			SceneNode(unsigned int id);
-			
-			//! \brief Constructor
-			SceneNode(std::string m_name, unsigned int m_id);
+			SceneNode(nodetype type, unsigned int id = -1, std::string name = "");
 			
 			//! \brief Constructor
 			~SceneNode(void);
@@ -38,16 +40,13 @@ namespace scene {
 			Transform* getTransform(void);
 
 			//! \brief Returns the node type
-			virtual nodetype* getType(void) = 0;
-		
-		protected:
-			//! \brief Constructor
-			SceneNode(void);
+			nodetype getType(void);
 
-			nodetype m_type;
-			std::string m_name;
-			unsigned  int m_id;
-			Transform m_transform;
+			//! \brief Returns the ID of the node
+			unsigned int getID(void);
+
+			//! \brief Returns the name of the node
+			std::string getName(void);
 	};
 }
 #endif //H_SCENENODE

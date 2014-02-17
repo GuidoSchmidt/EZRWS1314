@@ -48,10 +48,10 @@ namespace renderer {
 			std::string m_log;
 
 			//! \brief Returns the location of a given uniform variable
-			int GetUniformLocation(std::string name);
+            int getUniformLocation(std::string name);
 
 			//! \brief Checks if a file exists
-			bool CheckFileExist(const std::string &filename);
+            bool checkFileExist(const std::string &filename);
 
 		public:
 			//! \brief Constructor
@@ -64,76 +64,76 @@ namespace renderer {
 			~ShaderProgram();
 
 			//! \brief Adds a shader to the program
-			void AddShader(GLSL::GLSLShaderType shaderType, std::string filename);
+            void addShader(GLSL::GLSLShaderType shaderType, std::string filename);
 
 			//! \brief Links the shader program
-			void Link(void);
+            void link(void);
 
 			//! \brief Checks the link status of the shader program
-			bool IsLinked(void);
+            bool isLinked(void);
 
 			//! \brief Activates the shader program for use
-			void Use(void);
+            void use(void);
 
 			//! \brief Deactivates the shader program from use
-			void Unuse(void);
+            void unuse(void);
 
 			//! \brief Reloads all shaders
-			void ReloadAllShaders(void);
+            void reloadAllShaders(void);
 
 			//! \brief Reloads a specific shader
-			void ReloadShader(int i);
+            void reloadShader(int i);
 
 			//! \brief Returns the program log
-			std::string Log(void);
+            std::string log(void);
 
 			//! \brief Returns the shader program handle
-			GLint GetHandle(void);
+            GLint getHandle(void);
+
+            //! \brief Returns a uniform handle by its name used in the prorgam
+            GLuint getUniform(std::string uniform_name);
 
 			//! \brief Binds an attribute location
-			void BindAttributeLocation(GLuint location, std::string name);
+            void bindAttributeLocation(GLuint location, std::string name);
 
 			//! \brief Binds a fragment data location 
-			void BindFragDataLocation(GLuint location, std::string* name);
+            void bindFragDataLocation(GLuint location, std::string* name);
 
 			//! \brief Sets a uniform variable for a 2D vector (vec2)
-			void SetUniform(const std::string name, const glm::vec2 &vec);
+            void setUniform(GLuint uniform_location, const glm::vec2 &vec);
 
 			//! \brief Sets a uniform variable for a 3D vector (vec3)
-			void SetUniform(const std::string name, const glm::vec3 &vec);
+            void setUniform(GLuint uniform_location, const glm::vec3 &vec);
 
 			//! \brief Sets a uniform variable for a 4D vector (vec4)
-			void SetUniform(const std::string name, const glm::vec4 &vec);
+            void setUniform(GLuint uniform_location, const glm::vec4 &vec);
 
 			//! \brief Sets a uniform variable for a 4x4 matrix (mat4)
-			void SetUniform(const std::string name, const glm::mat4 &mat);
+            void setUniform(GLuint uniform_location, const glm::mat4 &mat);
 
 			//! \brief Sets a uniform variable for a float value
-			void SetUniform(const std::string name, float val);
+            void setUniform(GLuint uniform_location, float val);
 
 			//! \brief Sets a uniform variable for an integer value
-			void SetUniform(const std::string name, int val);
+            void setUniform(GLuint uniform_location, int val);
 
 			//! \brief Sets a uniform variable for an array of 3D-floats
-			void SetUniformArray3f(const std::string name, int count, GLfloat* value_ptr);
+            void setUniformArray3f(GLuint uniform_location, int count, GLfloat* value_ptr);
 
 			//! \brief Sets a uniform variable for an array of 4x4 matrices
-			void SetUniformArrayMatrix4f(const std::string name, int count, GLfloat* value_ptr);
+            void setUniformArrayMatrix4f(GLuint uniform_location, int count, GLfloat* value_ptr);
 
 			//! \brief Sets a uniform variable for a texture sampler
-			void SetUniformSampler(const std::string name, GLuint texture, int textureUnit);
-
-			//! \brief Sets a uniform variable for a texture multisample sampler
-			void SetUniformSampler2DMS(const std::string name, GLuint texture, int textureUnit);
+            void setUniformSampler(GLuint uniform_location, GLuint texture, int textureUnit);
 
 			//! \brief Sets a uniform variable for a cube map texture
-			void SetUniformCubemap(const std::string name, GLuint texture, int textureUnit);
+            void setUniformCubemap(GLuint uniform_location, GLuint texture, int textureUnit);
 
 			//! \brief Prints all active uniforms
-			void PrintActiveUniforms(void);
+            void printActiveUniforms(void);
 
 			//! \brief Prints all active attributes
-			void PrintActiveAttributes(void);
+            void printActiveAttributes(void);
 	};
 }
 #endif //H_SHADERPROGRAM

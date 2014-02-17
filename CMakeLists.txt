@@ -28,6 +28,13 @@ include(${CMAKE_MODULE_PATH}/macros.cmake)
 
 set(CMAKE_CONFIGURATION_TYPES Debug; Release)
 
+if(NOT CMAKE_BUILD_TYPE)
+   set(CMAKE_BUILD_TYPE Debug
+       CACHE STRING "Choose the type of build : None Debug Release RelWithDebInfo MinSizeRel Coverage."
+       FORCE)
+endif(NOT CMAKE_BUILD_TYPE)
+message("* Current build type is : ${CMAKE_BUILD_TYPE}")
+
 find_package(OpenGL3 REQUIRED)
 find_package(FreeImage REQUIRED)
 find_package(GLEW REQUIRED)

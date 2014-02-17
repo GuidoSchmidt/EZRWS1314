@@ -22,11 +22,12 @@ namespace utils {
 	void Importer::importFile(const std::string& pathToFile)
 	{
 		m_aiScene = m_aiImporter.ReadFile(pathToFile,  
-			aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials);
+            aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials);
 			
 		if(!m_aiScene)
 		{
 			std::cerr << "ERROR (Importer): Scene was not successfully loaded!" << std::endl;
+            std::cerr << m_aiImporter.GetErrorString() << std::endl;
 		}
 		else
 		{
@@ -49,7 +50,7 @@ namespace utils {
 		std::cout << "\nList of Nodes:" << std::endl;
 
 		//! ------ Cameras ------------------------------------------  
-		if (m_aiScene->HasCameras())
+        if (m_aiScene->HasCameras())
 		{
 			scene::Camera* new_camera;
 			//! Process cameras
@@ -72,13 +73,15 @@ namespace utils {
 				float far_plane		= current_camera->mClipPlaneFar;
 			
 				//! Create a camera
-				new_camera = new scene::Camera(name.C_Str(),
+				new_camera = new scene::Camera(camera_id, name.C_Str(),
 							       glm::vec3(position.x, position.y, position.z),
 							       glm::vec3(lookat.x, lookat.y, lookat.z),
 							       glm::vec3(up.x, up.y, up.z),
 							       glm::ivec2(1024, 1024));
 				new_camera->SetProjection(field_of_view, aspect, near_plane, far_plane);
-				m_camera_node_list.push_back(new_camera);
+
+				//! Add to scene manager
+				scene::SceneManager::instance()->addSceneNode(new_camera);
 
 				//! Log
 				std::cout << "\n  * Camera: " << camera_id << std::endl;
@@ -95,6 +98,15 @@ namespace utils {
 		//! ------ Lights ------------------------------------------
 		if (m_aiScene->HasLights())
 		{
+            //! Helper array to print light types to string
+            const char* light_type_str[] = {
+                "UNDEFINED",
+                "DIRECTIONAL",
+                "POINT",
+                "SPOT"
+            };
+
+            scene::Light* new_light;
 			//! Process lights
 			for (unsigned int light_id = 0; light_id < m_aiScene->mNumLights; light_id++)
 			{
@@ -104,113 +116,191 @@ namespace utils {
 				aiString name = current_light->mName;
 
 				//! Position & orientation
-				aiVector3D position  = current_light->mPosition;
-				aiVector3D direction = current_light->mDirection;
+                //! \todo blender currently has problems exporting the lights position
+                aiVector3D position         = current_light->mPosition;
+                position.x                  =   0.0;
+                position.y                  =   4.0;
+                position.z                  = -15.0;
+                aiVector3D direction        = current_light->mDirection;
+                aiLightSourceType lighttype = current_light->mType;
+                aiColor3D color             = current_light->mColorAmbient;
 
-				//! Colors
-				aiColor3D ambient  = current_light->mColorAmbient;
-				aiColor3D diffuse  = current_light->mColorDiffuse;
-				aiColor3D specular = current_light->mColorSpecular;
+                new_light = new scene::Light(light_id,
+                                             name.C_Str(),
+                                             scene::Transform( glm::vec3(position.x, position.y, position.z),
+                                                               glm::quat(1.0f, glm::vec3(direction.x, direction.y, direction.z) ),
+                                                               glm::vec3(1.0) ),
+                                             glm::vec3(color.r, color.g, color.b), 1.0f);
 
-				//! Log
+                //! Add to scene manager
+                scene::SceneManager::instance()->addLight(new_light);
+
+                //! Log
 				std::cout << "\n  * Light: " << light_id << std::endl;
 				std::cout << "    Name: " << name.C_Str() << std::endl;
+                std::cout << "    Type: " << light_type_str[lighttype] << std::endl;
 				std::cout << "    Position  (" << position.x << ", " << position.y << ", " << position.z << ")" << std::endl;
 				std::cout << "    Direction (" << direction.x << ", " << direction.y << ", " << direction.z << ")" << std::endl;
-				std::cout << "    Color Ambient:  (" << ambient.r << ", " << ambient.g << ", " << ambient.b << ")" << std::endl;
-				std::cout << "    Color Diffuse:  (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
-				std::cout << "    Color Specular: (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
+                std::cout << "    Color:    (" << color.r << ", " << color.g << ", " << color.b << ")" << std::endl;
 			}
 		}
 
 		//! ------ Meshes ------------------------------------------
 		if (m_aiScene->HasMeshes())
 		{
-			//! Traverse all scene nodes to get transformations of meshes
-			for (unsigned int node = 0; node < m_aiScene->mRootNode->mNumChildren; node++)
-			{
-				scene::Geometry* new_geometry;
-				//! Process meshes
-				for (unsigned int mesh_id = 0; mesh_id < m_aiScene->mNumMeshes; mesh_id++)
-				{
-					//! Get current node from assimp scene
-					aiNode* current_node = m_aiScene->mRootNode->mChildren[node];
+            std::cout << "Number meshes in Root Node: " << m_aiScene->mRootNode->mNumMeshes << std::endl;
+            std::cout << "Number meshes in m_aiScene: " << m_aiScene->mNumMeshes << std::endl;
 
-					aiString name = current_node->mName;
+            //! Get root transformtaion matrix
+            aiMatrix4x4 root_transform = m_aiScene->mRootNode->mTransformation;
 
-					//! Transformation
-					aiVector3D current_position, current_scale;
-					aiQuaternion current_rotation;
-					current_node->mTransformation.Decompose(current_scale, current_rotation, current_position);
+            scene::Geometry* new_geometry;
+            //! Process meshes
+            for (unsigned int mesh_id = 0; mesh_id < m_aiScene->mNumMeshes; mesh_id++)
+            {
+                //! Get current node from assimp scene
+                aiNode* current_node = m_aiScene->mRootNode->mChildren[mesh_id];
 
-					//! Create new geometry node and set its transform
-					new_geometry = new scene::Geometry(mesh_id, name.C_Str());
-					new_geometry->setTransform(
-						scene::Transform(glm::vec3(current_position.x, current_position.y, current_position.z),
-						glm::quat(current_rotation.w, glm::vec3(current_rotation.x, current_rotation.y, current_rotation.z)),
-						glm::vec3(current_scale.x, current_scale.y, current_scale.z) )
-					);
+                aiString name = current_node->mName;
 
-					aiMesh* current_mesh = m_aiScene->mMeshes[mesh_id];
-					//! Geometry
-					if (current_mesh->HasPositions())
-					{
-						//! Vertices
-						for (unsigned int vertex = 0; vertex <= current_mesh->mNumVertices; vertex++)
-						{
-							aiVector3D* current_vertex = &(current_mesh->mVertices[vertex]);
-							new_geometry->addVertex(current_vertex->x, current_vertex->y, current_vertex->z);
+                //! Transformation
+                aiVector3D current_position, current_scale;
+                aiQuaternion current_rotation;
+                aiMatrix4x4 m_transform = current_node->mTransformation;
+                //! The mesh need to be transformed with a general scene transformation matrix first
+                m_transform = root_transform * m_transform;
+                m_transform.Decompose(current_scale, current_rotation, current_position);
 
-							//! Normals
-							if (current_mesh->HasNormals())
-							{
-								aiVector3D* current_normal = &(current_mesh->mNormals[vertex]);
-								new_geometry->addNormal(current_normal->x, current_normal->y, current_normal->z);
-							}
+                //! Create new geometry node and set its transform
+                new_geometry = new scene::Geometry(mesh_id, name.C_Str());
+                new_geometry->setTransform(
+                    scene::Transform(glm::vec3(current_position.x, current_position.y, current_position.z),
+                    glm::quat(current_rotation.w, glm::vec3(current_rotation.x, current_rotation.y, current_rotation.z)),
+                    glm::vec3(current_scale.x, current_scale.y, current_scale.z) )
+                );
 
-							//! Texture coordinates
-							if (current_mesh->HasTextureCoords(0))
-							{
-								aiVector3D* current_uv = &(current_mesh->mTextureCoords[0][vertex]);
-								new_geometry->addUV(current_uv->x, current_uv->y);
-							}
-						}
-					}
-					//! Faces (indices for vertex list)
-					if (current_mesh->HasFaces())
-					{
-						for (unsigned int face = 0; face < current_mesh->mNumFaces; face++)
-						{
-							aiFace* current_face = &(current_mesh->mFaces[face]);
+                aiMesh* current_mesh = m_aiScene->mMeshes[mesh_id];
+                unsigned int material_index  = current_mesh->mMaterialIndex;
+                new_geometry->setMaterialIndex(material_index);
 
-							//! All three indices of the current triangle face
-							int vertex_index0 = current_mesh->mFaces[face].mIndices[0];
-							int vertex_index1 = current_mesh->mFaces[face].mIndices[1];
-							int vertex_index2 = current_mesh->mFaces[face].mIndices[2];
+                //! Geometry
+                if (current_mesh->HasPositions())
+                {
+                    //! Vertices
+                    for (unsigned int vertex = 0; vertex <= current_mesh->mNumVertices; vertex++)
+                    {
+                        aiVector3D* current_vertex = &(current_mesh->mVertices[vertex]);
+                        new_geometry->addVertex(current_vertex->x, current_vertex->y, current_vertex->z);
 
-							new_geometry->addIndex(vertex_index0);
-							new_geometry->addIndex(vertex_index1);
-							new_geometry->addIndex(vertex_index2);
-						}
-					}
+                        //! Normals
+                        if (current_mesh->HasNormals())
+                        {
+                            aiVector3D* current_normal = &(current_mesh->mNormals[vertex]);
+                            new_geometry->addNormal(current_normal->x, current_normal->y, current_normal->z);
+                        }
 
-					new_geometry->createBuffers();
-					m_geometry_node_list.push_back(new_geometry);
+                        //! Texture coordinates
+                        if (current_mesh->HasTextureCoords(0))
+                        {
+                            aiVector3D* current_uv = &(current_mesh->mTextureCoords[0][vertex]);
+                            new_geometry->addUV(current_uv->x, current_uv->y);
+                        }
+                    }
+                }
+                //! Faces (indices for vertex list)
+                if (current_mesh->HasFaces())
+                {
+                    for (unsigned int face = 0; face < current_mesh->mNumFaces; face++)
+                    {
+                        //! All three indices of the current triangle face
+                        int vertex_index0 = current_mesh->mFaces[face].mIndices[0];
+                        int vertex_index1 = current_mesh->mFaces[face].mIndices[1];
+                        int vertex_index2 = current_mesh->mFaces[face].mIndices[2];
 
-					//! Log
-					std::cout << "\n  * Mesh: " << mesh_id << std::endl;
-					std::cout << "    Name: " << name.C_Str() << std::endl;
-					std::cout << "    Vertex count: " << current_mesh->mNumVertices << std::endl;
-					std::cout << "    Faces count: " << current_mesh->mNumFaces << std::endl;
-					std::cout << "    Normals count: " << current_mesh->mNumVertices << std::endl;
-				}
-			}
-		}
+                        new_geometry->addIndex(vertex_index0);
+                        new_geometry->addIndex(vertex_index1);
+                        new_geometry->addIndex(vertex_index2);
+                    }
+                }
+
+                new_geometry->createBuffers();
+
+                //! Add to scene manager
+                m_geometry_node_list.push_back(new_geometry);
+                scene::SceneManager::instance()->addSceneNode(new_geometry);
+
+                //! Log
+                std::cout << "\n  * Mesh: " << mesh_id << std::endl;
+                std::cout << "    Name: " << name.C_Str() << std::endl;
+                std::cout << "    Vertex count: " << current_mesh->mNumVertices << std::endl;
+                std::cout << "    Faces count: " << current_mesh->mNumFaces << std::endl;
+                std::cout << "    Normals count: " << current_mesh->mNumVertices << std::endl;
+                std::cout << "    Material index: " << material_index << std::endl;
+            }
+        }
 
 		//! ------ Materials ------------------------------------------
 		if (m_aiScene->HasMaterials())
 		{
-			//! \todo Read materials and textures and organize them: HashMap, Smart-Pointers
+            scene::Material* new_material;
+
+            //! Read materials and textures and organize them: HashMap, Smart-Pointers
+            for(unsigned int material_id = 0; material_id < m_aiScene->mNumMaterials; material_id++)
+            {
+                aiMaterial* current_material = m_aiScene->mMaterials[material_id];
+
+
+                aiString name;
+                current_material->Get(AI_MATKEY_NAME, name);
+
+                aiColor3D diffuse;
+                current_material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+
+                aiColor3D specular;
+                current_material->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+
+                float shininess;
+                current_material->Get(AI_MATKEY_SHININESS, shininess);
+
+
+                //! --- Textures ---
+                //! Diffuse
+                aiString texture_path_diffuse;
+                current_material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path_diffuse);
+                //! Specular
+                aiString texture_path_specular;
+                current_material->GetTexture(aiTextureType_SPECULAR, 0, &texture_path_specular);
+                //! Normal
+                aiString texture_path_normal;
+                current_material->GetTexture(aiTextureType_NORMALS, 0, &texture_path_normal);
+
+                //! Create new material
+                new_material = new scene::Material(material_id, // Index-number
+                                                   glm::vec3(diffuse.r, // Diffuse Color
+                                                             diffuse.g,
+                                                             diffuse.b),
+                                                   scene::SceneManager::instance()->loadTexture(texture_path_diffuse.C_Str(),true),
+                                                   glm::vec3(specular.r,
+                                                             specular.g,
+                                                             specular.b),
+                                                   scene::SceneManager::instance()->loadTexture(texture_path_specular.C_Str(),true),
+                                                   shininess,
+                                                   scene::SceneManager::instance()->loadTexture(texture_path_normal.C_Str(),true));
+
+                //! Add material to scene manager
+                scene::SceneManager::instance()->addMaterial(new_material);
+
+                //! Log
+                std::cout << "\n  * Material: " << material_id << std::endl;
+                std::cout << "      " << name.C_Str() << std::endl;
+                std::cout << "      Diffuse-Color:   (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
+                std::cout << "      Diffuse-Texture: (" << texture_path_diffuse.C_Str() << ")" << std::endl;
+                std::cout << "      Specular-Color:  (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
+                std::cout << "      Specular-Texture:(" << texture_path_specular.C_Str() << ")" << std::endl;
+                std::cout << "      Shininess:        " << shininess << std::endl;
+                std::cout << "      Normal-Texture:  (" << texture_path_normal.C_Str() << ")" << std::endl;
+
+            }
 		}
 	}
 
@@ -227,6 +317,19 @@ namespace utils {
 		}
 	}
 
+	void Importer::deleteGeometryNode(const unsigned int index)
+	{
+		if (index > m_geometry_node_list.size())
+		{
+			std::cerr << "ERROR (Importer): wrong scene node index" << std::endl;
+			return;
+		}
+		else
+		{
+			m_geometry_node_list.erase(m_geometry_node_list.begin()+index);
+		}
+	}
+
 
 	scene::Camera* Importer::getCameraNode(const unsigned int index)
 	{
@@ -239,102 +342,5 @@ namespace utils {
 		{
 			return m_camera_node_list[index];
 		}
-	}
-
-	GLuint Importer::loadHDRTexture(std::string filename) {
-		GLuint tex_2d;
-
-		glActiveTexture(GL_TEXTURE0);
-		glGenTextures(1, &tex_2d);
-		glBindTexture(GL_TEXTURE_2D, tex_2d);
-		
-
-		// load a HDR RGB Float image
-		FREE_IMAGE_FORMAT format = FreeImage_GetFileType(filename.c_str(),0); //should be FIF_HDR or FIF_EXR
-		FIBITMAP *src = FreeImage_Load(format, filename.c_str(), 0);
-		int depth = FreeImage_GetBPP(src);
-		FREE_IMAGE_TYPE type = FreeImage_GetImageType(src); //should be FIt_RGBF
-		FREE_IMAGE_COLOR_TYPE color = FreeImage_GetColorType(src); //should be FIC_RGB
-		BYTE *bits = (BYTE*)FreeImage_GetBits(src);
-		FIRGBF *rgbFsrc = (FIRGBF*)bits;
-		
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, FreeImage_GetWidth(src), FreeImage_GetHeight(src), 0, GL_RGB, GL_FLOAT, rgbFsrc);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-		FreeImage_Unload(src);
-		return tex_2d;
-
-	}
-
-	GLuint Importer::loadTexture(std::string filename, bool repeat)
-	{
-		GLuint tex_2d;
-			
-		glActiveTexture(GL_TEXTURE0);	
-		glGenTextures( 1, &tex_2d );
-		glBindTexture( GL_TEXTURE_2D, tex_2d );
-
-		tex_2d = SOIL_load_OGL_texture
-		(
-			filename.c_str(),
-			SOIL_LOAD_AUTO,
-			SOIL_CREATE_NEW_ID,
-			SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
-		);
-		if (repeat)
-		{
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		}
-		else
-		{
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
-		}
-
-		return tex_2d;
-	}
-
-	GLuint Importer::loadCubeMap(std::string filename, bool HDR) 
-	{
-		GLuint cube_map;
-		glGenTextures(1, &cube_map);
-		glBindTexture(GL_TEXTURE_CUBE_MAP, cube_map);
-		glActiveTexture(GL_TEXTURE0);
-		
-		std::string sides[6] = { "_pos_x", "_neg_x", "_pos_y", "_neg_y", "_pos_z", "_neg_z"};
-		for (int i = 0; i < 6; i++)
-		{
-			// load a HDR RGB Float imager
-			std::string sname = filename + sides[i] + ((HDR) ? ".exr" : ".jpg");
-			const char *name = sname.c_str();
-			FREE_IMAGE_FORMAT format = FreeImage_GetFileType(name, 0); //should be FIF_HDR or FIF_EXR
-			FIBITMAP *src = FreeImage_Load(format, name, 0);
-			int depth = FreeImage_GetBPP(src);
-			FREE_IMAGE_TYPE type = FreeImage_GetImageType(src); //should be FIT_RGBF or FIT_BITMAP
-			FREE_IMAGE_COLOR_TYPE color = FreeImage_GetColorType(src); //should be FIC_RGB
-			BYTE *bits = (BYTE*)FreeImage_GetBits(src);
-
-			if (HDR)
-			{
-				FIRGBF *rgbFsrc = (FIRGBF*)bits;
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB32F, FreeImage_GetWidth(src), FreeImage_GetHeight(src), 0, GL_RGB, GL_FLOAT, rgbFsrc);
-			}
-			else {
-				glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB8, FreeImage_GetWidth(src), FreeImage_GetHeight(src), 0, GL_RGB, GL_UNSIGNED_BYTE, bits);
-			}
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP);
-			glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP);
-
-			FreeImage_Unload(src);
-		}
-		glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-
-		return cube_map;
 	}
 }

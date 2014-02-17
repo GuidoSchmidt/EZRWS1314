@@ -17,7 +17,7 @@
 
 namespace scene {
 	//! @class Camera
-	class Camera
+	class Camera : public SceneNode
 	{
 		private:
 			//! Initial Values
@@ -58,10 +58,10 @@ namespace scene {
 
 		public:
 			//! \brief Constructor
-			Camera(glm::ivec2 window_size);
+			Camera(unsigned int id, std::string name, glm::ivec2 window_size);
 
 			//! \brief Constructor
-			Camera(std::string name, glm::vec3 position, glm::vec3 lookAt, glm::vec3 up, glm::ivec2 window_size);
+			Camera(unsigned int id, std::string name, glm::vec3 position, glm::vec3 lookAt, glm::vec3 up, glm::ivec2 window_size);
 			
 			//! \brief Destructor
 			virtual ~Camera();
@@ -143,6 +143,9 @@ namespace scene {
 
 			//! \brief Rotates the camera by angle x around x-axis and angle y around y-axis
 			void Rotate(float x, float y);
+
+			//! \brief Returns the node type
+			nodetype getType(void);
 	};
 }
 #endif //H_CAMERA

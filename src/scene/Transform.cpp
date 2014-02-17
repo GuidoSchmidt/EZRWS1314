@@ -2,14 +2,14 @@
 #include "Transform.h"
 
 namespace scene {
-	Transform::Transform(glm::vec3 translate, glm::quat rotate, glm::vec3 scale)
+    Transform::Transform(glm::vec3 position, glm::quat rotate, glm::vec3 scale)
 	{
-		m_translation = translate;
+        m_position    = position;
 		m_rotation	  = rotate;
 		m_scale		  = scale;
 
 		m_translation_matrix = glm::mat4(0.0);
-		m_translation_matrix = glm::translate(m_translation);
+        m_translation_matrix = glm::translate(m_position);
 		m_rotation_matrix	 = glm::mat4(0.0);
 		m_rotation_matrix	 = glm::toMat4(m_rotation);
 		m_scale_matrix		 = glm::mat4(0.0);
@@ -29,9 +29,9 @@ namespace scene {
 		return m_model_matrix;
 	}
 
-	glm::vec3 Transform::getTranslation(void)
+	glm::vec3 Transform::getPosition(void)
 	{
-		return m_translation;
+        return m_position;
 	}
 
 	glm::quat Transform::getRotation(void)
@@ -46,8 +46,8 @@ namespace scene {
 
 	void Transform::setPosition(glm::vec3 position)
 	{
-		m_translation = position;
-		m_translation_matrix = glm::translate(m_translation);
+        m_position = position;
+        m_translation_matrix = glm::translate(m_position);
 	}
 
 	void Transform::setRotation(glm::quat rotate)
@@ -56,11 +56,24 @@ namespace scene {
 		m_rotation_matrix	 = glm::toMat4(m_rotation);
 	}
 
+	void Transform::setRotation(glm::mat4 rotate)
+	{
+		m_rotation = glm::toQuat(rotate);
+		m_rotation_matrix = rotate;
+	}
+
 	void Transform::setScale(glm::vec3 scale)
 	{
 		m_scale = scale;
 		m_scale_matrix = glm::scale(m_scale);
 	}
+
+    void Transform::translate(float x, float y, float z)
+    {
+        m_position.x += x;
+        m_position.y += y;
+        m_position.z += z;
+    }
 
 	glm::quat Transform::axelAngusToQuat (const double angle, const glm::vec3 axis)
 	{

@@ -8,14 +8,15 @@
 #include "../scene/SceneNode.h"
 #include "../scene/Camera.h"
 #include "../scene/Geometry.h"
+#include "../scene/Material.h"
+#include "../scene/Light.h"
 
 #include <glm/gtx/quaternion.hpp>
 #include <assimp/Importer.hpp>
-#include <FreeImage/FreeImage.h>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 #include <vector>
-#include <SOIL/SOIL.h>
+#include "../scene/SceneManager.h"
 
 namespace utils {
 	//! @class Importer
@@ -35,6 +36,8 @@ namespace utils {
 			std::vector<scene::Camera*>	  m_camera_node_list;
 			std::vector<GLuint>           m_texture_list;
 
+            GLuint tex_2d;
+
 
 		public:
 			//! \brief Returns the singleton instance
@@ -52,16 +55,10 @@ namespace utils {
 			//! \brief Returns a geometry node of the scene by index
 			scene::Geometry* getGeometryNode(const unsigned int index);
 
+			void deleteGeometryNode(const unsigned int index);
+
 			//! \brief Returns a camera of the scene by index
 			scene::Camera* getCameraNode(const unsigned int index);
-
-			//! \brief Loads a texture from a given filepath and returns the texture handle
-			GLuint loadTexture(std::string filename, bool repeat);
-
-			//! \brief Loads a hdr texture from a given filepath and returns the texture handle
-			GLuint loadHDRTexture(std::string filename);
-
-			GLuint loadCubeMap(std::string filename,bool HDR);
 	};
 }
 #endif // H_IMPORTER

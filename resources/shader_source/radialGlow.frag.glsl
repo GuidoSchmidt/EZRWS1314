@@ -32,7 +32,7 @@ void main()
 	vec4 mask= texture(maskSampler,maskUV)*1.067-0.0669;
 	colorOut =  mask * blur;
 
-	// if (blurUV.x > sunPos.x-0.01 && blurUV.x < sunPos.x+0.01 &&
-	//     blurUV.y > sunPos.y-0.01 && blurUV.y < sunPos.y+0.01)
-	//     colorOut = vec4(1,1,0,1);
+	if (blurUV.x > sunPos.x-0.01 && blurUV.x < sunPos.x+0.01 &&
+	    blurUV.y > sunPos.y-0.01 && blurUV.y < sunPos.y+0.01)
+	    colorOut = vec4(1,1,0,1);
 }
