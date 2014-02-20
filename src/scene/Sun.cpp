@@ -16,7 +16,7 @@ namespace scene
     {
 		color_night   = glm::vec3(0,0.13,0.26);
 		color_dawn    = glm::vec3(0.56,0.26,0.4);
-		color_day     = glm::vec3(1,0.9,0.0);
+		color_day     = glm::vec3(1,1,0.9);
 		color_rise    = glm::vec3(0.6,0.12,0.2);
 
 		min = 1/1440;
@@ -59,8 +59,8 @@ namespace scene
 		//18uhr untergang (-1,0,0)
 			
 		glm::vec3 pos;
-		pos.x = distance*cos(cycle+M_PI/2);
-		pos.y = distance*sin(cycle+M_PI/2);
+		pos.x = distance*sin(cycle);
+		pos.y = distance*-cos(cycle);
 		pos.z = 0.0;
 		m_transform.setPosition(pos);
 			
@@ -70,7 +70,7 @@ namespace scene
 		ssPos.y=(ssPos.y/ssPos.z)/2.0f+0.5f;
 			
 			
-		m_transform.setRotation(glm::lookAt(pos,glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0)));
+		//m_transform.setRotation(glm::lookAt(pos,glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0)));
 			
 		//calc color
 		m_color = calcColor();
@@ -98,7 +98,7 @@ namespace scene
 		}
 		else if (hour >= 5 && hour < 6)
 		{
-			blend = 1/(float)minute;
+			blend = (float)minute/60.0f;
 			return (1-blend)*color_night+blend*color_rise;//blend 
 		}
 		else if (hour >= 6 && hour < 7)
@@ -107,7 +107,7 @@ namespace scene
 		}
 		else if (hour >= 7 && hour < 8)
 		{
-			blend = 1/(float)minute;
+			blend = (float)minute/60.0f;
 			return (1-blend)*color_rise+blend*color_day;//blend
 		}
 		else if (hour >= 8 && hour < 17)
@@ -116,12 +116,12 @@ namespace scene
 		}
 		else if (hour >= 17 && hour < 18)
 		{
-			blend = 1/(float)minute;
+			blend = (float)minute/60.0f;
 			return (1-blend)*color_day+blend*color_dawn;//blend
 		}
 		else if (hour >= 18 && hour < 19)
 		{
-			blend = 1/(float)minute;
+			blend = (float)minute/60.0f;
 			return (1-blend)*color_dawn+blend*color_night;//blend		
 		}
 	}

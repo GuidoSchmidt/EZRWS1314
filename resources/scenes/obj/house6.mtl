@@ -1,5 +1,5 @@
 # Blender MTL File: 'house5.blend'
-# Material Count: 6
+# Material Count: 5
 
 newmtl Material
 Ns 96.078431
@@ -18,26 +18,16 @@ Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
 illum 2
-map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\house\house.tga
+map_Kd C:\Users\Andi\Dropbox\EZR-Documents\Test Model Krams Gedöns\house5\house 5\tex\stuff.tga
 
-newmtl None_stuff.tga
+newmtl None_house.tga
 Ns 0
 Ka 0.000000 0.000000 0.000000
 Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
 illum 2
-map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\house\stuff.tga
-
-newmtl _46b809b_dds
-Ns 96.078431
-Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.640000 0.640000
-Ks 0.500000 0.500000 0.500000
-Ni 1.000000
-d 1.000000
-illum 2
-map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\house\stuff.tga
+map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\house\house.jpg
 
 newmtl house
 Ns 96.078431
@@ -47,7 +37,7 @@ Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\house\house.tga
+map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\house\house.jpg
 
 newmtl roof
 Ns 96.078431
@@ -57,4 +47,4 @@ Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
-map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\house\roof.tga
+map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\house\roof.jpg

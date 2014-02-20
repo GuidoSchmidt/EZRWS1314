@@ -46,11 +46,11 @@ namespace renderer {
 		utils::Importer::instance()->deleteGeometryNode(0);
 		scene::SceneManager::instance()->deleteGeometryNode(0);
 
-		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/ship.obj");
+		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/ship.obj");
 		
 
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house5.dae");
-		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/house6.obj");
+		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/house6.obj");
 
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/baum_test.dae");
         //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
@@ -208,7 +208,7 @@ namespace renderer {
         GLuint forward_uniform_loc_mouse            = m_shaderProgram_forward->getUniform("mouse");
 
 		//! Sky shading
-        GLuint sky_uniform_loc_model        = m_shaderProgram_sky->getUniform("model");
+        GLuint sky_uniform_loc_model		    = m_shaderProgram_sky->getUniform("model");
         GLuint sky_uniform_loc_view             = m_shaderProgram_sky->getUniform("view");
         GLuint sky_uniform_loc_projection       = m_shaderProgram_sky->getUniform("projection");
         GLuint sky_uniform_loc_day_tex          = m_shaderProgram_sky->getUniform("day_tex");
@@ -226,21 +226,29 @@ namespace renderer {
 
         //scene::SceneManager::instance()->getLight(0)->setupShadowMapping(glm::vec2(512));
 
+		double mouse_x, mouse_y, old_x, old_y;
+		old_x = old_y = mouse_x = mouse_y = 0;
         while (m_context && m_context->isLive() && !glfwGetKey(m_context->getWindow(), GLFW_KEY_ESCAPE) )
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             
             //! simple camera movement
-            double mouse_x, mouse_y;
+            
+			
             float  mouse_correct_x, mouse_correct_y;
+			old_x=mouse_x;
+			old_y=mouse_y;
             glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
-            mouse_correct_x = ((mouse_x / m_context->getSize().x) * 2.0f) - 1.0f;
-            mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;
+  /*          mouse_correct_x = ((mouse_x / m_context->getSize().x) * 2.0f) - 1.0f;
+            mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;*/
+			mouse_correct_x = (((mouse_x-old_x) / m_context->getSize().x));// * 2.0f) - 1.0f;
+            mouse_correct_y = (((mouse_y-old_y) / m_context->getSize().y));// * 2.0f) - 1.0f;
             if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
             {
-                  m_scene_camera->Rotate(mouse_correct_x * camera_speed * 5.0f,
-                                         mouse_correct_y * camera_speed * 5.0f);
+                  m_scene_camera->Rotate(mouse_correct_x * camera_speed * 100,
+                                         mouse_correct_y * camera_speed * 100);
             }
+			
             if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W))
             {
                   m_scene_camera->MoveZ( camera_speed);
@@ -267,15 +275,57 @@ namespace renderer {
 			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
 			{
+				
+				sun->setMinute(sun->getMinute()-1);
 				if (sun->getMinute() == 0)
 					sun->setHour(sun->getHour()-1);
-				sun->setMinute(sun->getMinute()-1);
 			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
 			{
 				if (sun->getMinute() == 59)
 					sun->setHour(sun->getHour()+1);
 				sun->setMinute(sun->getMinute()+1);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_KP_2))
+			{
+				sun->setHour(0);
+				sun->setMinute(0);
+
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_KP_1))
+			{
+				sun->setHour(3);
+				sun->setMinute(0);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_KP_4))
+			{
+				sun->setHour(6);
+				sun->setMinute(0);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_KP_7))
+			{
+				sun->setHour(9);
+				sun->setMinute(0);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_KP_8))
+			{
+				sun->setHour(12);
+				sun->setMinute(0);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_KP_9))
+			{
+				sun->setHour(15);
+				sun->setMinute(0);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_KP_6))
+			{
+				sun->setHour(18);
+				sun->setMinute(0);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_KP_3))
+			{
+				sun->setHour(21);
+				sun->setMinute(0);
 			}
             if(glfwGetKey(m_context->getWindow(), GLFW_KEY_I))
             {

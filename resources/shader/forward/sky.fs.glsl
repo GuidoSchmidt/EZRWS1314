@@ -23,7 +23,7 @@ uniform vec3 color;
 //*** Main *********************************************************************
 void main(void)
 {
-    fragcolor = mix(texture(day_tex,vsUV),texture(night_tex,vsUV),blend);
+    fragcolor = mix(texture(night_tex,vsUV),texture(day_tex,vsUV),blend);
     fragcolor.a = 1;
     //fragcolor.rgb = vec3(1,0,0);
 }

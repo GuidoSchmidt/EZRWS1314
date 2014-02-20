@@ -95,6 +95,6 @@ void main(void)
 	vec3 shaded = phong(vsPosition, lightpos, normal, diffuse_color, specular_color, shininess);
 
     // fragcolor.rgb  = vsN;
-    //fragcolor.a = 0;
+    // fragcolor.a = 0;
     fragcolor = vec4(shaded, 0.0);
 }
