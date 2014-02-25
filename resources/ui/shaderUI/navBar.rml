@@ -1,0 +1,18 @@
+<rml>
+<head>
+    <link type="text/template" href="./templates/navBarT.rml"/>
+    <title>ROCKETTut</title>
+    <style>
+        body
+        {
+            width: 1024px;
+            height: 35px;
+
+            margin: auto;
+        }
+    </style>
+</head>
+<body template="window">
+
+</body>
+</rml>

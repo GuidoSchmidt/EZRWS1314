@@ -41,14 +41,13 @@
 
 
 static timeval start_time;
-static GLFWwindow* glfwindow = NULL;
 static ShellFileInterface* file_interface = NULL;
-
+static GLFWwindow* glfwindow = NULL;
 
 bool Shell::Initialise(const Rocket::Core::String& path)
 {
 	gettimeofday(&start_time, NULL);
-	InputX11::Initialise();
+    InputX11::Initialise();
 
 	glfwInit();
 

@@ -42,7 +42,7 @@
 class InputX11 : public Input
 {
 public:
-	static bool Initialise();
+    static bool Initialise();
 	static void Shutdown();
 
 	/// Process the windows message

@@ -24,9 +24,6 @@ namespace renderer {
 			//!\brief Destructor
 			~Context();
 
-            //! \brief Initalized the context to use UI
-            bool InitalizeUsingUI(void);
-
 			//! \brief Swaps the back and the front buffer
 			void swapBuffers(void);
 

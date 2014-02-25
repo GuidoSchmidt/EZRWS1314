@@ -12,7 +12,7 @@ namespace ui
     void UserInterface::Initalize(Rocket::Core::String& filepath)
     {
         gettimeofday(&m_start_time, 0);
-        InputX11::Initialise();
+        //InputX11::Initialise();
 
         glfwInit();
 

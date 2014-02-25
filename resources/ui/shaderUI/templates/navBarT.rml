@@ -1,0 +1,7 @@
+<template name="window">
+<head>
+    <link type="text/css" href="../rcss/navBar.rcss"/>
+</head>
+<body class="window">
+</body>
+</template>

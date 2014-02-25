@@ -1,0 +1,24 @@
+body
+{
+    font-family: Delicious;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 15;
+    color: white;
+}
+
+body.window
+{
+	//background: black;
+    background-decorator: image;
+    background-image: ../img/navigation.tga 0px 0px 1024px 38px;
+}
+
+body.window:hover{
+	//background: red;
+}
+
+div
+{
+    display: block;
+}

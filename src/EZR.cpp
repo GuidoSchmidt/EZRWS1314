@@ -8,12 +8,8 @@ Rocket::Core::Context* context = 0;
 
 void GameLoop()
 {
-    //glClear(GL_COLOR_BUFFER_BIT);
-
     context->Update();
     context->Render();
-
-    //Shell::FlipBuffers();
 }
 
 int main(void)
@@ -93,11 +89,18 @@ int main(void)
         Shell::LoadFonts(RESOURCES_PATH "/ui/fonts/");
 
         // Load and show the tutorial document.
-        Rocket::Core::ElementDocument* document = context->LoadDocument(RESOURCES_PATH "/ui/tutorial.rml");
-        if (document != NULL)
+        Rocket::Core::ElementDocument* textBox = context->LoadDocument(RESOURCES_PATH "/ui/shaderUI/mainWindow.rml");
+        Rocket::Core::ElementDocument* navBar = context->LoadDocument(RESOURCES_PATH "/ui/shaderUI/navBar.rml");
+
+        if (textBox != 0 || navBar != 0)
         {
-            document->Show();
-            document->RemoveReference();
+            textBox->Show();
+            textBox->SetProperty("left", Rocket::Core::Property(140, Rocket::Core::Property::PX));
+            textBox->SetProperty("top", Rocket::Core::Property(150, Rocket::Core::Property::PX));
+
+            navBar->Show();
+            navBar->SetProperty("left", Rocket::Core::Property(0, Rocket::Core::Property::PX));
+            navBar->SetProperty("top", Rocket::Core::Property(0, Rocket::Core::Property::PX));
         }
 
 

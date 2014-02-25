@@ -9,7 +9,9 @@ body
 
 body.window
 {
-	background-color: red;
+	background-color: black;
+	padding: 20px;
+	opacity: .5;
 }
 
 div

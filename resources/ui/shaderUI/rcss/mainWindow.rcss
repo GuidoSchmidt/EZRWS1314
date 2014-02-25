@@ -1,0 +1,30 @@
+body
+{
+    font-family: Delicious;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 15;
+    color: white;
+}
+
+body.window
+{
+    background-decorator: image;
+    background-image: ../img/textbox.tga 0px 0px 505px 431px;
+}
+
+div
+{
+    display: block;
+}
+
+div#title
+{
+    /*border-top: 1px rgb(100%, 0%, 0%);
+    border-right: 2px rgb(100%, 0%, 0%);
+    border-bottom: 2px rgb(100%, 0%, 0%);
+    border-left: 2px rgb(100%, 0%, 0%);*/
+
+    width: 93px;
+    height: 28px;
+}

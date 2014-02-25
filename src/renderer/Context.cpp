@@ -27,17 +27,6 @@ namespace renderer {
         glfwTerminate();
     }
 
-    bool InitalizeUsingUI(void)
-    {
-        gettimeofday(&start_time, NULL);
-        InputX11::Initialise();
-
-        file_interface = new ShellFileInterface(RESOURCES_PATH "/ui/");
-        Rocket::Core::SetFileInterface(file_interface);
-
-        return true;
-    }
-
 	void Context::createWindow(std::string title)
     {
 		FILE *stream ;

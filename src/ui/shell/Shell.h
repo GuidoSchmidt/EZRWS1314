@@ -37,6 +37,8 @@
 #define PATH_SEPARATOR	":"
 #endif
 
+#include "../../renderer/Renderer.h"
+
 /**
 	Shell functions for creating windows, attaching OpenGL and handling input in a platform independent way.
 	@author Lloyd Weehuizen
@@ -47,7 +49,7 @@ class Shell
 public:
 	/// Initialise the shell.
 	/// @param[in] path The path (relative to the current working directory) of the application's working directory.
-	static bool Initialise(const Rocket::Core::String& path);
+    static bool Initialise(const Rocket::Core::String& path);
 	/// Shutdown the shell.
 	static void Shutdown();
 

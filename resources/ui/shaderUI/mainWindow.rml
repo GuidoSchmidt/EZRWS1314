@@ -1,0 +1,22 @@
+<rml>
+<head>
+    <link type="text/template" href="templates/mainWindowT.rml"/>
+    <title>Tessellation</title>
+    <style>
+        body
+        {
+            width: 505px;
+            height: 431px;
+
+            margin: auto;
+        }
+    </style>
+</head>
+<body template="window">
+
+    <handle move_target="#document">
+            <div id="title"></div>
+    </handle>
+
+</body>
+</rml>
