@@ -8,6 +8,7 @@
 #include "Context.h"
 #include "FrameBufferObject.h"
 #include "ShaderProgram.h"
+#include "../ui/Userinterface.h"
 
 namespace renderer {		
 	//! @class Renderer
@@ -20,9 +21,6 @@ namespace renderer {
 
 			Context* m_context;
 			ShaderProgram* m_shaderProgram_forward;
-
-			//Rocket::Core::Context* context;
-			//Shell* shell;
 
 			//! \brief Constructor (singleton)
 			Renderer(void);
@@ -44,31 +42,7 @@ namespace renderer {
             void setRenderContext(Context& context);
 
 			//! \brief Calls the render loop
-			void renderloop(void);
-
-			//! Input handling
-			/*
-			//! Mouse callback function
-			void mouseCallback_implementation(int button, int action);
-			static void mouseCallback(GLFWwindow* window, int button, int action, int mods)
-			{
-				static Renderer* renderer = &Renderer::instance();
-				renderer->mouseCallback_implementation(button, action);
-			}
-			//! Keyboard callback function
-			void keyboardCallback_implementation(int key, int action);
-			static void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
-			{
-				static Renderer* renderer = &Renderer::instance();
-				renderer->keyboardCallback_implementation(key, action);
-			}
-			void cursorCallback_implementation(double mousex, double mousey);
-			static void cursorCallback(GLFWwindow* window, double mousex, double mousey)
-			{
-				static Renderer* renderer = &Renderer::instance();
-				renderer->cursorCallback_implementation(mousex, mousey);
-			}
-			*/
+            void renderloop(void);
 	};
 }
 #endif //H_RENDERER

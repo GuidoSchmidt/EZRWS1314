@@ -30,7 +30,6 @@
 
 #include <Rocket/Core/Types.h>
 #include <Rocket/Core/SystemInterface.h>
-#include <GL/glew.h>
 
 #ifdef ROCKET_PLATFORM_WIN32
 #define PATH_SEPARATOR	";"

@@ -28,7 +28,7 @@
 #ifndef ROCKETSHELLRENDERINTERFACE_H
 #define ROCKETSHELLRENDERINTERFACE_H
 
-#include <Rocket/Core/RenderInterface.h>
+#include "Rocket/Core/RenderInterface.h"
 #include "ShellOpenGL.h"
 
 /**

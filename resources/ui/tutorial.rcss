@@ -1,0 +1,18 @@
+body
+{
+	font-family: Delicious;
+	font-weight: normal;
+	font-style: normal;
+	font-size: 15;
+	color: white;
+}
+
+body.window
+{
+	background-color: red;
+}
+
+div
+{
+    display: block;
+}
