@@ -89,7 +89,7 @@ int main(void)
         renderer::Renderer::instance()->renderloop();
 
         // LibRocket input handling
-        int x, y = 0;
+        int x = 0, y = 0;
         int key_modifier_state = -1;
         double xpos, ypos;
         glfwGetCursorPos(glfwindow, &xpos, &ypos);
@@ -100,6 +100,7 @@ int main(void)
            glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS ||
            glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_3) == GLFW_PRESS)
         {
+			//std::cout << "Mouse Press" << std::endl;
             if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_1))
                 button_index = 0;
             if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2))
@@ -108,19 +109,22 @@ int main(void)
                 button_index = 1;
 
             context->ProcessMouseButtonDown(button_index, key_modifier_state);
-        }
-        else if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_1) == GLFW_RELEASE ||
-                glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2) == GLFW_RELEASE ||
-                glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_3) == GLFW_RELEASE)
-        {
-            if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_1))
-                button_index = 0;
-            if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2))
-                button_index = 2;
-            if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_3))
-                button_index = 1;
+			
+			if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_1) == GLFW_RELEASE
+				   // glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2) == GLFW_RELEASE ||
+				   // glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_3) == GLFW_RELEASE
+				   )
+			{
+				//std::cout << "Mouse Release" << std::endl;
+				if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_1))
+					button_index = 0;
+				if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2))
+					button_index = 2;
+				if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_3))
+					button_index = 1;
 
-            context->ProcessMouseButtonUp(button_index, key_modifier_state);
+				context->ProcessMouseButtonUp(button_index, key_modifier_state);
+			}
         }
 
 

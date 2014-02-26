@@ -168,5 +168,5 @@ float Shell::GetElapsedTime()
 //	double usec = now.tv_usec - start_time.tv_usec;
 //	double result = sec + (usec / 1000000.0);
 
-	return (float)0;
+	return static_cast<float>(glfwGetTime());
 }

@@ -39,7 +39,7 @@ div#title
     border-left: 2px rgb(100%, 0%, 0%);*/
     font-size  : 20px;
     background : rgba(255, 255, 255, 50);
-    color      : red;
+    color      : rgba(255, 255, 255, 200);
     padding    : 2px 12px;
 }
 
