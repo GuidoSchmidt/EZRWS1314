@@ -8,7 +8,6 @@
 #include "Context.h"
 #include "FrameBufferObject.h"
 #include "ShaderProgram.h"
-#include "../ui/Userinterface.h"
 
 namespace renderer {		
 	//! @class Renderer

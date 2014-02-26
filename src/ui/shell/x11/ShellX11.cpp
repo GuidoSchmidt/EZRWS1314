@@ -33,6 +33,7 @@
 #include <stdio.h>
 #include <GLFW/glfw3.h>
 #include <Rocket/Core.h>
+#include "../../../utils/Common.h"
 
 #include "../Shell.h"
 #include "../ShellFileInterface.h"
@@ -42,7 +43,7 @@
 
 static timeval start_time;
 static ShellFileInterface* file_interface = NULL;
-static GLFWwindow* glfwindow = NULL;
+GLFWwindow* glfwindow = 0;
 
 bool Shell::Initialise(const Rocket::Core::String& path)
 {
@@ -108,15 +109,7 @@ void Shell::FlipBuffers()
 
 void Shell::EventLoop(ShellIdleFunction idle_function)
 {
-	while(!glfwWindowShouldClose(glfwindow))
-	{
-        renderer::Renderer::instance()->renderloop();
 
-		idle_function();
-
-        glfwSwapBuffers(glfwindow);
-		glfwPollEvents();
-    }
 }
 
 void Shell::RequestExit()

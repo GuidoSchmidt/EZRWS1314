@@ -1,22 +1,19 @@
 <rml>
 <head>
     <link type="text/template" href="templates/mainWindowT.rml"/>
-    <title>Tessellation</title>
-    <style>
-        body
-        {
-            width: 505px;
-            height: 431px;
-
-            margin: auto;
-        }
-    </style>
+    <link type="text/css" href="./rcss/mainWindow.rcss" />
+    <title>Shader UI</title>
 </head>
-<body template="window">
-
+<body id="main" template="window">
     <handle move_target="#document">
-            <div id="title"></div>
     </handle>
-
+    <div id="title">Title</div>
+    <div id="content">
+    void main(void)
+    {
+        vec3  foo = vec3(42, 42, 42);
+        float bar = 1337.0;
+    }
+    </div>
 </body>
 </rml>

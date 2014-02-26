@@ -1,24 +1,40 @@
 body
 {
-    font-family: Delicious;
-    font-weight: normal;
+    font-family: Roboto;
+    font-weight: Bold;
     font-style: normal;
     font-size: 15;
     color: white;
+    width: 1024px;
+    height: 35px;
 }
 
 body.window
 {
-	//background: black;
-    background-decorator: image;
-    background-image: ../img/navigation.tga 0px 0px 1024px 38px;
+    width       : 1024px;
+    height      : 32px;
+    background  : rgba(0, 0, 0, 128);
+    line-height : 30px;
 }
 
-body.window:hover{
-	//background: red;
+div {
+    color: white;
+    padding: 2px 60px;
 }
 
-div
-{
-    display: block;
+/* Colors are in LAB: 58, 33, -88 */
+div#vertex:hover {
+    background: rgb(255, 0, 112);
+}
+
+div#tesselation:hover {
+    background: rgb(213, 109, 0);
+}
+
+div#geometry:hover {
+    background: rgb(0, 171, 99);
+}
+
+div#fragment:hover {
+    background: rgb(99, 123, 255);
 }

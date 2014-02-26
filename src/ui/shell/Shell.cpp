@@ -33,11 +33,15 @@ Rocket::Core::String Shell::executable_path;
 /// Loads the default fonts from the given path.
 void Shell::LoadFonts(const char* directory)
 {
-	Rocket::Core::String font_names[4];
-	font_names[0] = "Delicious-Roman.otf";
-	font_names[1] = "Delicious-Italic.otf";
-	font_names[2] = "Delicious-Bold.otf";
-	font_names[3] = "Delicious-BoldItalic.otf";
+    Rocket::Core::String font_names[7];
+    font_names[0] = "Cousine-Regular.ttf";
+    font_names[1] = "Cousine-Italic.ttf";
+    font_names[2] = "Cousine-Bold.ttf";
+    font_names[3] = "Cousine-BoldItalic.ttf";
+
+    font_names[4] = "Roboto-Thin.ttf";
+    font_names[5] = "Roboto-Light.ttf";
+    font_names[6] = "Roboto-Medium.ttf";
 
 	for (int i = 0; i < sizeof(font_names) / sizeof(Rocket::Core::String); i++)
 	{

@@ -16,5 +16,13 @@
     #include <GL/glew.h>
     #include <GLFW/glfw3.h>
     #include <glm/glm.hpp>
+    #include <Rocket/Core.h>
+
+extern GLFWwindow *glfwindow;
+
+//! GUI elements
+extern Rocket::Core::ElementDocument *textBox;
+extern Rocket::Core::ElementDocument *navBar;
+
 
 #endif //COMMON_H

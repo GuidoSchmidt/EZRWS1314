@@ -25,7 +25,8 @@
  *
  */
 
-#include "ShellRenderInterfaceOpenGL.h"
+#include "../utils/Common.h"
+#include "RenderInterfaceOpenGL.h"
 #include <Rocket/Core.h>
 
 #define GL_CLAMP_TO_EDGE 0x812F

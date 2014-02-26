@@ -33,10 +33,10 @@
 #include <X11/Xlib.h>
 #include <X11/keysym.h>
 #include <X11/Xutil.h>
+#include "../../../utils/Common.h"
 
 static void InitialiseKeymap();
 static int GetKeyModifierState(int x_state);
-renderer::Context* render_context = 0;
 
 static const int KEYMAP_SIZE = 256;
 static Rocket::Core::Input::KeyIdentifier key_identifier_map[KEYMAP_SIZE];

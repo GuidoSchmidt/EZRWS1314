@@ -6,7 +6,7 @@
 #include <Rocket/Core.h>
 #include <Rocket/Debugger.h>
 
-#include "shell/ShellRenderInterfaceOpenGL.h"
+#include "RenderInterfaceOpenGL.h"
 #include "shell/Shell.h"
 #include "shell/Input.h"
 

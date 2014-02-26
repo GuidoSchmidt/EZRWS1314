@@ -1,18 +1,13 @@
 <rml>
 <head>
     <link type="text/template" href="./templates/navBarT.rml"/>
-    <title>ROCKETTut</title>
-    <style>
-        body
-        {
-            width: 1024px;
-            height: 35px;
-
-            margin: auto;
-        }
-    </style>
+    <link type="text/css" href="./rcss/navBar.rcss" />
+    <title>Navbar</title>
 </head>
 <body template="window">
-
+    <div id="vertex">Vertex</div>
+    <div id="tesselation">Tesselation</div>
+    <div id="geometry">Geometry</div>
+    <div id="fragment">Fragment</div>
 </body>
 </rml>

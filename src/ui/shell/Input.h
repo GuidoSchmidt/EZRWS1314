@@ -53,9 +53,9 @@ public:
 	/// @param[in] key_modifier_state The configuration of the key modifiers.
 	/// @return The character code.
 	static Rocket::Core::word GetCharacterCode(Rocket::Core::Input::KeyIdentifier key_identifier, int key_modifier_state);
+    static Rocket::Core::Context* context;
 
 protected:
-	static Rocket::Core::Context* context;
 };
 
 #endif

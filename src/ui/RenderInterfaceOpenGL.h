@@ -29,7 +29,7 @@
 #define ROCKETSHELLRENDERINTERFACE_H
 
 #include "Rocket/Core/RenderInterface.h"
-#include "ShellOpenGL.h"
+//#include "ShellOpenGL.h"
 
 /**
 	Low level OpenGL render interface for Rocket

@@ -89,7 +89,7 @@ private:
 	static Rocket::Core::String executable_path;
 };
 
-#include "ShellRenderInterfaceOpenGL.h"
+#include "../RenderInterfaceOpenGL.h"
 #include "ShellSystemInterface.h"
 
 #endif
