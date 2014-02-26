@@ -28,7 +28,7 @@
 #ifndef INPUTX11_H
 #define INPUTX11_H
 
-#include <X11/Xlib.h>
+//#include <X11/Xlib.h>
 #include "../Input.h"
 
 /**
@@ -46,7 +46,7 @@ public:
 	static void Shutdown();
 
 	/// Process the windows message
-	static void ProcessXEvent(Display* display, const XEvent& event);
+	//static void ProcessXEvent(Display* display, const XEvent& event);
 };
 
 #endif

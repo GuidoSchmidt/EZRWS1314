@@ -17,5 +17,7 @@ void ClickListener::ProcessEvent(Rocket::Core::Event& event)
 
         Rocket::Core::Context* context = event.GetTargetElement()->GetContext();
         context->GetDocument("main")->GetElementById("title")->SetInnerRML(shader_name);
+
+		std::cout << "CLICK" << std::endl;
     }
 }

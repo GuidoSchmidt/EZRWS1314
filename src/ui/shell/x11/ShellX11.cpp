@@ -27,9 +27,9 @@
 
 #include "../../../renderer/Renderer.h"
 #include <sys/types.h>
-#include <sys/time.h>
+//#include <sys/time.h>
 #include <time.h>
-#include <unistd.h>
+//#include <unistd.h>
 #include <stdio.h>
 #include <GLFW/glfw3.h>
 #include <Rocket/Core.h>
@@ -41,13 +41,13 @@
 #include "InputX11.h"
 
 
-static timeval start_time;
+//static timeval start_time;
 static ShellFileInterface* file_interface = NULL;
 GLFWwindow* glfwindow = 0;
 
 bool Shell::Initialise(const Rocket::Core::String& path)
 {
-	gettimeofday(&start_time, NULL);
+	//gettimeofday(&start_time, NULL);
     InputX11::Initialise();
 
 	glfwInit();
@@ -160,13 +160,13 @@ void Shell::Log(const char* fmt, ...)
 // Returns the seconds that have elapsed since program startup.
 float Shell::GetElapsedTime() 
 {
-	struct timeval now;
+//	struct timeval now;
 
-	gettimeofday(&now, NULL);
+	//gettimeofday(&now, NULL);
 
-	double sec = now.tv_sec - start_time.tv_sec;
-	double usec = now.tv_usec - start_time.tv_usec;
-	double result = sec + (usec / 1000000.0);
+//	double sec = now.tv_sec - start_time.tv_sec;
+//	double usec = now.tv_usec - start_time.tv_usec;
+//	double result = sec + (usec / 1000000.0);
 
-	return (float)result;
+	return (float)0;
 }

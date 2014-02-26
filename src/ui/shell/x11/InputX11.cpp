@@ -30,20 +30,20 @@
 #include <Rocket/Core/Input.h>
 #include <Rocket/Debugger.h>
 #include "../Shell.h"
-#include <X11/Xlib.h>
-#include <X11/keysym.h>
-#include <X11/Xutil.h>
+//#include <X11/Xlib.h>
+//#include <X11/keysym.h>
+//#include <X11/Xutil.h>
 #include "../../../utils/Common.h"
 
-static void InitialiseKeymap();
-static int GetKeyModifierState(int x_state);
+//static void InitialiseKeymap();
+//static int GetKeyModifierState(int x_state);
 
-static const int KEYMAP_SIZE = 256;
-static Rocket::Core::Input::KeyIdentifier key_identifier_map[KEYMAP_SIZE];
+//static const int KEYMAP_SIZE = 256;
+//static Rocket::Core::Input::KeyIdentifier key_identifier_map[KEYMAP_SIZE];
 
 bool InputX11::Initialise()
 {
-	InitialiseKeymap();
+	//InitialiseKeymap();
 	return true;
 }
 
@@ -51,6 +51,7 @@ void InputX11::Shutdown()
 {
 }
 
+/*
 void InputX11::ProcessXEvent(Display* display, const XEvent& event)
 {
 	// Process all mouse and keyboard events
@@ -182,13 +183,13 @@ static void InitialiseKeymap()
 //	key_identifier_map[XK_Zenkaku & 0xFF] = Rocket::Core::Input::; /* to Zenkaku */
 //	key_identifier_map[XK_Hankaku & 0xFF] = Rocket::Core::Input::; /* to Hankaku */
 //	key_identifier_map[XK_Zenkaku_Hankaku & 0xFF] = Rocket::Core::Input::; /* Zenkaku/Hankaku toggle */
-	key_identifier_map[XK_Touroku & 0xFF] = Rocket::Core::Input::KI_OEM_FJ_TOUROKU;
-	key_identifier_map[XK_Massyo & 0xFF] = Rocket::Core::Input::KI_OEM_FJ_MASSHOU;
+//	key_identifier_map[XK_Touroku & 0xFF] = Rocket::Core::Input::KI_OEM_FJ_TOUROKU;
+//	key_identifier_map[XK_Massyo & 0xFF] = Rocket::Core::Input::KI_OEM_FJ_MASSHOU;
 //	key_identifier_map[XK_Kana_Lock & 0xFF] = Rocket::Core::Input::; /* Kana Lock */
 //	key_identifier_map[XK_Kana_Shift & 0xFF] = Rocket::Core::Input::; /* Kana Shift */
 //	key_identifier_map[XK_Eisu_Shift & 0xFF] = Rocket::Core::Input::; /* Alphanumeric Shift */
 //	key_identifier_map[XK_Eisu_toggle & 0xFF] = Rocket::Core::Input::; /* Alphanumeric toggle */
-
+/*
 	key_identifier_map[XK_Home & 0xFF] = Rocket::Core::Input::KI_HOME;
 	key_identifier_map[XK_Left & 0xFF] = Rocket::Core::Input::KI_LEFT;
 	key_identifier_map[XK_Up & 0xFF] = Rocket::Core::Input::KI_UP;
@@ -312,3 +313,4 @@ static void InitialiseKeymap()
 	key_identifier_map[XK_y & 0xFF] = Rocket::Core::Input::KI_Y;
 	key_identifier_map[XK_z & 0xFF] = Rocket::Core::Input::KI_Z;
 }
+*/

@@ -20,7 +20,7 @@ void GameLoop()
 
 int main(void)
 {
-	renderer::Renderer* main_renderer;
+    renderer::Renderer* main_renderer;
     main_renderer = renderer::Renderer::instance();
 
     if(!glfwInit())
@@ -90,12 +90,12 @@ int main(void)
 
         // LibRocket input handling
         int x, y = 0;
-        int key_modifier_state = 0;
+        int key_modifier_state = -1;
         double xpos, ypos;
         glfwGetCursorPos(glfwindow, &xpos, &ypos);
         context->ProcessMouseMove(static_cast<int>(xpos), static_cast<int>(ypos), key_modifier_state);
 
-        int button_index;
+        int button_index = 1;
         if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS ||
            glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2) == GLFW_PRESS ||
            glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_3) == GLFW_PRESS)
@@ -138,5 +138,5 @@ int main(void)
     Shell::CloseWindow();
     Shell::Shutdown();
 
-	return 0;
+    return 0;
 }

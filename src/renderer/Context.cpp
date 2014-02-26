@@ -9,11 +9,11 @@
 #include "../ui/shell/x11/InputX11.h"
 #include "../ui/shell/ShellFileInterface.h"
 #include <sys/types.h>
-#include <sys/time.h>
+//#include <sys/time.h>
 #include <time.h>
 #include <Rocket/Core/Core.h>
 
-static timeval start_time;
+//static timeval start_time;
 static ShellFileInterface* file_interface = NULL;
 
 namespace renderer {
