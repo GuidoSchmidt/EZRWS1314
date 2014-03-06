@@ -110,9 +110,9 @@ int main(void)
 
             context->ProcessMouseButtonDown(button_index, key_modifier_state);
 			
-			if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_1) == GLFW_RELEASE
-				   // glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2) == GLFW_RELEASE ||
-				   // glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_3) == GLFW_RELEASE
+            if(glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_1) == GLFW_RELEASE ||
+               glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2) == GLFW_RELEASE ||
+               glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_3) == GLFW_RELEASE
 				   )
 			{
 				//std::cout << "Mouse Release" << std::endl;

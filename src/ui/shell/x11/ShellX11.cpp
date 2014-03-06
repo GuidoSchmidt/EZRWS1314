@@ -69,7 +69,7 @@ void Shell::Shutdown()
 bool Shell::OpenWindow(const char* name, bool attach_opengl)
 {
 
-	glfwindow = glfwCreateWindow(1024, 768, "GLFW", 0, 0);
+    glfwindow = glfwCreateWindow(1024.0f, 768.0f, "GLFW", 0, 0);
 	glfwMakeContextCurrent(glfwindow);
 
 	// Set up the GL state.
