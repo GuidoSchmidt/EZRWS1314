@@ -1,6 +1,6 @@
 //! @file Light.cpp
 #include "Light.h"
-#include "sun.h"
+#include "Sun.h"
 
 
 namespace scene
