@@ -18,7 +18,7 @@ namespace renderer {
 	namespace GLSL{
 		enum GLSLShaderType{
 			VERTEX = 0,
-			FRAGMENT = 1,
+            FRAGMENT = 1,
 			GEOMETRY = 2,
 			TESS_CONTROL = 3,
 			TESS_EVALUATION = 4
