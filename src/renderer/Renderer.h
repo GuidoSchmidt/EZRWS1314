@@ -42,6 +42,9 @@ namespace renderer {
 
 			//! \brief Calls the render loop
             void renderloop(void);
+
+            //! \brief Returns a shader of a shader program
+            ShaderProgram* getShaderByID(const unsigned int id);
 	};
 }
 #endif //H_RENDERER

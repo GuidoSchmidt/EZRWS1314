@@ -321,4 +321,28 @@ namespace renderer
 		return m_shaderProgram_ID;
 	}
 
+    void ShaderProgram::getShaderCodeOf(GLSL::GLSLShaderType shaderType)
+    {
+        switch(shaderType)
+        {
+            case GLSL::VERTEX:
+
+            break;
+            case GLSL::FRAGMENT:
+
+
+            break;
+            case GLSL::GEOMETRY:
+
+
+            break;
+            case GLSL::TESS_CONTROL:
+
+
+            break;
+            case GLSL::TESS_EVALUATION:
+
+            break;
+        }
+    }
 }

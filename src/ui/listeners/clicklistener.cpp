@@ -6,6 +6,7 @@ static ClickListener click_listener;
 
 void ClickListener::RegisterClickableContainer(Rocket::Core::Element* element)
 {
+    m_renderer = renderer::Renderer::instance();
     element->AddEventListener("click", &click_listener);
 }
 

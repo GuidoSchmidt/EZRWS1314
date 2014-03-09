@@ -48,4 +48,9 @@ namespace renderer {
 
         m_framecount++;
     }
+
+    ShaderProgram* Renderer::getShaderByID(const unsigned int id)
+    {
+
+    }
 }

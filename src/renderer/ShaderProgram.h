@@ -134,6 +134,9 @@ namespace renderer {
 
 			//! \brief Prints all active attributes
 			void PrintActiveAttributes(void);
+
+            //! \brief Returns the code of a shader
+            void getShaderCodeOf(GLSL::GLSLShaderType shaderType);
 	};
 }
 #endif //H_SHADERPROGRAM
