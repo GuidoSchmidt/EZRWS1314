@@ -2,6 +2,8 @@ FILE (GLOB_RECURSE project_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
 SET (project_MOC_HEADERS app.h)
 SET (project_BIN ${PROJECT_NAME})
 
+set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs")
+
 include_directories(
     ${OpenGL3_INCLUDE_PATH}
     ${GLEW_INCLUDE_PATH}

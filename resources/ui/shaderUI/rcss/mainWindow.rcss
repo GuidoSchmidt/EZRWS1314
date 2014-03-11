@@ -1,0 +1,88 @@
+body
+{
+    font-family: Cousine;
+    font-weight: normal;
+    font-style: normal;
+    font-size: 15;
+    color: white;
+    width: 612px;
+    left: 412px;
+    top: 32px;
+    height: 736;
+}
+
+body.window
+{
+    /*background-decorator: image;*/
+    /*background-image: ../img/textbox.tga 0px 0px 505px 431px;*/
+    background : rgba(0, 0, 0, 20);
+    opacity    : 0.1;
+}
+
+body.window:hover {
+    background: rgba(0, 0, 0, 128);
+    opacity   : 1.0;
+}
+
+div
+{
+    display: block;
+}
+
+div#title
+{
+    font-family: Roboto;
+    font-weight: Bold;
+    /*border-top: 1px rgb(100%, 0%, 0%);
+    border-right: 2px rgb(100%, 0%, 0%);
+    border-bottom: 2px rgb(100%, 0%, 0%);
+    border-left: 2px rgb(100%, 0%, 0%);*/
+    font-size  : 20px;
+    background : rgba(255, 255, 255, 50);
+    color      : rgba(255, 255, 255, 200);
+    padding    : 2px 12px;
+}
+
+div#content {
+    font-size  : 12px;
+    padding    : 20px;
+    color: rgba(240, 240, 240, 220);
+}
+
+div.lN {
+    float: left;
+}
+
+div.line {
+    float: left;
+}
+
+div.comment {
+    color: rgba(128, 128, 128, 200);
+}
+
+span.whitespace {
+    padding-left: 35px;
+}
+
+div.version {
+    color: rgba(240, 20, 140, 220);
+}
+
+span.keyword {
+    color: rgba(20, 240, 140, 220);
+}
+
+span.function {
+    color: rgba(20, 140, 240, 220);
+}
+
+span.number {
+    color: rgba(220, 140, 160, 220); 
+}
+
+span.lineNumber {
+    color: rgba(220, 220, 220, 120);
+    background: rgba(100, 100, 100, 120);
+    padding-right: 15px; 
+}

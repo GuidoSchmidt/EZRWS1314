@@ -12,6 +12,8 @@ namespace renderer {
         m_fps = 0;
         m_current_time = 0.0;
         m_previous_time = 0.0;
+
+        init();
     }
 
     Renderer::~Renderer(void)
@@ -98,7 +100,6 @@ namespace renderer {
 		compositingPass->inputFBOs.push_back(gBuffer);
 		compositingPass->inputFBOs.push_back(sunlightFBO4);
 
-
 		slowExtractionPass = new CPUExtractionPass(fsq, WIDTH, HEIGHT);
 		slowExtractionPass->inputFBOs.push_back(compositingFBO);
 		slowExtractionPass->inputFBOs.push_back(downsampledExtractionFBO);
@@ -132,6 +133,7 @@ namespace renderer {
     {
         //! OpenGL settings
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+
         glEnable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_2D);
     }
@@ -445,6 +447,12 @@ namespace renderer {
             //! Swap buffers
             m_context->swapBuffers();
         }
+    }
+
+    std::string Renderer::getShaderSourceOf(GLSL::GLSLShaderType shaderType)
+    {
+        std::string code = m_shaderProgram_forward->getShaderCodeOf(shaderType);
+        return code;
     }
 
 	void Renderer::doTheSunlightEffect()

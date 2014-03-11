@@ -1,0 +1,13 @@
+<rml>
+<head>
+    <link type="text/template" href="templates/mainWindowT.rml"/>
+    <link type="text/css" href="./rcss/mainWindow.rcss" />
+    <title>Shader UI</title>
+</head>
+<body id="main" template="window">
+    <handle move_target="#document">
+    </handle>
+    <div id="title">Title</div>
+    <div id="content">Content</div>
+</body>
+</rml>

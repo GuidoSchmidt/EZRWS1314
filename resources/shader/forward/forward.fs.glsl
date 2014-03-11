@@ -77,7 +77,6 @@ vec3 phong(in vec3 position, in vec4 light, in vec3 normal, in vec3 diffuse_colo
 	vec3 shaded = ambient_term + diffuse_term + specular_term;
 	return clamp(shaded, 0.0, 1.0);
 }
-
 //*** Main *********************************************************************
 void main(void)
 {

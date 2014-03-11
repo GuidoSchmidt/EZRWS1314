@@ -1,0 +1,13 @@
+<rml>
+<head>
+    <link type="text/template" href="./templates/navBarT.rml"/>
+    <link type="text/css" href="./rcss/navBar.rcss" />
+    <title>Navbar</title>
+</head>
+<body template="window">
+    <div id="vertex">Vertex</div>
+    <div id="tesselation">Tesselation</div>
+    <div id="geometry">Geometry</div>
+    <div id="fragment">Fragment</div>
+</body>
+</rml>

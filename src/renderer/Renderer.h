@@ -77,9 +77,6 @@ namespace renderer {
 			scene::Geometry* skyNode;
 
 
-			//Rocket::Core::Context* context;
-			//Shell* shell;
-
 			//! \brief Constructor (singleton)
 			Renderer(void);
 
@@ -103,11 +100,13 @@ namespace renderer {
 			void setRenderContext(Context& context);
 
 			//! \brief Calls the render loop
-			void renderloop(void);
+            void renderloop(void);
 
 			void doTheSunlightEffect(void);
 
 			void switchExtractionStrategy();
+            //! \brief Returns the source code of a shader of a shader program
+            std::string getShaderSourceOf(GLSL::GLSLShaderType shaderType);
 	};
 }
 #endif //H_RENDERER
