@@ -39,8 +39,9 @@ namespace renderer {
 	{
 		private:
 			GLint m_shaderProgram_ID;
-			std::vector<GLint> m_shader_IDs;
-			std::vector<std::string> m_shader_sources;
+            std::map<GLSL::GLSLShaderType, GLint> m_shader_IDs;
+            //std::vector<std::string> m_shader_sources;
+            std::map<GLSL::GLSLShaderType, std::string> m_shader_sources;
 			bool m_islinked;
 			bool m_activeUniformsWritten;
 			bool m_activeAttributesWritten;
@@ -82,7 +83,7 @@ namespace renderer {
 			void ReloadAllShaders(void);
 
 			//! \brief Reloads a specific shader
-			void ReloadShader(int i);
+            void ReloadShader(GLSL::GLSLShaderType shaderType);
 
 			//! \brief Returns the program log
 			std::string Log(void);
@@ -136,7 +137,7 @@ namespace renderer {
 			void PrintActiveAttributes(void);
 
             //! \brief Returns the code of a shader
-            void getShaderCodeOf(GLSL::GLSLShaderType shaderType);
+            std::string getShaderCodeOf(GLSL::GLSLShaderType shaderType);
 	};
 }
 #endif //H_SHADERPROGRAM

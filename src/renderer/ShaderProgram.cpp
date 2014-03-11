@@ -11,6 +11,48 @@ namespace renderer
 
 	namespace GLSL
 	{
+        std::string ReadShaderSourceFormatted(std::string filename)
+        {
+            std::string shaderSrc;
+            std::string line;
+            std::string formatted;
+
+            std::string startTag;
+            std::string endTag = "</div>";
+
+            std::ifstream fileIn(filename.c_str());
+            if(fileIn.is_open()){
+                while(!fileIn.eof()){;
+                    getline(fileIn, line);
+
+                    if(line[0] == '/' && line[1] == '/')
+                    {
+                        startTag = "<div class='comment'>";
+                    }
+                    else if(line[0] == '#')
+                    {
+                        startTag = "<div class='version'>";
+                    }
+                    else
+                        startTag = "<div>";
+
+                    line += endTag + "\n";
+                    formatted = startTag + line;
+                    shaderSrc += formatted;
+
+                    std::cout << shaderSrc << std::endl;
+                }
+                fileIn.close();
+            }
+            else
+            {
+                std::cout << "ERROR (ShaderProgram): Unable to read shader source code from '";
+                std::cout << filename;
+                std::cout << "'\n";
+            }
+            return shaderSrc;
+        }
+
 		std::string ReadShaderSource(std::string filename)
 		{
 			std::string shaderSrc;
@@ -31,8 +73,6 @@ namespace renderer
 				std::cout << filename;
 				std::cout << "'\n";
 			}
-
-			//std::cout << shaderSrc << std::endl;
 			return shaderSrc;
 		}
 
@@ -84,20 +124,20 @@ namespace renderer
 
 	ShaderProgram::ShaderProgram(GLSL::GLSLShaderType shaderType0, std::string filename0, GLSL::GLSLShaderType shaderType1, std::string filename1)
 	{
-		m_shaderProgram_ID = glCreateProgram();
-		m_activeAttributesWritten = false;
-		m_activeUniformsWritten = false;
+        m_shaderProgram_ID = glCreateProgram();
+        m_activeAttributesWritten = false;
+        m_activeUniformsWritten = false;
 
-		m_shader_sources.push_back(filename0);
-		m_shader_sources.push_back(filename1);
+        m_shader_sources[shaderType0] = filename0;
+        m_shader_sources[shaderType1] = filename1;
 
 		std::cout << "\n-- SHADER PROGRAMM LOG --------------------------------------------------\n";
 
-		AddShader(shaderType0, m_shader_sources[0]);
-		AddShader(shaderType1, m_shader_sources[1]);
-		glAttachShader(m_shaderProgram_ID, m_shader_IDs[0]);
-		glAttachShader(m_shaderProgram_ID, m_shader_IDs[1]);
-		Link();
+        AddShader(shaderType0, m_shader_sources[shaderType0]);
+        AddShader(shaderType1, m_shader_sources[shaderType1]);
+        glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::VERTEX]);
+        glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::FRAGMENT]);
+        Link();
 
 		std::cout << "\n";
 	}
@@ -135,29 +175,25 @@ namespace renderer
 		glCompileShader(Shader_ID);
 		GLSL::PrintShaderInfoLog(Shader_ID);
 
-		m_shader_IDs.push_back(Shader_ID);
+        m_shader_IDs[shaderType] = Shader_ID;
 	}
 
 	void ShaderProgram::ReloadAllShaders(void)
 	{
-		for(unsigned int i=0; i < m_shader_sources.size(); i++)
-		{
-			std::string shaderSource = GLSL::ReadShaderSource(m_shader_sources[i]);
-			const char* shaderSourcePointer = shaderSource.c_str();
-			glShaderSource(m_shader_IDs[i], 1, &shaderSourcePointer, NULL);
-			glCompileShader(m_shader_IDs[i]);
-			GLSL::PrintShaderInfoLog(m_shader_IDs[i]);
-		}
-		Link();
+       ReloadShader(GLSL::VERTEX);
+       ReloadShader(GLSL::FRAGMENT);
+       ReloadShader(GLSL::GEOMETRY);
+       ReloadShader(GLSL::TESS_CONTROL);
+       ReloadShader(GLSL::TESS_EVALUATION);
 	}
 
-	void ShaderProgram::ReloadShader(int i)
+    void ShaderProgram::ReloadShader(GLSL::GLSLShaderType shaderType)
 	{
-		std::string shaderSource = GLSL::ReadShaderSource(m_shader_sources[i]);
+        std::string shaderSource = GLSL::ReadShaderSource(m_shader_sources[shaderType]);
 		const char* shaderSourcePointer = shaderSource.c_str();
-		glShaderSource(m_shader_IDs[i], 1, &shaderSourcePointer, NULL);
-		glCompileShader(m_shader_IDs[i]);
-		GLSL::PrintShaderInfoLog(m_shader_IDs[i]);
+        glShaderSource(m_shader_IDs[shaderType], 1, &shaderSourcePointer, NULL);
+        glCompileShader(m_shader_IDs[shaderType]);
+        GLSL::PrintShaderInfoLog(m_shader_IDs[shaderType]);
 		Link();
 	}
 
@@ -295,7 +331,8 @@ namespace renderer
 
 	void ShaderProgram::PrintActiveUniforms(void)
 	{
-		if(!m_activeUniformsWritten){
+        if(!m_activeUniformsWritten)
+        {
 			GLint maxLength, nUniforms;
 			glGetProgramiv(m_shaderProgram_ID, GL_ACTIVE_UNIFORMS, &nUniforms);
 			glGetProgramiv(m_shaderProgram_ID, GL_ACTIVE_UNIFORM_MAX_LENGTH, &maxLength);
@@ -321,28 +358,9 @@ namespace renderer
 		return m_shaderProgram_ID;
 	}
 
-    void ShaderProgram::getShaderCodeOf(GLSL::GLSLShaderType shaderType)
+    std::string ShaderProgram::getShaderCodeOf(GLSL::GLSLShaderType shaderType)
     {
-        switch(shaderType)
-        {
-            case GLSL::VERTEX:
-
-            break;
-            case GLSL::FRAGMENT:
-
-
-            break;
-            case GLSL::GEOMETRY:
-
-
-            break;
-            case GLSL::TESS_CONTROL:
-
-
-            break;
-            case GLSL::TESS_EVALUATION:
-
-            break;
-        }
+        std::string shaderSource = GLSL::ReadShaderSourceFormatted(m_shader_sources[shaderType]);
+        return shaderSource;
     }
 }

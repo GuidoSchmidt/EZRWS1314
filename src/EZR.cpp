@@ -14,14 +14,13 @@ Rocket::Core::Context* context = 0;
 
 void GameLoop()
 {
+    glDisable(GL_DEPTH_TEST);
     context->Update();
     context->Render();
 }
 
 int main(void)
 {
-    renderer::Renderer* main_renderer;
-    main_renderer = renderer::Renderer::instance();
 
     if(!glfwInit())
     {
@@ -31,13 +30,20 @@ int main(void)
         std::cout << "GLFW initalized!" << std::    endl;
     }
 
-
     // Generic OS initialisation, creates a window and attaches OpenGL.
     Shell::Initialise("../Samples/tutorial/template/");
     Shell::OpenWindow("Template Tutorial", true);
     //renderer::Context* m_context = new renderer::Context(glm::ivec2(1024, 768));
     //m_context->InitalizeUsingUI();
     //m_context->createWindow("TEST");
+
+    if(glewInit() != GLEW_OK)
+    {
+        //! Error handling
+        std::cerr << "ERROR (GLEW): Initialization failed!\n";
+    }
+    renderer::Renderer* main_renderer;
+    main_renderer = renderer::Renderer::instance();
 
     //! System interface
     UISystemInterface system_interface;

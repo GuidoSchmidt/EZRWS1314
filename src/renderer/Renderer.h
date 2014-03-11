@@ -43,8 +43,8 @@ namespace renderer {
 			//! \brief Calls the render loop
             void renderloop(void);
 
-            //! \brief Returns a shader of a shader program
-            ShaderProgram* getShaderByID(const unsigned int id);
+            //! \brief Returns the source code of a shader of a shader program
+            std::string getShaderSourceOf(GLSL::GLSLShaderType shaderType);
 	};
 }
 #endif //H_RENDERER

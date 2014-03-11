@@ -8,12 +8,6 @@
     <handle move_target="#document">
     </handle>
     <div id="title">Title</div>
-    <div id="content">
-    void main(void)
-    {
-        vec3  foo = vec3(42, 42, 42);
-        float bar = 1337.0;
-    }
-    </div>
+    <div id="content">Content</div>
 </body>
 </rml>

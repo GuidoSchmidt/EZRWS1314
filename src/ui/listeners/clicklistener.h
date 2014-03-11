@@ -14,7 +14,6 @@ class ClickListener : public Rocket::Core::EventListener
         static void RegisterClickableContainer(Rocket::Core::Element* element);
 
     protected:
-        renderer::Renderer *m_renderer;
         virtual void ProcessEvent(Rocket::Core::Event& event);
 };
 

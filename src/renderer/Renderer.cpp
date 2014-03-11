@@ -10,6 +10,7 @@ namespace renderer {
         m_fps = 0;
         m_current_time = 0.0;
         m_previous_time = 0.0;
+        m_shaderProgram_forward = 0;
 
         init();
     }
@@ -32,6 +33,9 @@ namespace renderer {
     void Renderer::init()
     {
         setupGL();
+
+        m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
+                                                    GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl");
     }
 
     void Renderer::setupGL(void)
@@ -49,8 +53,9 @@ namespace renderer {
         m_framecount++;
     }
 
-    ShaderProgram* Renderer::getShaderByID(const unsigned int id)
+    std::string Renderer::getShaderSourceOf(GLSL::GLSLShaderType shaderType)
     {
-
+        std::string code = m_shaderProgram_forward->getShaderCodeOf(shaderType);
+        return code;
     }
 }

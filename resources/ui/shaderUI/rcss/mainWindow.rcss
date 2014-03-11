@@ -16,12 +16,12 @@ body.window
     /*background-decorator: image;*/
     /*background-image: ../img/textbox.tga 0px 0px 505px 431px;*/
     background : rgba(0, 0, 0, 20);
-    color      : rgba(255, 255, 255, 20);
+    opacity    : 0.1;
 }
 
 body.window:hover {
     background: rgba(0, 0, 0, 128);
-    color: white;    
+    opacity   : 1.0;
 }
 
 div
@@ -44,6 +44,15 @@ div#title
 }
 
 div#content {
-    font-size  : 12px;
+    font-size  : 16px;
     padding    : 12px;
+    color: rgba(240, 240, 240, 220);
+}
+
+div.comment {
+    color: rgba(128, 128, 128, 200);
+}
+
+div.version {
+    color: rgba(240, 20, 140, 220);
 }
