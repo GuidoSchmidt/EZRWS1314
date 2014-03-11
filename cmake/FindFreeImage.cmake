@@ -24,7 +24,7 @@ IF (MINGW)
     )
 
 ELSEIF (MSVC)
-    FIND_PATH( FREEIMAGE_INCLUDE_PATH FreeImage.h
+    FIND_PATH( FREEIMAGE_INCLUDE_PATH FreeImage/
         ${DEPENDENCIES_PATH}/include
     )
 
@@ -37,7 +37,7 @@ ELSEIF (MSVC)
     foreach (CONFIGURATION_TYPE ${CMAKE_CONFIGURATION_TYPES})
         execute_process(COMMAND ${CMAKE_COMMAND}  -E  copy_if_different
             ${DEPENDENCIES_PATH}/bin/win/FreeImage.dll
-            ${PROJECT_BINARY_DIR}/bin/${CONFIGURATION_TYPE}/FreeImage.dll
+            ${PROJECT_BINARY_DIR}/bin/${CONFIGURATION_TYPE}
         )
     endforeach()
     

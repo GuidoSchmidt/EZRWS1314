@@ -10,13 +10,14 @@
 #include "./ui/listeners/ClickListener.h"
 #include <string>
 
-Rocket::Core::Context* context = 0;
+Rocket::Core::Context *context = 0;
+extern GLFWwindow *glfwindow;
 
 void GameLoop()
 {
     glDisable(GL_DEPTH_TEST);
-    context->Update();
-    context->Render();
+	context->Update();
+    //context->Render();
 }
 
 int main(void)
@@ -91,7 +92,7 @@ int main(void)
 
     while(!glfwWindowShouldClose(glfwindow))
     {
-        renderer::Renderer::instance()->renderloop();
+        //renderer::Renderer::instance()->renderloop();
 
         // LibRocket input handling
         int x = 0, y = 0;
@@ -132,9 +133,7 @@ int main(void)
 			}
         }
 
-
-        // Render loop
-        GameLoop();
+		GameLoop();
 
         glfwSwapBuffers(glfwindow);
         glfwPollEvents();

@@ -63,8 +63,8 @@ namespace renderer {
         //! \todo Create user interface
 
         //! \todo Use Context::getSize().x and .y!
-        int WIDTH = m_context->getSize().x;
-        int HEIGHT = m_context->getSize().y;
+		int WIDTH = 1024; // m_context->getSize().x;
+		int HEIGHT = 768; // m_context->getSize().y;
         //glm::vec2 nearFar = glm::vec2(0.1,.0);
         
         //Setup dat slim fboooooos
@@ -125,8 +125,6 @@ namespace renderer {
 		sun = new scene::Sun(1337,"zunLigt", trans, glm::vec3(1),1,990,sunTex);
 		sun->setHour(12);
 		sun->setMinute(0);
-        renderloop();
-
     }
     
     void Renderer::setupGL(void)
@@ -190,7 +188,7 @@ namespace renderer {
                            glm::vec3(30.0f, 30.0f, 30.0f),
                            glm::vec3(0.0f, 0.0f, 0.0f),
                            glm::vec3(0.0f, 1.0f, 0.0f),
-                           m_context->getSize());
+                           glm::ivec2(1024, 768));
 		m_scene_camera->SetFarPlane(3000);
 		m_scene_camera->SetNearPlane(0.1);
 
