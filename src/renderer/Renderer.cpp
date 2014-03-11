@@ -20,10 +20,10 @@ namespace renderer {
     {
     }
 
-    Renderer* Renderer::instance(Context& context)
+    Renderer* Renderer::instance()
     {
         static Renderer m_instance;
-        m_instance.setRenderContext(context);
+        //m_instance.setRenderContext(context);
         return &m_instance;
     }
 

@@ -94,7 +94,7 @@ namespace renderer {
 				
 		public:
 			//! Returns the singleton instance
-			static Renderer* instance(Context& context);
+            static Renderer* instance();
 
 			//! \brief Sets the context to render to
 			void setRenderContext(Context& context);

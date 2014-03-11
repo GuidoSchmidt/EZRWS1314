@@ -136,7 +136,7 @@ namespace renderer {
             void printActiveUniforms(void);
 
 			//! \brief Prints all active attributes
-			void PrintActiveAttributes(void);
+            void printActiveAttributes(void);
 
             //! \brief Returns the code of a shader
             std::string getShaderCodeOf(GLSL::GLSLShaderType shaderType);

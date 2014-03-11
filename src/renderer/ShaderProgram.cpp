@@ -209,11 +209,11 @@ namespace renderer
 		std::cout << "\n-- SHADER PROGRAMM LOG --------------------------------------------------\n";
 
 
-        AddShader(shaderType0, m_shader_sources[shaderType0]);
-        AddShader(shaderType1, m_shader_sources[shaderType1]);
+        addShader(shaderType0, m_shader_sources[shaderType0]);
+        addShader(shaderType1, m_shader_sources[shaderType1]);
         glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::VERTEX]);
         glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::FRAGMENT]);
-        Link();
+        link();
 
 		std::cout << "\n";
 	}
@@ -223,7 +223,7 @@ namespace renderer
 
 	}
 
-	void ShaderProgram::addShader(GLSL::GLSLShaderType shaderType, std::string filename)
+    void ShaderProgram::addShader(GLSL::GLSLShaderType shaderType, std::string filename)
 	{
 		GLint Shader_ID;
 
@@ -265,13 +265,15 @@ namespace renderer
 
     void ShaderProgram::ReloadShader(GLSL::GLSLShaderType shaderType)
 	{
+        std::string shaderSource = GLSL::ReadShaderSource(m_shader_sources[shaderType]);
+        const char* shaderSourcePointer = shaderSource.c_str();
         glShaderSource(m_shader_IDs[shaderType], 1, &shaderSourcePointer, NULL);
         glCompileShader(m_shader_IDs[shaderType]);
         GLSL::PrintShaderInfoLog(m_shader_IDs[shaderType]);
-		Link();
+        link();
 	}
 
-	void ShaderProgram::link(void)
+    void ShaderProgram::link(void)
 	{
 		glLinkProgram(m_shaderProgram_ID);
 
