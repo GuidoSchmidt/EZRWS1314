@@ -50,8 +50,6 @@ bool Shell::Initialise(const Rocket::Core::String& path)
 	//gettimeofday(&start_time, NULL);
     InputX11::Initialise();
 
-	glfwInit();
-
 	file_interface = new ShellFileInterface(path);
 	Rocket::Core::SetFileInterface(file_interface);
 
@@ -72,6 +70,7 @@ bool Shell::OpenWindow(const char* name, bool attach_opengl)
     glfwindow = glfwCreateWindow(1024.0f, 768.0f, "GLFW", 0, 0);
 	glfwMakeContextCurrent(glfwindow);
 
+	/*
 	// Set up the GL state.
 	glClearColor(0, 0, 0, 1);
 	glEnableClientState(GL_VERTEX_ARRAY);
@@ -86,7 +85,7 @@ bool Shell::OpenWindow(const char* name, bool attach_opengl)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
+	*/
     return true;
 }
 

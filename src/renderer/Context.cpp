@@ -40,6 +40,9 @@ namespace renderer {
             std::cerr << "ERROR (GLFW): Initialization failed!\n";
         }
 
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		m_window = glfwCreateWindow(m_size.x, m_size.y, title.c_str(), 0, 0);
         if(!m_window)
         {

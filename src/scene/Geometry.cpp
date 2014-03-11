@@ -283,15 +283,10 @@ namespace scene {
 		}
 
 		m_ErrorCheckMesh = glGetError();
-		if(m_ErrorCheckMesh != GL_NO_ERROR)
+		if (m_ErrorCheckMesh != GL_NO_ERROR)
 		{
-			/*
-			utils::log() << "\nERROR (Geometry: ";
-			utils::log() << m_name;
-			utils::log() << "): Buffers could not be created!\n";
-			*/
+			std::cerr << "\nERROR (Geometry: " << m_name << "): Buffers could not be created!\n";
 		}
-		//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	void Geometry::createBoundingBoxBuffers(void)

@@ -59,7 +59,6 @@ namespace renderer {
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/baum_test.dae");
         //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
 
-        //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/head.dae");
         m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
 
         //! \todo Create user interface
@@ -70,8 +69,6 @@ namespace renderer {
 		int HEIGHT = 768; // m_context->getSize().y;
         //glm::vec2 nearFar = glm::vec2(0.1,.0);
         
-        //Setup dat slim fboooooos
-
         gBuffer		 = new SlimFBO(WIDTH,HEIGHT, 2, true);
 		sunlightFBO0 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
 		sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
@@ -135,14 +132,17 @@ namespace renderer {
     {
         //! OpenGL settings
         glClearColor(0.0f, 1.0f, 0.0f, 1.0f);
-        glEnable(GL_DEPTH_TEST);
+		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_TEXTURE_2D);
+		glEnable(GL_CULL_FACE);
+		glEnable(GL_POLYGON_OFFSET_FILL);
     }
 
     void Renderer::setupShaderStages()
     {
 		//! Simple forward rendering
-		m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/testing/testing.vs.glsl",
-													GLSL::FRAGMENT, RESOURCES_PATH "/shader/testing/testing.fs.glsl");
+		m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
+													GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl");
 		//m_fbo = new FrameBufferObject(1024, 768);
 		//m_fbo->addColorAttachment(0);
 		//m_fbo->addDepthAttachment_Texture(1);
@@ -151,8 +151,8 @@ namespace renderer {
 		//m_shaderProgram_compositing = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/compositing/fullscreen.vs.glsl",
 		//												GLSL::FRAGMENT, RESOURCES_PATH "/shader/compositing/compositing.fs.glsl");
 		
-		m_fullscreen_triangle = new utils::FullscreenTriangle();
-		m_fullscreen_triangle->createGeometry();
+		//m_fullscreen_triangle = new utils::FullscreenTriangle();
+		//m_fullscreen_triangle->createGeometry();
     }
 
 //! ---- Input Handling --------------------------------------------------------
@@ -172,12 +172,14 @@ namespace renderer {
     }
 
 
-	double old_x = 0;
-	double old_y = 0;
-	double mouse_x = 0;
-	double mouse_y = 0;
+	double old_x = 0.0;
+	double old_y = 0.0;
+	double mouse_x = 0.0;
+	double mouse_y = 0.0;
+	float  mouse_correct_x = 0.0f;
+	float  mouse_correct_y = 0.0f;;
 	glm::vec3 camera_position = glm::vec3(1.0f);
-	float camera_speed = 1;
+	float camera_speed = 0.005;
 
 	int WIDTH  = 1024;
 	int HEIGHT = 768;
@@ -211,9 +213,12 @@ namespace renderer {
 	GLuint forward_uniform_loc_shadowProjection;
 	GLuint compositing_uniform_loc_shadowMap;
 
-	void Renderer::setupRenderer()
+	void Renderer::setupRenderer(GLFWwindow* window)
 	{
 		glClearColor(1.0f, 0.0f, 0.5f, 1.0f);
+		glfwSetScrollCallback(window, ScrollCallback);
+		glfwSetKeyCallback(window, KeyboardCallback);
+
 		glm::vec4 wsSunPos = glm::vec4(0, 10, 2000, 1);
 
 		//GLuint night_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/common/night.jpg", true);
@@ -222,12 +227,11 @@ namespace renderer {
 		//GLuint ldr_reflective_cube = scene::SceneManager::instance()->loadCubeMap(RESOURCES_PATH "/textures/ldr-cross/beach_small_reflective_cross", false);
 
 		m_scene_camera = new scene::Camera(0, "scene_camera",
-			glm::vec3(30.0f, 30.0f, 30.0f),
+			glm::vec3(2.0f, 2.0f, 2.0f),
 			glm::vec3(0.0f, 0.0f, 0.0f),
 			glm::vec3(0.0f, 1.0f, 0.0f),
-			glm::ivec2(1024, 768));
-		m_scene_camera->SetFarPlane(3000);
-		m_scene_camera->SetNearPlane(0.1);
+			glm::ivec2(1204, 768));
+
 
 		//! Uniform setup
 		//! Forward shading
@@ -265,23 +269,18 @@ namespace renderer {
 
     void Renderer::renderloop(GLFWwindow *window)
     {        
-        //! simple camera movement
-        
-		glfwMakeContextCurrent(window);
+		glClearColor(1.0, 0.0, 1.0, 1.0);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        float  mouse_correct_x, mouse_correct_y;
-		old_x=mouse_x;
-		old_y=mouse_y;
+		//! simple camera movement
 		glfwGetCursorPos(window, &mouse_x, &mouse_y);
-        mouse_correct_x = ((mouse_x / WIDTH) * 2.0f) - 1.0f;
-        mouse_correct_y = ((mouse_y / HEIGHT) * 2.0f) - 1.0f;
-		mouse_correct_x = (((mouse_x - old_x) / WIDTH));// * 2.0f) - 1.0f;
-		mouse_correct_y = (((mouse_y - old_y) / HEIGHT));// * 2.0f) - 1.0f;
+		mouse_correct_x = ((mouse_x / 1024) * 2.0f) - 1.0f;
+		mouse_correct_y = ((mouse_y / 768) * 2.0f) - 1.0f;
 		if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_2))
-        {
-                m_scene_camera->Rotate(mouse_correct_x * camera_speed * 100,
-                                        mouse_correct_y * camera_speed * 100);
-        }
+		{
+			m_scene_camera->Rotate( mouse_correct_x * camera_speed * 100.0f,
+									mouse_correct_y * camera_speed * 100.0f);
+		}
 			
         if (glfwGetKey(window, GLFW_KEY_W))
         {
@@ -391,26 +390,40 @@ namespace renderer {
         glm::mat4 view       = m_scene_camera->GetViewMatrix();
         glm::mat4 projection = m_scene_camera->GetProjectionMatrix();
 
-        glfwSetScrollCallback(window, ScrollCallback);
-        glfwSetKeyCallback(window, KeyboardCallback);
-
 		//! TESTING END ############################################
 		m_shaderProgram_forward->use();
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glCullFace(GL_BACK);
+		//glPolygonOffset(0.9, 1.0);
 
-		//render geometry nodes 
+		glViewport(0, 0, 1024, 768);
+
+		//m_shaderProgram_forward->setUniform(forward_uniform_loc_light_position, scene::SceneManager::instance()->getLight(0)->getTransform()->getPosition());
+		m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(1.0, 1.0));
+		m_shaderProgram_forward->setUniform(forward_uniform_loc_view, view);
+		m_shaderProgram_forward->setUniform(forward_uniform_loc_projection, projection);
+		
 		for (unsigned int i = 0; i < m_renderqueue.size(); i++)
 		{
+			
 			m_shaderProgram_forward->setUniform(forward_uniform_loc_model, m_renderqueue[i]->getTransform()->getModelMatrix());
 			m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_color, *(m_renderqueue[i]->getMaterial()->getDiffuseColor()));
 			m_shaderProgram_forward->setUniform(forward_uniform_loc_specular_color, *(m_renderqueue[i]->getMaterial()->getSpecularColor()));
 			m_shaderProgram_forward->setUniform(forward_uniform_loc_shininess, m_renderqueue[i]->getMaterial()->getShininess());
+			
 			m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
 			m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, m_renderqueue[i]->getMaterial()->getSpecularTexture(), 1);
 			m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 2);
+			
 			m_renderqueue[i]->drawTriangles();
 		}
 
 		m_shaderProgram_forward->unuse();
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
 		//! TESTING END ############################################
 
 

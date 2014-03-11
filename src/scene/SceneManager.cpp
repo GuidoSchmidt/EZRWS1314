@@ -55,7 +55,7 @@ namespace scene
   std::vector<Geometry*> SceneManager::generateRenderQueue(void)
   {
     std::vector<Geometry*> render_queue;
-    for(unsigned int node = 0; node < m_scene_node_list.size(); node++)
+	for(unsigned int node = 0; node < m_scene_node_list.size(); node++)
     {
         if(m_scene_node_list.at(node)->getType() == GEOMETRY)
         {
@@ -68,7 +68,6 @@ namespace scene
             continue;
         }
     }
-
     return render_queue;
   }
 

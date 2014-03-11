@@ -47,6 +47,7 @@ namespace scene
 
     void Light::setupShadowMapping(glm::vec2 size)
     {
+		/*
         m_shadowMap_size = size;
         m_hasShadowMap = true;
         //! Shader program
@@ -61,7 +62,8 @@ namespace scene
         m_fbo = new renderer::FrameBufferObject(m_shadowMap_size.x, m_shadowMap_size.y);
         m_fbo->addColorAttachment(0);
         m_fbo->addDepthAttachment_Texture(1);
-    }
+		*/
+	}
 
     void Light::generateShadowMap(std::vector<Geometry*>* renderQueue)
     {
