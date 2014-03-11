@@ -12,6 +12,8 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
+#include <cctype>
 
 namespace renderer {
 	//! Shader program helper function

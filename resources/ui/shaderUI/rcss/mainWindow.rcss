@@ -5,8 +5,8 @@ body
     font-style: normal;
     font-size: 15;
     color: white;
-    width: 512px;
-    left: 512px;
+    width: 612px;
+    left: 412px;
     top: 32px;
     height: 736;
 }
@@ -44,15 +44,45 @@ div#title
 }
 
 div#content {
-    font-size  : 16px;
-    padding    : 12px;
+    font-size  : 12px;
+    padding    : 20px;
     color: rgba(240, 240, 240, 220);
+}
+
+div.lN {
+    float: left;
+}
+
+div.line {
+    float: left;
 }
 
 div.comment {
     color: rgba(128, 128, 128, 200);
 }
 
+span.whitespace {
+    padding-left: 35px;
+}
+
 div.version {
     color: rgba(240, 20, 140, 220);
+}
+
+span.keyword {
+    color: rgba(20, 240, 140, 220);
+}
+
+span.function {
+    color: rgba(20, 140, 240, 220);
+}
+
+span.number {
+    color: rgba(220, 140, 160, 220); 
+}
+
+span.lineNumber {
+    color: rgba(220, 220, 220, 120);
+    background: rgba(100, 100, 100, 120);
+    padding-right: 15px; 
 }
