@@ -49,6 +49,7 @@ namespace utils {
 		std::cout << "Camera count: " << m_aiScene->mNumCameras << std::endl;
 		std::cout << "\nList of Nodes:" << std::endl;
 
+
 		//! ------ Cameras ------------------------------------------  
         if (m_aiScene->HasCameras())
 		{
@@ -299,7 +300,6 @@ namespace utils {
                 std::cout << "      Specular-Texture:(" << texture_path_specular.C_Str() << ")" << std::endl;
                 std::cout << "      Shininess:        " << shininess << std::endl;
                 std::cout << "      Normal-Texture:  (" << texture_path_normal.C_Str() << ")" << std::endl;
-
             }
 		}
 	}

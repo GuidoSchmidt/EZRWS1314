@@ -160,13 +160,5 @@ void Shell::Log(const char* fmt, ...)
 // Returns the seconds that have elapsed since program startup.
 float Shell::GetElapsedTime() 
 {
-//	struct timeval now;
-
-	//gettimeofday(&now, NULL);
-
-//	double sec = now.tv_sec - start_time.tv_sec;
-//	double usec = now.tv_usec - start_time.tv_usec;
-//	double result = sec + (usec / 1000000.0);
-
 	return static_cast<float>(glfwGetTime());
 }

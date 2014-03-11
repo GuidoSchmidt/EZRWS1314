@@ -17,7 +17,6 @@ void ClickListener::ProcessEvent(Rocket::Core::Event& event)
         Rocket::Core::String shader_name = event.GetTargetElement()->GetInnerRML();
         std::string c_shader_name = shader_name.CString();
 
-        /*
         if(c_shader_name == "Vertex")
         {
             std::string shader_source = renderer::Renderer::instance()->getShaderSourceOf(renderer::GLSL::VERTEX);
@@ -41,9 +40,9 @@ void ClickListener::ProcessEvent(Rocket::Core::Event& event)
             std::string shader_source = renderer::Renderer::instance()->getShaderSourceOf(renderer::GLSL::GEOMETRY);
             Rocket::Core::String code = shader_source.c_str();
             context->GetDocument("main")->GetElementById("content")->SetInnerRML(code.CString());
-        }*/
+        }
 
         shader_name.Append(" Shader");
-        context->GetDocument("main")->GetElementById("title")->SetInnerRML(shader_name);
+        context->GetDocument("main")->GetElementById("title")->SetInnerRML(shader_name.CString());
     }
 }

@@ -15,9 +15,7 @@ extern GLFWwindow *glfwindow;
 
 void GameLoop()
 {
-    glDisable(GL_DEPTH_TEST);
-	context->Update();
-    //context->Render();
+
 }
 
 int main(void)
@@ -44,7 +42,10 @@ int main(void)
     }
     renderer::Renderer* main_renderer;
     main_renderer = renderer::Renderer::instance();
+	main_renderer->init(glfwindow);
+	main_renderer->setupRenderer();
 
+	/*
     //! System interface
     UISystemInterface system_interface;
     Rocket::Core::SetSystemInterface(&system_interface);
@@ -86,15 +87,12 @@ int main(void)
     ClickListener::RegisterClickableContainer(navBar->GetElementById("geometry"));
     ClickListener::RegisterClickableContainer(navBar->GetElementById("tesselation"));
     ClickListener::RegisterClickableContainer(navBar->GetElementById("fragment"));
-
-
-    //Shell::EventLoop(GameLoop);
+	*/
 
     while(!glfwWindowShouldClose(glfwindow))
     {
-        //renderer::Renderer::instance()->renderloop();
-
         // LibRocket input handling
+		/*
         int x = 0, y = 0;
         int key_modifier_state = -1;
         double xpos, ypos;
@@ -133,15 +131,25 @@ int main(void)
 			}
         }
 
-		GameLoop();
+		/*
+		glDisable(GL_DEPTH_TEST);
+		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_LIGHTING);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		context->Update();
+		context->Render();
+		*/
+
+		renderer::Renderer::instance()->renderloop(glfwindow);
 
         glfwSwapBuffers(glfwindow);
         glfwPollEvents();
     }
 
     // Shutdown Rocket.
-    context->RemoveReference();
-    Rocket::Core::Shutdown();
+    //context->RemoveReference();
+    //Rocket::Core::Shutdown();
 
     Shell::CloseWindow();
     Shell::Shutdown();

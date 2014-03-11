@@ -291,6 +291,7 @@ namespace scene {
 			utils::log() << "): Buffers could not be created!\n";
 			*/
 		}
+		//glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
 	void Geometry::createBoundingBoxBuffers(void)

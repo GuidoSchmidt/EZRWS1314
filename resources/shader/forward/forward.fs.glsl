@@ -95,5 +95,5 @@ void main(void)
 
     // fragcolor.rgb  = vsN;
     // fragcolor.a = 0;
-    fragcolor = vec4(shaded, 0.0);
+    fragcolor = vec4(1.0, 0.0, 0.0, 1.0);
 }

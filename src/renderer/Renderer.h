@@ -83,24 +83,29 @@ namespace renderer {
 			//! \brief Destructor (singleton)
 			~Renderer(void);
 
-			//! \brief Initializes the renderer
-			void init(void);
+
 
 			//! \brief Sets needed OpenGL states
 			void setupGL(void);
 
-                        //! \brief Sets the needes shader stages and fbos
-                        void setupShaderStages(void);
+            //! \brief Sets the needes shader stages and fbos
+			void setupShaderStages(void);
 				
 		public:
 			//! Returns the singleton instance
             static Renderer* instance();
 
+			//! \brief Initializes the renderer
+			void init(GLFWwindow* window);
+
 			//! \brief Sets the context to render to
 			void setRenderContext(Context& context);
 
+			//! \brief Setup the render loop
+			void Renderer::setupRenderer();
+
 			//! \brief Calls the render loop
-            void renderloop(void);
+            void renderloop(GLFWwindow *window);
 
 			void doTheSunlightEffect(void);
 
