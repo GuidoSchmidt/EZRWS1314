@@ -107,7 +107,7 @@ namespace renderer {
 
 			void doTheSunlightEffect(void);
 
-			void switchExtractionStrategy();
+			void switchExtractionStrategy(bool fast);
 	};
 }
 #endif //H_RENDERER

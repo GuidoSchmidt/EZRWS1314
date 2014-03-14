@@ -16,7 +16,6 @@ namespace scene
     {
         private:
             //! Light properties
-            float     m_intensity; // should be [candela]
             //! Light matrices for shadow mapping
             glm::mat4 m_view;
             glm::mat4 m_projection;
@@ -30,6 +29,7 @@ namespace scene
             GLuint m_uniform_loc_model;
 		protected :
 			glm::vec3 m_color;
+			float     m_intensity; // should be [candela]
         public:
             //! \brief Constructor
             Light(int id,

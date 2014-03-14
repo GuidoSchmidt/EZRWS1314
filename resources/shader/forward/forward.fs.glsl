@@ -69,13 +69,13 @@ vec3 phong(in vec3 position, in vec4 light, in vec3 normal, in vec3 diffuse_colo
 	vec3 ambient_term  = vec3(0.05);
 
 	vec3 diffuse_term  = texture(diffuse_map, vsUV).rgb * cosin*light_color;
-   	diffuse_term = clamp(diffuse_term, 0.0, 1.0);
+   	diffuse_term = max(diffuse_term, 0.0);
 
 	vec3 specular_term = texture(specular_map, vsUV).rgb * pow(cosin, shininess);
-   	specular_term = clamp(specular_term, 0.0, 1.0); 
+   	specular_term = max(specular_term, 0.0); 
 
 	vec3 shaded = ambient_term + diffuse_term + specular_term;
-	return clamp(shaded, 0.0, 1.0);
+	return max(shaded, 0.0);
 }
 
 //*** Main *********************************************************************
