@@ -9,5 +9,12 @@
     </handle>
     <div id="title">Title</div>
     <div id="content">Content</div>
+
+
+        <button onclick="goto nope">Run Shader</button><br />
+        <button onclick="goto high_score">Stop Shader</button>
+
+        <input id="good" type="text" name="graphics" value="good" /> Good<br />
+
 </body>
 </rml>
