@@ -4,6 +4,10 @@
 
 static ClickListener click_listener;
 
+enum class Shader{ non, vertex, tesselation, geometry, fragment };
+
+Shader selected = Shader::non;
+
 void ClickListener::RegisterClickableContainer(Rocket::Core::Element* element)
 {
     element->AddEventListener("click", &click_listener);
@@ -19,27 +23,67 @@ void ClickListener::ProcessEvent(Rocket::Core::Event& event)
 
         if(c_shader_name == "Vertex")
         {
-            std::string shader_source = renderer::Renderer::instance()->getShaderSourceOf(renderer::GLSL::VERTEX);
-            Rocket::Core::String code = shader_source.c_str();
-            context->GetDocument("main")->GetElementById("content")->SetInnerRML(code.CString());
+            if(selected != Shader::vertex)
+            {
+                std::string shader_source = renderer::Renderer::instance()->getShaderSourceOf(renderer::GLSL::VERTEX);
+                Rocket::Core::String code = shader_source.c_str();
+                context->GetDocument("main")->GetElementById("content")->SetInnerRML(code.CString());
+                context->GetDocument("main")->SetProperty("display", "block");
+                selected = Shader::vertex;
+            }
+            else
+            {
+                context->GetDocument("main")->SetProperty("display", "none");
+                selected = Shader::non;
+            }
         }
-        if(c_shader_name == "Fragment")
+        else if(c_shader_name == "Fragment")
         {
-            std::string shader_source = renderer::Renderer::instance()->getShaderSourceOf(renderer::GLSL::FRAGMENT);
-            Rocket::Core::String code = shader_source.c_str();
-            context->GetDocument("main")->GetElementById("content")->SetInnerRML(code.CString());
+            if(selected != Shader::fragment)
+            {
+                std::string shader_source = renderer::Renderer::instance()->getShaderSourceOf(renderer::GLSL::FRAGMENT);
+                Rocket::Core::String code = shader_source.c_str();
+                context->GetDocument("main")->GetElementById("content")->SetInnerRML(code.CString());
+                context->GetDocument("main")->SetProperty("display", "block");
+                selected = Shader::fragment;
+            }
+            else
+            {
+                context->GetDocument("main")->SetProperty("display", "none");
+                selected = Shader::non;
+            }
         }
-        if(c_shader_name == "Tesselation")
+        else if(c_shader_name == "Tesselation")
         {
-            std::string shader_source = renderer::Renderer::instance()->getShaderSourceOf(renderer::GLSL::TESS_CONTROL);
-            Rocket::Core::String code = shader_source.c_str();
-            context->GetDocument("main")->GetElementById("content")->SetInnerRML(code.CString());
+            if(selected != Shader::tesselation)
+            {
+                std::string shader_source = renderer::Renderer::instance()->getShaderSourceOf(renderer::GLSL::TESS_CONTROL);
+                Rocket::Core::String code = shader_source.c_str();
+                context->GetDocument("main")->GetElementById("content")->SetInnerRML(code.CString());
+                context->GetDocument("main")->SetProperty("display", "block");
+                selected = Shader::tesselation;
+            }
+            else
+            {
+                context->GetDocument("main")->SetProperty("display", "none");
+                selected = Shader::non;
+            }
         }
-        if(c_shader_name == "Geometry")
+        else if(c_shader_name == "Geometry")
         {
-            std::string shader_source = renderer::Renderer::instance()->getShaderSourceOf(renderer::GLSL::GEOMETRY);
-            Rocket::Core::String code = shader_source.c_str();
-            context->GetDocument("main")->GetElementById("content")->SetInnerRML(code.CString());
+            if(selected != Shader::geometry)
+            {
+                std::string shader_source = renderer::Renderer::instance()->getShaderSourceOf(renderer::GLSL::GEOMETRY);
+                Rocket::Core::String code = shader_source.c_str();
+                context->GetDocument("main")->GetElementById("content")->SetInnerRML(code.CString());
+                context->GetDocument("main")->SetProperty("display", "block");
+                selected = Shader::geometry;
+            }
+            else
+            {
+                context->GetDocument("main")->SetProperty("display", "none");
+                selected = Shader::non;
+            }
         }
 
         shader_name.Append(" Shader");
