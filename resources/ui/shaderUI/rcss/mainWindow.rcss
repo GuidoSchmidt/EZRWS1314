@@ -103,37 +103,26 @@ span.lineNumber {
 
 
 
-input,
-select,
-dataselect
+input
 {
-    margin-left: 20px;
+    width: 159px;
+    height: 37px;
+    background-color: red;
 }
-
-input.text
-{
-    margin-left: 0px;
-}
-
-
-
-
 
 button,
 input.text
 {
-    display: inline-block;
+    display: block;
 
     width: 159px;
     height: 37px;
 
     padding-top: 8px;
-    vertical-align: -18px;
 
     font-size: 18;
+    color:black;
     text-align: center;
-    tab-index: auto;
-
     background-color: red;
 }
 

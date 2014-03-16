@@ -10,11 +10,17 @@
     <div id="title">Title</div>
     <div id="content">Content</div>
 
-
         <button onclick="goto nope">Run Shader</button><br />
         <button onclick="goto high_score">Stop Shader</button>
 
+        <!--
         <input id="good" type="text" name="graphics" value="good" /> Good<br />
+-->
+<form>
+PIN: <input type="text" name="pin" maxlength="4" size="4" />
+<br />
+Good<br />
+</form>
 
 </body>
 </rml>

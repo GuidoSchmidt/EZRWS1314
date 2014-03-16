@@ -5,6 +5,8 @@
 #include <Rocket/Core/RenderInterface.h>
 #include <Rocket/Core.h>
 #include <Rocket/Debugger.h>
+#include <Rocket/Controls.h>
+#include <Rocket/Controls/ElementFormControlInput.h>
 
 #include "RenderInterfaceOpenGL.h"
 #include "shell/Shell.h"
