@@ -46,17 +46,17 @@ namespace renderer {
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/baum_test.obj");
 		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/sky.obj");
 		skyNode = utils::Importer::instance()->getGeometryNode(0);
-		/*utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/ship.obj");
+		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/ship.obj");
 		shipSails = utils::Importer::instance()->getGeometryNode(1);
 		shipBot= utils::Importer::instance()->getGeometryNode(2);
 		shipTop = utils::Importer::instance()->getGeometryNode(3);
-		shipStuff = utils::Importer::instance()->getGeometryNode(4);*/
+		shipStuff = utils::Importer::instance()->getGeometryNode(4);
 
-		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/house 5.1.obj");
+		/*utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/house 5.1.obj");
 		shipSails = utils::Importer::instance()->getGeometryNode(4);
 		shipBot = utils::Importer::instance()->getGeometryNode(2);
 		shipTop = utils::Importer::instance()->getGeometryNode(3);
-		shipStuff = utils::Importer::instance()->getGeometryNode(1);
+		shipStuff = utils::Importer::instance()->getGeometryNode(1);*/
 
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/baum_test.dae");
         //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
