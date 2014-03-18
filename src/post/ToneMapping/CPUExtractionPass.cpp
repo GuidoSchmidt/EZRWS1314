@@ -57,9 +57,7 @@ void CPUExtractionPass::doExecute() {
 		av += lum;
 	}
 	av /= (width / scale)*(height / scale);
-	image_average = av;
-	image_max = max;
-	image_min = min;
+	minAveMax = glm::vec3(min,av,max);
 	double time3 = glfwGetTime() - time2 - time1;    //mit res /4 => 2-3ms  --- mit res /2 = > 9-10ms --- mit res /1 => 35-45ms FUUUUU
 	int i = 3;
 }

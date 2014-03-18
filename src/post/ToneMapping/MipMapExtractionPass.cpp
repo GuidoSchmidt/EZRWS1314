@@ -21,7 +21,7 @@ MipMapExtractionPass::MipMapExtractionPass(SlimQuad* pQuad, int pWidth, int pHei
 	do {
 		w = ceil(w / 2.0);
 		h = ceil(h / 2.0);
-		fbos.push_back(new SlimFBO(w, h, 1, false));
+		fbos.push_back(new SlimFBO(w, h, 1, false, GL_NEAREST));
 		nPasses++;
 	} while (w > 1);
 }

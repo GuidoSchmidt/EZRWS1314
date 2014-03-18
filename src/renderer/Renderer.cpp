@@ -67,16 +67,16 @@ namespace renderer {
         
         //Setup dat slim fboooooos
 
-        gBuffer		 = new SlimFBO(WIDTH,HEIGHT, 2, true);
-		sunlightFBO0 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO2 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO3 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO4 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+		gBuffer		 = new SlimFBO(WIDTH,HEIGHT, 2, true, GL_LINEAR);
+		sunlightFBO0 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
+		sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
+		sunlightFBO2 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
+		sunlightFBO3 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
+		sunlightFBO4 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
 
-		compositingFBO = new SlimFBO(WIDTH, HEIGHT, 1, false);
+		compositingFBO = new SlimFBO(WIDTH, HEIGHT, 1, false, GL_LINEAR);
 
-		downsampledExtractionFBO = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+		downsampledExtractionFBO = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
 
 		//now the render passses!
         fsq = new SlimQuad();
@@ -121,7 +121,7 @@ namespace renderer {
 		skyScale[3][3]=1;
 		scene::Transform trans = scene::Transform(glm::vec3(0),glm::toQuat(glm::mat4(1)),glm::vec3(1));
 		GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/common/sun.png",true);
-		sun = new scene::Sun(1337,"zunLigt", trans, glm::vec3(1),50000,990,sunTex);
+		sun = new scene::Sun(1337,"zunLigt", trans, glm::vec3(1),2000,990,sunTex);
 		sun->setHour(12);
 		sun->setMinute(0);
         renderloop();
@@ -439,7 +439,7 @@ namespace renderer {
 
 
 			if (finalPass->param_fastExtraction == 0.0f)
-				finalPass->param_minAveMax = glm::vec3(slowExtractionPass->image_min, slowExtractionPass->image_average, slowExtractionPass->image_max);
+				finalPass->param_minAveMax = slowExtractionPass->minAveMax;
 			else
 				finalPass->minAveMaxTexture = fastExtractionPass->outputTexture;
 
