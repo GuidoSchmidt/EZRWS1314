@@ -13,7 +13,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-#include <glm\glm.hpp>
+#include <glm/glm.hpp>
 #include "../post/SlimQuad.h"
 
 namespace scene
