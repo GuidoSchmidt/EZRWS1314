@@ -24,7 +24,7 @@ IF (MINGW)
     )
 
 ELSEIF (MSVC)
-    FIND_PATH( FREEIMAGE_INCLUDE_PATH FreeImage.h
+    FIND_PATH( FREEIMAGE_INCLUDE_PATH FreeImage/FreeImage.h
         ${DEPENDENCIES_PATH}/include
     )
 
