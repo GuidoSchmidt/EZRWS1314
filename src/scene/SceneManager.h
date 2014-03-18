@@ -13,7 +13,7 @@
 
 #include <map>
 #include <SOIL/SOIL.h>
-#include <FreeImage.h>
+#include <FreeImage/FreeImage.h>
 
 namespace scene
 {

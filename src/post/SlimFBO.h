@@ -13,8 +13,7 @@ class SlimFBO
 {
 public:
 	SlimFBO();
-	SlimFBO(int x,int y,int n, bool depth);
-	SlimFBO(int x,int y,int n, bool depth, float multi);
+	SlimFBO(int x,int y,int n, bool depth, int filter);
 	~SlimFBO();
 	void bind();
 	void unbind();

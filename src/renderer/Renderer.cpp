@@ -67,16 +67,16 @@ namespace renderer {
         
         //Setup dat slim fboooooos
 
-        gBuffer		 = new SlimFBO(WIDTH,HEIGHT, 2, true);
-		sunlightFBO0 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO2 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO3 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
-		sunlightFBO4 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+		gBuffer		 = new SlimFBO(WIDTH,HEIGHT, 2, true, GL_LINEAR);
+		sunlightFBO0 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
+		sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
+		sunlightFBO2 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
+		sunlightFBO3 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
+		sunlightFBO4 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
 
-		compositingFBO = new SlimFBO(WIDTH, HEIGHT, 1, false);
+		compositingFBO = new SlimFBO(WIDTH, HEIGHT, 1, false, GL_LINEAR);
 
-		downsampledExtractionFBO = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false);
+		downsampledExtractionFBO = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
 
 		//now the render passses!
         fsq = new SlimQuad();
@@ -121,7 +121,7 @@ namespace renderer {
 		skyScale[3][3]=1;
 		scene::Transform trans = scene::Transform(glm::vec3(0),glm::toQuat(glm::mat4(1)),glm::vec3(1));
 		GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/common/sun.png",true);
-		sun = new scene::Sun(1337,"zunLigt", trans, glm::vec3(1),1,990,sunTex);
+		sun = new scene::Sun(1337,"zunLigt", trans, glm::vec3(1),2000,990,sunTex);
 		sun->setHour(12);
 		sun->setMinute(0);
         renderloop();
@@ -348,9 +348,13 @@ namespace renderer {
                 m_shaderProgram_compositing->reloadAllShaders();
             }
 
-			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_E) )
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_E))
             {
-				switchExtractionStrategy();
+				switchExtractionStrategy(true);
+            }
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_R))
+            {
+				switchExtractionStrategy(false);
             }
 
             //! Normal camera mode
@@ -403,6 +407,7 @@ namespace renderer {
 						m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_color, *(m_renderqueue[i]->getMaterial()->getDiffuseColor()) );
 						m_shaderProgram_forward->setUniform(forward_uniform_loc_specular_color, *(m_renderqueue[i]->getMaterial()->getSpecularColor()) );
 						m_shaderProgram_forward->setUniform(forward_uniform_loc_shininess, m_renderqueue[i]->getMaterial()->getShininess() );
+						m_shaderProgram_forward->setUniform(forward_uniform_loc_light_color, sun->getColor());
 						m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
 						m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, m_renderqueue[i]->getMaterial()->getSpecularTexture(), 1);
 						m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 2);
@@ -434,7 +439,7 @@ namespace renderer {
 
 
 			if (finalPass->param_fastExtraction == 0.0f)
-				finalPass->param_minAveMax = glm::vec3(slowExtractionPass->image_min, slowExtractionPass->image_average, slowExtractionPass->image_max);
+				finalPass->param_minAveMax = slowExtractionPass->minAveMax;
 			else
 				finalPass->minAveMaxTexture = fastExtractionPass->outputTexture;
 
@@ -475,21 +480,34 @@ namespace renderer {
 	}
 
 
-	void Renderer::switchExtractionStrategy()
+	void Renderer::switchExtractionStrategy(bool fast)
 	{
-		MipMapExtractionPass* ex = dynamic_cast<MipMapExtractionPass*>(extractionPass);
-		if (ex != 0) {
-			//extractionPass is MipMap change to CPU
-			extractionPass = slowExtractionPass;
-			finalPass->minAveMaxTexture = 0;
-			finalPass->param_fastExtraction = 0.0f;
-		}
-		else
+
+		if (fast) 
 		{
 			extractionPass = fastExtractionPass;
 			finalPass->minAveMaxTexture = fastExtractionPass->outputTexture;
 			finalPass->param_fastExtraction = 1.0f;
 		}
+		else 
+		{
+			extractionPass = slowExtractionPass;
+			finalPass->minAveMaxTexture = 0;
+			finalPass->param_fastExtraction = 0.0f;
+		}
+		//MipMapExtractionPass* ex = dynamic_cast<MipMapExtractionPass*>(extractionPass);
+		//if (ex != 0) {
+		//	//extractionPass is MipMap change to CPU
+		//	extractionPass = slowExtractionPass;
+		//	finalPass->minAveMaxTexture = 0;
+		//	finalPass->param_fastExtraction = 0.0f;
+		//}
+		//else
+		//{
+		//	extractionPass = fastExtractionPass;
+		//	finalPass->minAveMaxTexture = fastExtractionPass->outputTexture;
+		//	finalPass->param_fastExtraction = 1.0f;
+		//}
 	}
 
 }
