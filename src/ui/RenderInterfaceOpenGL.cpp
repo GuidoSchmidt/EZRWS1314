@@ -32,18 +32,6 @@
 
 #define GL_CLAMP_TO_EDGE 0x812F
 
-renderer::ShaderProgram *program;
-GLuint vertexBuffer;
-GLuint indexBuffer;
-GLuint vertexPosLoc = 0;
-GLuint vertexColorLoc = 0;
-GLuint vertexTexCoordLoc = 0;
-GLuint textureLocation = 0;
-GLuint translationLoc = 0;
-GLuint viewDimLoc = 0;
-GLuint VAO_id = 0;
-GLuint VBO_id = 0;
-
 ShellRenderInterfaceOpenGL::ShellRenderInterfaceOpenGL()
 {
 }
@@ -54,10 +42,31 @@ void ShellRenderInterfaceOpenGL::SetViewport(int width, int height)
     m_height = height;
 }
 
-
-// Called by Rocket when it wants to render geometry that it does not wish to optimise.
 void ShellRenderInterfaceOpenGL::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
 {
+	// Set OpenGL states properly
+	glUseProgram(0);
+	glDisable(GL_DEPTH_TEST);
+	glDisable(GL_CULL_FACE);
+	glDisable(GL_POLYGON_OFFSET_FILL);
+	glActiveTexture(GL_TEXTURE0);
+	glDisable(GL_DEPTH_TEST);
+
+	glClearColor(0, 0, 0, 1);
+	glEnableClientState(GL_VERTEX_ARRAY);
+	glEnableClientState(GL_COLOR_ARRAY);
+
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, 1024, 768, 0, -1, 1);
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	// Render UI
 	glPushMatrix();
 	glTranslatef(translation.x, translation.y, 0);
 
@@ -82,24 +91,20 @@ void ShellRenderInterfaceOpenGL::RenderGeometry(Rocket::Core::Vertex* vertices, 
 
 	glPopMatrix();
 }
-
-// Called by Rocket when it wants to compile geometry it believes will be static for the forseeable future.		
+	
 Rocket::Core::CompiledGeometryHandle ShellRenderInterfaceOpenGL::CompileGeometry(Rocket::Core::Vertex* ROCKET_UNUSED(vertices), int ROCKET_UNUSED(num_vertices), int* ROCKET_UNUSED(indices), int ROCKET_UNUSED(num_indices), const Rocket::Core::TextureHandle ROCKET_UNUSED(texture))
 {
     return (Rocket::Core::CompiledGeometryHandle) NULL;
 }
-
-// Called by Rocket when it wants to render application-compiled geometry.		
+	
 void ShellRenderInterfaceOpenGL::RenderCompiledGeometry(Rocket::Core::CompiledGeometryHandle ROCKET_UNUSED(geometry), const Rocket::Core::Vector2f& ROCKET_UNUSED(translation))
 {
 }
-
-// Called by Rocket when it wants to release application-compiled geometry.		
+	
 void ShellRenderInterfaceOpenGL::ReleaseCompiledGeometry(Rocket::Core::CompiledGeometryHandle ROCKET_UNUSED(geometry))
 {
 }
-
-// Called by Rocket when it wants to enable or disable scissoring to clip content.		
+	
 void ShellRenderInterfaceOpenGL::EnableScissorRegion(bool enable)
 {
     if (enable)
@@ -108,13 +113,11 @@ void ShellRenderInterfaceOpenGL::EnableScissorRegion(bool enable)
         glDisable(GL_SCISSOR_TEST);
 }
 
-// Called by Rocket when it wants to change the scissor region.		
 void ShellRenderInterfaceOpenGL::SetScissorRegion(int x, int y, int width, int height)
 {
     glScissor(x, m_height - (y + height), width, height);
 }
 
-// Set to byte packing, or the compiler will expand our struct, which means it won't read correctly from file
 #pragma pack(1) 
 struct TGAHeader 
 {
@@ -131,10 +134,8 @@ struct TGAHeader
     char  bitsPerPixel;
     char  imageDescriptor;
 };
-// Restore packing
 #pragma pack()
-
-// Called by Rocket when a texture is required by the library.		
+	
 bool ShellRenderInterfaceOpenGL::LoadTexture(Rocket::Core::TextureHandle& texture_handle, Rocket::Core::Vector2i& texture_dimensions, const Rocket::Core::String& source)
 {
     Rocket::Core::FileInterface* file_interface = Rocket::Core::GetFileInterface();
@@ -205,7 +206,6 @@ bool ShellRenderInterfaceOpenGL::LoadTexture(Rocket::Core::TextureHandle& textur
     return success;
 }
 
-// Called by Rocket when a texture is required to be built from an internally-generated sequence of pixels.
 bool ShellRenderInterfaceOpenGL::GenerateTexture(Rocket::Core::TextureHandle& texture_handle, const Rocket::Core::byte* source, const Rocket::Core::Vector2i& source_dimensions)
 {
     GLuint texture_id = 0;

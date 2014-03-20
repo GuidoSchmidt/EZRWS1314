@@ -12,13 +12,7 @@
 
 Rocket::Core::Context *context = 0;
 extern GLFWwindow *glfwindow;
-
 static int m_contentXPos = 1000;
-
-void GameLoop()
-{
-
-}
 
 int main(void)
 {
@@ -166,27 +160,6 @@ int main(void)
 			contentBox->SetProperty("left", Rocket::Core::Property(m_contentXPos, Rocket::Core::Property::PX));
 		}
 
-		glUseProgram(0);
-		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_CULL_FACE);
-		glDisable(GL_POLYGON_OFFSET_FILL);
-		glActiveTexture(GL_TEXTURE0);
-		glDisable(GL_DEPTH_TEST);
-		
-		glClearColor(0, 0, 0, 1);
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glEnableClientState(GL_COLOR_ARRAY);
-
-		glEnable(GL_BLEND);
-		//glBlendEquation(GL_FUNC_ADD);
-		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(0, 1024, 768, 0, -1, 1);
-
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
 		context->Update();
 		context->Render();
 
