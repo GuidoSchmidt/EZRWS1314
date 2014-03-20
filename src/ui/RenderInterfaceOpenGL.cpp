@@ -46,18 +46,6 @@ GLuint VBO_id = 0;
 
 ShellRenderInterfaceOpenGL::ShellRenderInterfaceOpenGL()
 {
-    program = new renderer::ShaderProgram(renderer::GLSL::VERTEX, RESOURCES_PATH "/shader/ui/librocket.vs.glsl",
-        renderer::GLSL::FRAGMENT, RESOURCES_PATH "/shader/ui/librocket.fs.glsl");
-
-	//! Create vertex array object
-	glGenVertexArrays(1, &VAO_id);
-	glBindVertexArray(VAO_id);
-
-	//! Create vertex buffer object
-	glGenBuffers(1, &VBO_id);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO_id);
-
-	textureLocation = program->getUniform("texture");
 }
 
 void ShellRenderInterfaceOpenGL::SetViewport(int width, int height)
@@ -70,44 +58,29 @@ void ShellRenderInterfaceOpenGL::SetViewport(int width, int height)
 // Called by Rocket when it wants to render geometry that it does not wish to optimise.
 void ShellRenderInterfaceOpenGL::RenderGeometry(Rocket::Core::Vertex* vertices, int num_vertices, int* indices, int num_indices, const Rocket::Core::TextureHandle texture, const Rocket::Core::Vector2f& translation)
 {
-	program->use();
-	program->setUniformSampler(textureLocation, texture, 1);
+	glPushMatrix();
+	glTranslatef(translation.x, translation.y, 0);
 
-	glBufferData(GL_ARRAY_BUFFER, num_vertices * sizeof(GLfloat), &vertices[0], GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, (GLvoid*)0);
-	glEnableVertexAttribArray(0);
+	glVertexPointer(2, GL_FLOAT, sizeof(Rocket::Core::Vertex), &vertices[0].position);
+	glEnableClientState(GL_COLOR_ARRAY);
+	glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Rocket::Core::Vertex), &vertices[0].colour);
 
-	/* BEGIN OF OLD SHIT
-    glPushMatrix();
-    glTranslatef(translation.x, translation.y, 0);
+	if (!texture)
+	{
+		glDisable(GL_TEXTURE_2D);
+		glDisableClientState(GL_TEXTURE_COORD_ARRAY);
+	}
+	else
+	{
+		glEnable(GL_TEXTURE_2D);
+		glBindTexture(GL_TEXTURE_2D, (GLuint)texture);
+		glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+		glTexCoordPointer(2, GL_FLOAT, sizeof(Rocket::Core::Vertex), &vertices[0].tex_coord);
+	}
 
-    glVertexPointer(2, GL_FLOAT, sizeof(Rocket::Core::Vertex), &vertices[0].position);
-    glEnableClientState(GL_COLOR_ARRAY);
-    glColorPointer(4, GL_UNSIGNED_BYTE, sizeof(Rocket::Core::Vertex), &vertices[0].colour);
-    
-    if (!texture)
-    {
-        glDisable(GL_TEXTURE_2D);
-        glDisableClientState(GL_TEXTURE_COORD_ARRAY);
-    }
-    
-    else
-    {
-        glEnable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, (GLuint) texture);
-        glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-        glTexCoordPointer(2, GL_FLOAT, sizeof(Rocket::Core::Vertex), &vertices[0].tex_coord);
-    }
-    glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, indices);
-    glPopMatrix();
-	// END OF OLD SHIT
-	*/
-
-	glBindVertexArray(VAO_id);
 	glDrawElements(GL_TRIANGLES, num_indices, GL_UNSIGNED_INT, indices);
-	glBindVertexArray(0);
 
-	program->unuse();
+	glPopMatrix();
 }
 
 // Called by Rocket when it wants to compile geometry it believes will be static for the forseeable future.		

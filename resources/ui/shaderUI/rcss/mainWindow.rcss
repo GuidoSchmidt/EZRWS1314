@@ -8,19 +8,18 @@ body
     width: 612px;
     left: 412px;
     top: 32px;
-    height: 736;
+    height: 736px;
 }
 
 body.window
 {
     /*background-decorator: image;*/
     /*background-image: ../img/textbox.tga 0px 0px 505px 431px;*/
-    background : rgba(0, 0, 0, 20);
-    opacity    : 0.1;
+    background : rgba(0, 0, 0, 200);
 }
 
 body.window:hover {
-    background: rgba(0, 0, 0, 128);
+    background: rgba(0, 0, 0, 200);
     opacity   : 1.0;
 }
 
@@ -43,10 +42,32 @@ div#title
     padding    : 2px 12px;
 }
 
+div#wrapper {
+    float: left;
+}
+
+div#lineNumbers {
+    position         : absolute;
+    left             : 0;
+    top              : 0;
+    text-align       : right;     
+    float            : left;
+    padding-right     : 8px;   
+    width            : 20px;
+    height           : 736px;
+    font-size        : 12px;
+    color            : rgb(128, 128, 128);
+    background-color : rgba(0, 0, 0, 240);
+    overflow         : hidden;
+}
+
 div#content {
-    font-size  : 12px;
-    padding    : 20px;
-    color: rgba(240, 240, 240, 220);
+    position     : absolute;
+    padding-left : 15px;
+    left         : 20px;
+    float        : left;
+    font-size    : 12px;
+    color        : rgba(240, 240, 240, 220);
 }
 
 div.lN {

@@ -32,23 +32,21 @@ namespace renderer
             return result;
         }
 
-
         bool has_any_digits(const std::string& s)
         {
             return std::any_of(s.begin(), s.end(), ::isdigit);
         }
 
-        std::string ReadShaderSourceFormatted(std::string filename)
+		std::string ReadShaderSourceFormatted(std::string filename, unsigned int &lineCount)
         {
-            std::string shaderSrc;
+			std::string shaderSrc;
             std::string line;
             std::string lineFormatted;
             std::string formatted;
             unsigned int lineNumber = 0;
-            std::string lineNumberString = "<span class='lineNumber'>";
 
             std::ifstream fileIn(filename.c_str());
-            if(fileIn.is_open()){
+            if(filename.length() != 0 && fileIn.is_open()){
                 while(!fileIn.eof()){;
                     std::string startTag = "<div>";
                     std::string endTag   = "</div>";
@@ -109,13 +107,11 @@ namespace renderer
                     }
 
                     lineFormatted += endTag + "\n";
-                    formatted = startTag + lineNumberString + std::to_string(lineNumber) + "</span>" + whiteSpace + lineFormatted;
+                    formatted = startTag + whiteSpace + lineFormatted;
 
-                    std::cout << formatted << std::endl << std::endl;
                     shaderSrc += formatted;
 
                     lineNumber++;
-                    //std::cout << shaderSrc << std::endl;
                 }
                 fileIn.close();
             }
@@ -125,6 +121,8 @@ namespace renderer
                 std::cout << filename;
                 std::cout << "'\n";
             }
+
+			lineCount = lineNumber;
             return shaderSrc;
         }
 
@@ -422,9 +420,13 @@ namespace renderer
         return m_shaderProgram_ID;
     }
 
-    std::string ShaderProgram::getShaderCodeOf(GLSL::GLSLShaderType shaderType)
+	std::string ShaderProgram::getShaderCodeOf(GLSL::GLSLShaderType shaderType, unsigned int &lineCount)
     {
-        std::string shaderSource = GLSL::ReadShaderSourceFormatted(m_shader_sources[shaderType]);
-        return shaderSource;
+		std::string shaderSource;
+		if (!m_shader_sources[shaderType].empty())
+			shaderSource = GLSL::ReadShaderSourceFormatted(m_shader_sources[shaderType], lineCount);
+		else
+			shaderSource = "No code for this shader!";
+		return shaderSource;
     }
 }

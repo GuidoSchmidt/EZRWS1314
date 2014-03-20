@@ -110,8 +110,9 @@ namespace renderer {
 			void doTheSunlightEffect(void);
 
 			void switchExtractionStrategy();
+
             //! \brief Returns the source code of a shader of a shader program
-            std::string getShaderSourceOf(GLSL::GLSLShaderType shaderType);
+            std::string getShaderSourceOf(GLSL::GLSLShaderType shaderType, unsigned int &lineCount);
 	};
 }
 #endif //H_RENDERER

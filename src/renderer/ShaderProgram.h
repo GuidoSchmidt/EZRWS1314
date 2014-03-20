@@ -139,7 +139,7 @@ namespace renderer {
             void printActiveAttributes(void);
 
             //! \brief Returns the code of a shader
-            std::string getShaderCodeOf(GLSL::GLSLShaderType shaderType);
+			std::string getShaderCodeOf(GLSL::GLSLShaderType shaderType, unsigned int &lineCount);
 	};
 }
 #endif //H_SHADERPROGRAM

@@ -5,9 +5,9 @@
     <title>Navbar</title>
 </head>
 <body template="window">
-    <div id="vertex">Vertex</div>
-    <div id="tesselation">Tesselation</div>
-    <div id="geometry">Geometry</div>
-    <div id="fragment">Fragment</div>
+    <div id="vs">Vertex Shader</div><!-- vs = Vertex Shader -->
+    <div id="ts">Tesselation Shader</div><!-- ts = Tesselation Shader -->
+    <div id="gs">Geometry Shader</div><!-- gs = Geometry Shader -->
+    <div id="fs">Fragment Shader</div><!-- fs = Fragment Shader -->
 </body>
 </rml>

@@ -215,7 +215,6 @@ namespace renderer {
 
 	void Renderer::setupRenderer(GLFWwindow* window)
 	{
-		glClearColor(1.0f, 0.0f, 0.5f, 1.0f);
 		glfwSetScrollCallback(window, ScrollCallback);
 		glfwSetKeyCallback(window, KeyboardCallback);
 
@@ -269,7 +268,6 @@ namespace renderer {
 
     void Renderer::renderloop(GLFWwindow *window)
     {        
-		glClearColor(1.0, 0.0, 1.0, 1.0);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		//! simple camera movement
@@ -394,10 +392,8 @@ namespace renderer {
 		m_shaderProgram_forward->use();
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		glCullFace(GL_BACK);
-		//glPolygonOffset(0.9, 1.0);
 
 		glViewport(0, 0, 1024, 768);
-
 		//m_shaderProgram_forward->setUniform(forward_uniform_loc_light_position, scene::SceneManager::instance()->getLight(0)->getTransform()->getPosition());
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(1.0, 1.0));
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_view, view);
@@ -414,20 +410,15 @@ namespace renderer {
 			m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
 			m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, m_renderqueue[i]->getMaterial()->getSpecularTexture(), 1);
 			m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 2);
-			
+	
 			m_renderqueue[i]->drawTriangles();
 		}
-
 		m_shaderProgram_forward->unuse();
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		
 
 
 		//! TESTING END ############################################
-
-
-
 			// @Andi: Does not work from here for me...
 			/*
             //! First shader program:
@@ -512,9 +503,9 @@ namespace renderer {
         }*/
     }
 
-    std::string Renderer::getShaderSourceOf(GLSL::GLSLShaderType shaderType)
+    std::string Renderer::getShaderSourceOf(GLSL::GLSLShaderType shaderType, unsigned int &lineCount)
     {
-        std::string code = m_shaderProgram_forward->getShaderCodeOf(shaderType);
+        std::string code = m_shaderProgram_forward->getShaderCodeOf(shaderType, lineCount);
         return code;
     }
 

@@ -5,9 +5,12 @@
     <title>Shader UI</title>
 </head>
 <body id="main" template="window">
-    <handle move_target="#document">
-    </handle>
+    <handle move_target="#document"></handle>
     <div id="title">Title</div>
-    <div id="content">Content</div>
+    <div id="wrapper">
+    	<div id="lineNumbers"></div>
+    	<div id="content">TEST</div>
+    </div>
+    
 </body>
 </rml>

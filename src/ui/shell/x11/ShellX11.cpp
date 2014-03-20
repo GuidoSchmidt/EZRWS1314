@@ -66,7 +66,12 @@ void Shell::Shutdown()
 
 bool Shell::OpenWindow(const char* name, bool attach_opengl)
 {
-
+	/*
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+	*/
     glfwindow = glfwCreateWindow(1024.0f, 768.0f, "GLFW", 0, 0);
 	glfwMakeContextCurrent(glfwindow);
 

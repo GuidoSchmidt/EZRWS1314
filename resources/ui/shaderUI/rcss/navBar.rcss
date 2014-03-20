@@ -3,7 +3,7 @@ body
     font-family: Roboto;
     font-weight: Bold;
     font-style: normal;
-    font-size: 15;
+    font-size: 13;
     color: white;
     width: 1024px;
     height: 35px;
@@ -15,6 +15,7 @@ body.window
     height      : 32px;
     background  : rgba(0, 0, 0, 128);
     line-height : 30px;
+    opacity: 0.1;
 }
 
 div {
@@ -23,18 +24,18 @@ div {
 }
 
 /* Colors are in LAB: 58, 33, -88 */
-div#vertex:hover {
+div#vs:hover {
     background: rgb(255, 0, 112);
 }
 
-div#tesselation:hover {
+div#ts:hover {
     background: rgb(213, 109, 0);
 }
 
-div#geometry:hover {
+div#gs:hover {
     background: rgb(0, 171, 99);
 }
 
-div#fragment:hover {
+div#fs:hover {
     background: rgb(99, 123, 255);
 }

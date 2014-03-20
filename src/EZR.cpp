@@ -13,6 +13,8 @@
 Rocket::Core::Context *context = 0;
 extern GLFWwindow *glfwindow;
 
+static int m_contentXPos = 1000;
+
 void GameLoop()
 {
 
@@ -85,21 +87,22 @@ int main(void)
     Shell::LoadFonts(RESOURCES_PATH "/ui/fonts/");
 
     // Load and show the tutorial document.
-    Rocket::Core::ElementDocument* textBox = context->LoadDocument(RESOURCES_PATH "/ui/shaderUI/mainWindow.rml");
+    Rocket::Core::ElementDocument* contentBox = context->LoadDocument(RESOURCES_PATH "/ui/shaderUI/mainWindow.rml");
     Rocket::Core::ElementDocument* navBar = context->LoadDocument(RESOURCES_PATH "/ui/shaderUI/navBar.rml");
 
-    if (textBox != 0 || navBar != 0)
+	if (contentBox != 0 || navBar != 0)
     {
-        textBox->Show();
+		contentBox->Show();
+		contentBox->SetProperty("left", Rocket::Core::Property(m_contentXPos, Rocket::Core::Property::PX));
 
         navBar->Show();
         navBar->SetProperty("left", Rocket::Core::Property(0, Rocket::Core::Property::PX));
         navBar->SetProperty("top", Rocket::Core::Property(0, Rocket::Core::Property::PX));
     }
-    ClickListener::RegisterClickableContainer(navBar->GetElementById("vertex"));
-    ClickListener::RegisterClickableContainer(navBar->GetElementById("geometry"));
-    ClickListener::RegisterClickableContainer(navBar->GetElementById("tesselation"));
-    ClickListener::RegisterClickableContainer(navBar->GetElementById("fragment"));
+    ClickListener::RegisterClickableContainer(navBar->GetElementById("vs"));
+    ClickListener::RegisterClickableContainer(navBar->GetElementById("ts"));
+    ClickListener::RegisterClickableContainer(navBar->GetElementById("gs"));
+    ClickListener::RegisterClickableContainer(navBar->GetElementById("fs"));
 
 	renderer::Renderer* main_renderer;
 	main_renderer = renderer::Renderer::instance();
@@ -108,10 +111,11 @@ int main(void)
 
 	while (!glfwWindowShouldClose(glfwindow))
     {
+		//--- EZR rendering ------------------------------------------------------------------------
 		glEnable(GL_DEPTH_TEST);
 		renderer::Renderer::instance()->renderloop(glfwindow);
 	
-
+		//--- libRocket ----------------------------------------------------------------------------
 		// LibRocket input handling
 		int x = 0, y = 0;
 		int key_modifier_state = -1;
@@ -151,14 +155,30 @@ int main(void)
 			}
 		}
 
+		if (xpos > m_contentXPos)
+		{
+			m_contentXPos = 420;
+			contentBox->SetProperty("left", Rocket::Core::Property(m_contentXPos, Rocket::Core::Property::PX));
+		}
+		else if (xpos < m_contentXPos && ypos > 35)
+		{
+			m_contentXPos = 1000;
+			contentBox->SetProperty("left", Rocket::Core::Property(m_contentXPos, Rocket::Core::Property::PX));
+		}
+
+		glUseProgram(0);
 		glDisable(GL_DEPTH_TEST);
-		glDisable(GL_TEXTURE_2D);
+		glDisable(GL_CULL_FACE);
+		glDisable(GL_POLYGON_OFFSET_FILL);
+		glActiveTexture(GL_TEXTURE0);
+		glDisable(GL_DEPTH_TEST);
 		
 		glClearColor(0, 0, 0, 1);
 		glEnableClientState(GL_VERTEX_ARRAY);
 		glEnableClientState(GL_COLOR_ARRAY);
 
 		glEnable(GL_BLEND);
+		//glBlendEquation(GL_FUNC_ADD);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 		glMatrixMode(GL_PROJECTION);

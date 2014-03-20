@@ -287,6 +287,9 @@ namespace scene {
 		{
 			std::cerr << "\nERROR (Geometry: " << m_name << "): Buffers could not be created!\n";
 		}
+
+		//glBindBuffer(GL_ARRAY_BUFFER, 0);
+		//glBindVertexArray(0);
 	}
 
 	void Geometry::createBoundingBoxBuffers(void)
@@ -386,30 +389,30 @@ namespace scene {
 		glBindVertexArray(0);
 	}
 
-    void Geometry::setMaterialIndex(unsigned int material_index)
-    {
-        m_material_index = material_index;
-    }
-
-    unsigned int Geometry::getMaterialIndex(void)
-    {
-        return m_material_index;
-    }
-
-    void Geometry::setMaterialTo(Material* material)
-    {
-        m_material = material;
-    }
-
-    Material* Geometry::getMaterial(void)
-    {
-        return m_material;
-    }
-
-
-    void Geometry::applyTransform(scene::Transform& t)
+	void Geometry::setMaterialIndex(unsigned int material_index)
 	{
-        m_transform.setPosition(t.getPosition());
+		m_material_index = material_index;
+	}
+
+	unsigned int Geometry::getMaterialIndex(void)
+	{
+		return m_material_index;
+	}
+
+	void Geometry::setMaterialTo(Material* material)
+	{
+		m_material = material;
+	}
+
+	Material* Geometry::getMaterial(void)
+	{
+		return m_material;
+	}
+
+
+	void Geometry::applyTransform(scene::Transform& t)
+	{
+		m_transform.setPosition(t.getPosition());
 		m_transform.setRotation(t.getRotation());
 	}
 
