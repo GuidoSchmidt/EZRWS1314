@@ -1,5 +1,4 @@
 #include <Rocket/Core.h>
-#include <sstream>
 
 #include "ClickListener.h"
 
@@ -8,6 +7,7 @@ static Rocket::Core::Context *m_context;
 static renderer::GLSL::GLSLShaderType m_shaderType;
 static std::string m_shader_name;
 static std::string m_shader_source;
+extern double scroll;
 
 void ClickListener::RegisterClickableContainer(Rocket::Core::Element* element)
 {
@@ -25,14 +25,8 @@ void ClickListener::ProcessEvent(Rocket::Core::Event& event)
 		Rocket::Core::String l_id = l_element->GetId();
 		
 		m_context = l_element->GetContext();
-
-		/*
-        Rocket::Core::Element* element = event.GetTargetElement();
-		Rocket::Core::String element_tag_name = element->GetTagName();
-        //c_shader_name = shader_name.CString();
-		//std::cout << c_shader_name << std::endl;
-		std::cout << element_tag_name.CString() << std::endl;
-		*/
+		
+		scroll = 32.0;
 
         if(l_id == "vs")
         {
@@ -64,16 +58,6 @@ void ClickListener::ProcessEvent(Rocket::Core::Event& event)
 		m_shader_source = renderer::Renderer::instance()->getShaderSourceOf(m_shaderType, lineCount);
 		Rocket::Core::String code = m_shader_source.c_str();
 		m_context->GetDocument("main")->GetElementById("wrapper")->GetElementById("content")->SetInnerRML(code.CString());
-		// Fill line numbers
-		std::string numbers = "";
-		for (unsigned int i = 0; i < 50; ++i)
-		{
-			std::string stringNumber = static_cast<ostringstream*>(&(ostringstream() << i))->str();
-			numbers += stringNumber + "\n";
-		}
-		std::cout << numbers  << std::endl;
-
-		m_context->GetDocument("main")->GetElementById("wrapper")->GetElementById("lineNumbers")->SetInnerRML(numbers.c_str());
     }
 	return;
 }

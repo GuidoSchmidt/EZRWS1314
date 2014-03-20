@@ -47,68 +47,69 @@ GLFWwindow* glfwindow = 0;
 
 bool Shell::Initialise(const Rocket::Core::String& path)
 {
-	//gettimeofday(&start_time, NULL);
+    //gettimeofday(&start_time, NULL);
     InputX11::Initialise();
 
-	file_interface = new ShellFileInterface(path);
-	Rocket::Core::SetFileInterface(file_interface);
+    file_interface = new ShellFileInterface(path);
+    Rocket::Core::SetFileInterface(file_interface);
 
-	return true;
+    return true;
 }
 
 void Shell::Shutdown()
 {
-	InputX11::Shutdown();
+    InputX11::Shutdown();
 
-	delete file_interface;
-	file_interface = NULL;
+    delete file_interface;
+    file_interface = NULL;
 }
 
 bool Shell::OpenWindow(const char* name, bool attach_opengl)
 {
-	/*
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
-	*/
+    /*
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+    glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_FALSE);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
+    */
+
     glfwindow = glfwCreateWindow(1024.0f, 768.0f, "GLFW", 0, 0);
-	glfwMakeContextCurrent(glfwindow);
+    glfwMakeContextCurrent(glfwindow);
 
-	/*
-	// Set up the GL state.
-	glClearColor(0, 0, 0, 1);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
+    /*
+    // Set up the GL state.
+    glClearColor(0, 0, 0, 1);
+    glEnableClientState(GL_VERTEX_ARRAY);
+    glEnableClientState(GL_COLOR_ARRAY);
 
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, 1024, 768, 0, -1, 1);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, 1024, 768, 0, -1, 1);
 
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	*/
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    */
     return true;
 }
 
 void Shell::CloseWindow()
 {
-	glfwDestroyWindow(glfwindow);
+    glfwDestroyWindow(glfwindow);
 }
 
 // Returns a platform-dependent handle to the window.
 void* Shell::GetWindowHandle()
 {
-	return NULL;
+    return NULL;
 }
 
 // Flips the OpenGL buffers.
 void Shell::FlipBuffers()
 {
-	glfwSwapBuffers(glfwindow);
+    glfwSwapBuffers(glfwindow);
 }
 
 void Shell::EventLoop(ShellIdleFunction idle_function)
@@ -118,51 +119,51 @@ void Shell::EventLoop(ShellIdleFunction idle_function)
 
 void Shell::RequestExit()
 {
-	glfwTerminate();
+    glfwTerminate();
 }
 
 void Shell::DisplayError(const char* fmt, ...)
 {
-	const int buffer_size = 1024;
-	char buffer[buffer_size];
-	va_list argument_list;
+    const int buffer_size = 1024;
+    char buffer[buffer_size];
+    va_list argument_list;
 
-	// Print the message to the buffer.
-	va_start(argument_list, fmt);
-	int len = vsnprintf(buffer, buffer_size - 2, fmt, argument_list);	
-	if ( len < 0 || len > buffer_size - 2 )	
-	{
-		len = buffer_size - 2;
-	}	
-	buffer[len] = '\n';
-	buffer[len + 1] = '\0';
-	va_end(argument_list);
+    // Print the message to the buffer.
+    va_start(argument_list, fmt);
+    int len = vsnprintf(buffer, buffer_size - 2, fmt, argument_list);	
+    if ( len < 0 || len > buffer_size - 2 )	
+    {
+        len = buffer_size - 2;
+    }	
+    buffer[len] = '\n';
+    buffer[len + 1] = '\0';
+    va_end(argument_list);
 
-	printf("%s", buffer);
+    printf("%s", buffer);
 }
 
 void Shell::Log(const char* fmt, ...)
 {
-	const int buffer_size = 1024;
-	char buffer[buffer_size];
-	va_list argument_list;
+    const int buffer_size = 1024;
+    char buffer[buffer_size];
+    va_list argument_list;
 
-	// Print the message to the buffer.
-	va_start(argument_list, fmt);
-	int len = vsnprintf(buffer, buffer_size - 2, fmt, argument_list);	
-	if ( len < 0 || len > buffer_size - 2 )	
-	{
-		len = buffer_size - 2;
-	}	
-	buffer[len] = '\n';
-	buffer[len + 1] = '\0';
-	va_end(argument_list);
+    // Print the message to the buffer.
+    va_start(argument_list, fmt);
+    int len = vsnprintf(buffer, buffer_size - 2, fmt, argument_list);	
+    if ( len < 0 || len > buffer_size - 2 )	
+    {
+        len = buffer_size - 2;
+    }	
+    buffer[len] = '\n';
+    buffer[len + 1] = '\0';
+    va_end(argument_list);
 
-	printf("%s", buffer);
+    printf("%s", buffer);
 }
 
 // Returns the seconds that have elapsed since program startup.
 float Shell::GetElapsedTime() 
 {
-	return static_cast<float>(glfwGetTime());
+    return static_cast<float>(glfwGetTime());
 }

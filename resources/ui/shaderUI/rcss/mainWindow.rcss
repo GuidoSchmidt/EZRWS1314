@@ -16,6 +16,7 @@ body.window
     /*background-decorator: image;*/
     /*background-image: ../img/textbox.tga 0px 0px 505px 431px;*/
     background : rgba(0, 0, 0, 200);
+    overflow   : hidden;    
 }
 
 body.window:hover {
@@ -37,13 +38,15 @@ div#title
     border-bottom: 2px rgb(100%, 0%, 0%);
     border-left: 2px rgb(100%, 0%, 0%);*/
     font-size  : 20px;
-    background : rgba(255, 255, 255, 50);
+    background : rgba( 12,  12,  12, 250);
     color      : rgba(255, 255, 255, 200);
     padding    : 2px 12px;
+    z-index: 99;
 }
 
 div#wrapper {
-    float: left;
+    position: absolute;
+    top: 0;
 }
 
 div#lineNumbers {
@@ -51,10 +54,9 @@ div#lineNumbers {
     left             : 0;
     top              : 0;
     text-align       : right;     
-    float            : left;
-    padding-right     : 8px;   
-    width            : 20px;
-    height           : 736px;
+    padding-right    : 8px;   
+    width            : 25px;
+    height           : 5000px;
     font-size        : 12px;
     color            : rgb(128, 128, 128);
     background-color : rgba(0, 0, 0, 240);
@@ -68,10 +70,6 @@ div#content {
     float        : left;
     font-size    : 12px;
     color        : rgba(240, 240, 240, 220);
-}
-
-div.lN {
-    float: left;
 }
 
 div.line {

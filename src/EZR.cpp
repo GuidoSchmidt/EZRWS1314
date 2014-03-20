@@ -1,39 +1,43 @@
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <Rocket/Core.h>
+#include <Rocket/Debugger.h>
+
 #include "./utils/Common.h"
 #include "./renderer/Context.h"
 #include "./renderer/Renderer.h"
-#include <Rocket/Core.h>
-#include <Rocket/Debugger.h>
 #include "./ui/UISystemInterface.h"
 #include "./ui/shell/Shell.h"
 #include "./ui/shell/Input.h"
-
 #include "./ui/listeners/ClickListener.h"
-#include <string>
+
 
 Rocket::Core::Context *context = 0;
 extern GLFWwindow *glfwindow;
+extern double scroll;
 static int m_contentXPos = 1000;
 
 int main(void)
 {
-    if(!glfwInit())
-    {
-        std::cout << "ERROR: GLFW initialization failed!" << std::endl;
-    }
-    else {
-        std::cout << "GLFW initalized!" << std::    endl;
-    }
+	if (!glfwInit())
+	{
+		std::cout << "ERROR: GLFW initialization failed!" << std::endl;
+	}
+	else {
+		std::cout << "GLFW initalized!" << std::endl;
+	}
 
-    // Generic OS initialisation, creates a window and attaches OpenGL.
-    Shell::Initialise("../Samples/tutorial/template/");
-    Shell::OpenWindow("Template Tutorial", true);
+	// Generic OS initialisation, creates a window and attaches OpenGL.
+	Shell::Initialise("../Samples/tutorial/template/");
+	Shell::OpenWindow("Template Tutorial", true);
 	glfwMakeContextCurrent(glfwindow);
 
-    if(glewInit() != GLEW_OK)
-    {
-        //! Error handling
-        std::cerr << "ERROR (GLEW): Initialization failed!\n";
-    }
+	if (glewInit() != GLEW_OK)
+	{
+		//! Error handling
+		std::cerr << "ERROR (GLEW): Initialization failed!\n";
+	}
 
 	const GLubyte* glinfo_renderer_ptr = glGetString(GL_RENDERER);
 	const GLubyte* glinfo_vendor_ptr = glGetString(GL_VENDOR);
@@ -55,34 +59,41 @@ int main(void)
 	std::cout << "GLSL Version:      ";
 	std::cout << glinfo_glslVersion_ptr << std::endl;
 
-    //! System interface
-    UISystemInterface system_interface;
-    Rocket::Core::SetSystemInterface(&system_interface);
+	//! System interface
+	UISystemInterface system_interface;
+	Rocket::Core::SetSystemInterface(&system_interface);
 
-    //! Render interface
-    ShellRenderInterfaceOpenGL opengl_renderer;
-    Rocket::Core::SetRenderInterface(&opengl_renderer);
-    opengl_renderer.SetViewport(1024,768);
+	//! Render interface
+	ShellRenderInterfaceOpenGL opengl_renderer;
+	Rocket::Core::SetRenderInterface(&opengl_renderer);
+	opengl_renderer.SetViewport(1024, 768);
 
-    Rocket::Core::Initialise();
+	Rocket::Core::Initialise();
 
-    context = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(1024, 768));
-    if (context == NULL)
-    {
-        Rocket::Core::Shutdown();
-        glfwTerminate();
-        return -1;
-    }
+	context = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(1024, 768));
+	if (context == NULL)
+	{
+		Rocket::Core::Shutdown();
+		glfwTerminate();
+		return -1;
+	}
 
-    // Load and show the demo document.
-    Rocket::Debugger::Initialise(context);
-    Input::SetContext(context);
+	// Load and show the demo document.
+	Rocket::Debugger::Initialise(context);
+	Input::SetContext(context);
 
-    Shell::LoadFonts(RESOURCES_PATH "/ui/fonts/");
+	Shell::LoadFonts(RESOURCES_PATH "/ui/fonts/");
 
-    // Load and show the tutorial document.
-    Rocket::Core::ElementDocument* contentBox = context->LoadDocument(RESOURCES_PATH "/ui/shaderUI/mainWindow.rml");
-    Rocket::Core::ElementDocument* navBar = context->LoadDocument(RESOURCES_PATH "/ui/shaderUI/navBar.rml");
+	// Load and show the tutorial document.
+	Rocket::Core::ElementDocument* contentBox = context->LoadDocument(RESOURCES_PATH "/ui/shaderUI/mainWindow.rml");
+	Rocket::Core::ElementDocument* navBar = context->LoadDocument(RESOURCES_PATH "/ui/shaderUI/navBar.rml");
+	/*
+	Rocket::Core::ElementDocument* cursor = context->LoadMouseCursor(RESOURCES_PATH "/ui/shaderUI/pointer.rml");
+	if (cursor)
+	{
+		glfwSetInputMode(glfwindow, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		cursor->RemoveReference();
+	}*/
 
 	if (contentBox != 0 || navBar != 0)
     {
@@ -93,7 +104,17 @@ int main(void)
         navBar->SetProperty("left", Rocket::Core::Property(0, Rocket::Core::Property::PX));
         navBar->SetProperty("top", Rocket::Core::Property(0, Rocket::Core::Property::PX));
     }
-    ClickListener::RegisterClickableContainer(navBar->GetElementById("vs"));
+	// Fill line numbers
+	std::string numbers = "";
+	for (unsigned int i = 0; i < 500; ++i)
+	{
+		std::string stringNumber = static_cast<ostringstream*>(&(ostringstream() << i))->str();
+		numbers += stringNumber + "<br />";
+	}
+	std::cout << numbers << std::endl;
+	contentBox->GetElementById("wrapper")->GetElementById("lineNumbers")->SetInnerRML(numbers.c_str());
+    
+	ClickListener::RegisterClickableContainer(navBar->GetElementById("vs"));
     ClickListener::RegisterClickableContainer(navBar->GetElementById("ts"));
     ClickListener::RegisterClickableContainer(navBar->GetElementById("gs"));
     ClickListener::RegisterClickableContainer(navBar->GetElementById("fs"));
@@ -116,6 +137,7 @@ int main(void)
 		double xpos, ypos;
 		glfwGetCursorPos(glfwindow, &xpos, &ypos);
 		context->ProcessMouseMove(static_cast<int>(xpos), static_cast<int>(ypos), key_modifier_state);
+		context->ProcessMouseWheel((int)scroll, key_modifier_state);
 
 		int button_index = 1;
 		if (glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_1) == GLFW_PRESS ||
@@ -153,9 +175,12 @@ int main(void)
 		{
 			m_contentXPos = 420;
 			contentBox->SetProperty("left", Rocket::Core::Property(m_contentXPos, Rocket::Core::Property::PX));
+			float pos = min(static_cast<int>(scroll), 32);
+			contentBox->GetElementById("wrapper")->SetProperty("top", Rocket::Core::Property(pos, Rocket::Core::Property::PX));
 		}
 		else if (xpos < m_contentXPos && ypos > 35)
 		{
+			scroll = 32.0;
 			m_contentXPos = 1000;
 			contentBox->SetProperty("left", Rocket::Core::Property(m_contentXPos, Rocket::Core::Property::PX));
 		}

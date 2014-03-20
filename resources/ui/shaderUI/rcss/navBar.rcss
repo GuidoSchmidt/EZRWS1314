@@ -20,22 +20,48 @@ body.window
 
 div {
     color: white;
-    padding: 2px 60px;
+    text-align: center;
+    padding: 1px;
 }
 
 /* Colors are in LAB: 58, 33, -88 */
+div#vs{
+    position: absolute;
+    width: 256px;
+}
+
 div#vs:hover {
     background: rgb(255, 0, 112);
+}
+
+div#ts{
+    position: absolute;
+    width: 256px;
+    left: 256px;
 }
 
 div#ts:hover {
     background: rgb(213, 109, 0);
 }
 
+div#gs {
+    position: absolute;
+    width: 256px;
+    left: 512px;
+}
+
 div#gs:hover {
     background: rgb(0, 171, 99);
+    width: 256px;
+}
+
+div#fs {
+    position: absolute;
+    width: 256px;
+    left: 768px;
 }
 
 div#fs:hover {
     background: rgb(99, 123, 255);
+    width: 256px;
 }

@@ -1,7 +1,9 @@
 //! @file Renderer.cpp
+#include <algorithm>
+
 #include "Renderer.h"
 
-double scroll = 60.0;
+double scroll = 32.0;
 
 namespace renderer {
 
@@ -12,8 +14,6 @@ namespace renderer {
         m_fps = 0;
         m_current_time = 0.0;
         m_previous_time = 0.0;
-
-        //init();
     }
 
     Renderer::~Renderer(void)
@@ -161,8 +161,9 @@ namespace renderer {
 */
     void ScrollCallback(GLFWwindow * window, double xoffset, double yoffset)
     {
-        scroll += yoffset;
-
+		if (scroll > 32.0)
+			scroll = 32.0;
+		scroll += yoffset * 20.0;
     }
 
     void KeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -215,6 +216,7 @@ namespace renderer {
 
 	void Renderer::setupRenderer(GLFWwindow* window)
 	{
+
 		glfwSetScrollCallback(window, ScrollCallback);
 		glfwSetKeyCallback(window, KeyboardCallback);
 
@@ -364,10 +366,10 @@ namespace renderer {
         }
         if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_3))
         {
-            scroll = 60.0;
+            scroll = 32.0;
         }
         //! Field of view
-        m_scene_camera->SetFOV(scroll);
+        //m_scene_camera->SetFOV(scroll);
 
         //! Other keyboard events
         if (glfwGetKey(window, GLFW_KEY_1) )
