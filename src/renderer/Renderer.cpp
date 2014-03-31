@@ -49,8 +49,8 @@ namespace renderer {
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/ship.obj");
 		
 
-		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house5.dae");
-		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/house6.obj");
+		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae");
+		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/house6.obj");
 
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/baum_test.dae");
         //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
@@ -228,63 +228,63 @@ namespace renderer {
 
 		double mouse_x, mouse_y, old_x, old_y;
 		old_x = old_y = mouse_x = mouse_y = 0;
-        while (m_context && m_context->isLive() && !glfwGetKey(m_context->getWindow(), GLFW_KEY_ESCAPE) )
-        {
-            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-            
-            //! simple camera movement
-            
-			
-            float  mouse_correct_x, mouse_correct_y;
-			old_x=mouse_x;
-			old_y=mouse_y;
-            glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
-  /*          mouse_correct_x = ((mouse_x / m_context->getSize().x) * 2.0f) - 1.0f;
-            mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;*/
-			mouse_correct_x = (((mouse_x-old_x) / m_context->getSize().x));// * 2.0f) - 1.0f;
-            mouse_correct_y = (((mouse_y-old_y) / m_context->getSize().y));// * 2.0f) - 1.0f;
-            if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
-            {
-                  m_scene_camera->Rotate(mouse_correct_x * camera_speed * 100,
-                                         mouse_correct_y * camera_speed * 100);
-            }
-			
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W))
-            {
-                  m_scene_camera->MoveZ( camera_speed);
-            }
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S))
-            {
-                  m_scene_camera->MoveZ(-camera_speed);
-            }
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D))
-            {
-                  m_scene_camera->MoveX( camera_speed);
-            }
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A))
-            {
-                  m_scene_camera->MoveX(-camera_speed);
-            }
+		while (m_context && m_context->isLive() && !glfwGetKey(m_context->getWindow(), GLFW_KEY_ESCAPE))
+		{
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+			//! simple camera movement
+
+
+			float  mouse_correct_x, mouse_correct_y;
+			old_x = mouse_x;
+			old_y = mouse_y;
+			glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
+			/*          mouse_correct_x = ((mouse_x / m_context->getSize().x) * 2.0f) - 1.0f;
+					  mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;*/
+			mouse_correct_x = (((mouse_x - old_x) / m_context->getSize().x));// * 2.0f) - 1.0f;
+			mouse_correct_y = (((mouse_y - old_y) / m_context->getSize().y));// * 2.0f) - 1.0f;
+			if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
+			{
+				m_scene_camera->Rotate(mouse_correct_x * camera_speed * 100,
+					mouse_correct_y * camera_speed * 100);
+			}
+
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W))
+			{
+				m_scene_camera->MoveZ(camera_speed);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S))
+			{
+				m_scene_camera->MoveZ(-camera_speed);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D))
+			{
+				m_scene_camera->MoveX(camera_speed);
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A))
+			{
+				m_scene_camera->MoveX(-camera_speed);
+			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
 			{
-				sun->setHour(sun->getHour()+1);
+				sun->setHour(sun->getHour() + 1);
 			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_DOWN))
 			{
-				sun->setHour(sun->getHour()-1);
+				sun->setHour(sun->getHour() - 1);
 			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
 			{
-				
-				sun->setMinute(sun->getMinute()-1);
+
+				sun->setMinute(sun->getMinute() - 1);
 				if (sun->getMinute() == 0)
-					sun->setHour(sun->getHour()-1);
+					sun->setHour(sun->getHour() - 1);
 			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
 			{
 				if (sun->getMinute() == 59)
-					sun->setHour(sun->getHour()+1);
-				sun->setMinute(sun->getMinute()+1);
+					sun->setHour(sun->getHour() + 1);
+				sun->setMinute(sun->getMinute() + 1);
 			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_KP_2))
 			{
@@ -327,95 +327,95 @@ namespace renderer {
 				sun->setHour(21);
 				sun->setMinute(0);
 			}
-            if(glfwGetKey(m_context->getWindow(), GLFW_KEY_I))
-            {
-                scene::SceneManager::instance()->getLight(0)->getTransform()->translate(0.0, 1.0f, 0.0f);
-            }
-            if(glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
-            {
-              scroll = 60.0;
-            }
-            //! Field of view
-            m_scene_camera->SetFOV(scroll);
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_I))
+			{
+				scene::SceneManager::instance()->getLight(0)->getTransform()->translate(0.0, 1.0f, 0.0f);
+			}
+			if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
+			{
+				scroll = 60.0;
+			}
+			//! Field of view
+			m_scene_camera->SetFOV(scroll);
 
-            //! Other keyboard events
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_1) )
-            {
-                  m_shaderProgram_forward->reloadAllShaders();
-            }
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_2) )
-            {
-                m_shaderProgram_compositing->reloadAllShaders();
-            }
+			//! Other keyboard events
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_1))
+			{
+				m_shaderProgram_forward->reloadAllShaders();
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_2))
+			{
+				m_shaderProgram_compositing->reloadAllShaders();
+			}
 
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_E))
-            {
+			{
 				switchExtractionStrategy(true);
-            }
+			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_R))
-            {
+			{
 				switchExtractionStrategy(false);
-            }
+			}
 
-            //! Normal camera mode
-            glm::mat4 view       = m_scene_camera->GetViewMatrix();
-            glm::mat4 projection = m_scene_camera->GetProjectionMatrix();
+			//! Normal camera mode
+			glm::mat4 view = m_scene_camera->GetViewMatrix();
+			glm::mat4 projection = m_scene_camera->GetProjectionMatrix();
 
-            glfwSetScrollCallback(m_context->getWindow(), ScrollCallback);
-            glfwSetKeyCallback(m_context->getWindow(), KeyboardCallback);
+			glfwSetScrollCallback(m_context->getWindow(), ScrollCallback);
+			glfwSetKeyCallback(m_context->getWindow(), KeyboardCallback);
 
-            //scene::SceneManager::instance()->getLight(0)->generateShadowMap(&m_renderqueue);
+			//scene::SceneManager::instance()->getLight(0)->generateShadowMap(&m_renderqueue);
 
-            //! First shader program:
-            //! ### GEOMETRY RENDER ############################################
-            gBuffer->write();
-			
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			//! First shader program:
+			//! ### GEOMETRY RENDER ############################################
+			gBuffer->write();
 
-				
-
-					double forwardTime1 = glfwGetTime();
-					//! First shader program
-				
-				//render sky
-				m_shaderProgram_sky->use();
-
-					//uniforms
-					sun->update(projection,view);
-					m_shaderProgram_sky->setUniform(sky_uniform_loc_view, view);
-					m_shaderProgram_sky->setUniform(sky_uniform_loc_model, skyScale);
-					m_shaderProgram_sky->setUniform(sky_uniform_loc_projection, projection);
-					m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_day_tex, day_tex, 0); //sonne
-					m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_night_tex, night_tex, 1 ); //sonne
-					m_shaderProgram_sky->setUniform(sky_uniform_loc_blend, sun->textureBlend);  //sonne
-					m_shaderProgram_sky->setUniform(sky_uniform_loc_color, sun->getColor() ); //sonne
-					skyNode->drawTriangles();
-
-				m_shaderProgram_forward->use();
-					//m_shaderProgram_forward->SetUniform(uniform_loc_light_position, scene::SceneManager::instance()->getLight(0)->getTransform()->getPosition() );
-					m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(mouse_correct_x, mouse_correct_y) );
-					m_shaderProgram_forward->setUniform(forward_uniform_loc_view, view);
-					m_shaderProgram_forward->setUniform(forward_uniform_loc_projection, projection);
-					glm::vec3 p = sun->getTransform()->getPosition();
-					m_shaderProgram_forward->setUniform(forward_uniform_loc_light_position, sun->getTransform()->getPosition());
-					m_shaderProgram_forward->setUniform(forward_uniform_loc_light_color, sun->getColor());
-
-					//render geometry nodes 
-					for(unsigned int i = 0; i < m_renderqueue.size(); i++)
-					{
-						m_shaderProgram_forward->setUniform(forward_uniform_loc_model, m_renderqueue[i]->getTransform()->getModelMatrix() );
-						m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_color, *(m_renderqueue[i]->getMaterial()->getDiffuseColor()) );
-						m_shaderProgram_forward->setUniform(forward_uniform_loc_specular_color, *(m_renderqueue[i]->getMaterial()->getSpecularColor()) );
-						m_shaderProgram_forward->setUniform(forward_uniform_loc_shininess, m_renderqueue[i]->getMaterial()->getShininess() );
-						m_shaderProgram_forward->setUniform(forward_uniform_loc_light_color, sun->getColor());
-						m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
-						m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, m_renderqueue[i]->getMaterial()->getSpecularTexture(), 1);
-						m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 2);
-						m_renderqueue[i]->drawTriangles();
-					}
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
-				m_shaderProgram_forward->unuse();
+
+			double forwardTime1 = glfwGetTime();
+			//! First shader program
+
+			//render sky
+			m_shaderProgram_sky->use();
+
+			//uniforms
+			sun->update(projection, view);
+			m_shaderProgram_sky->setUniform(sky_uniform_loc_view, view);
+			m_shaderProgram_sky->setUniform(sky_uniform_loc_model, skyScale);
+			m_shaderProgram_sky->setUniform(sky_uniform_loc_projection, projection);
+			m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_day_tex, day_tex, 0); //sonne
+			m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_night_tex, night_tex, 1); //sonne
+			m_shaderProgram_sky->setUniform(sky_uniform_loc_blend, sun->textureBlend);  //sonne
+			m_shaderProgram_sky->setUniform(sky_uniform_loc_color, sun->getColor()); //sonne
+			skyNode->drawTriangles();
+
+			m_shaderProgram_forward->use();
+			//m_shaderProgram_forward->SetUniform(uniform_loc_light_position, scene::SceneManager::instance()->getLight(0)->getTransform()->getPosition() );
+			m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(mouse_correct_x, mouse_correct_y));
+			m_shaderProgram_forward->setUniform(forward_uniform_loc_view, view);
+			m_shaderProgram_forward->setUniform(forward_uniform_loc_projection, projection);
+			glm::vec3 p = sun->getTransform()->getPosition();
+			m_shaderProgram_forward->setUniform(forward_uniform_loc_light_position, sun->getTransform()->getPosition());
+			m_shaderProgram_forward->setUniform(forward_uniform_loc_light_color, sun->getColor());
+
+			//render geometry nodes 
+			for (unsigned int i = 0; i < m_renderqueue.size(); i++)
+			{
+				m_shaderProgram_forward->setUniform(forward_uniform_loc_model, m_renderqueue[i]->getTransform()->getModelMatrix());
+				m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_color, *(m_renderqueue[i]->getMaterial()->getDiffuseColor()));
+				m_shaderProgram_forward->setUniform(forward_uniform_loc_specular_color, *(m_renderqueue[i]->getMaterial()->getSpecularColor()));
+				m_shaderProgram_forward->setUniform(forward_uniform_loc_shininess, m_renderqueue[i]->getMaterial()->getShininess());
+				m_shaderProgram_forward->setUniform(forward_uniform_loc_light_color, sun->getColor());
+				m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
+				m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, m_renderqueue[i]->getMaterial()->getSpecularTexture(), 1);
+				m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 2);
+				m_renderqueue[i]->drawTriangles();
+			}
+
+
+			m_shaderProgram_forward->unuse();
 
 			double forwardTime2 = glfwGetTime() - forwardTime1; //ca 1-10ms
 
@@ -424,9 +424,9 @@ namespace renderer {
 			/*ssSunPos = projection * view * wsSunPos;
 			ssSunPos.x=(ssSunPos.x/ssSunPos.z)/2.0f+0.5f;
 			ssSunPos.y=(ssSunPos.y/ssSunPos.z)/2.0f+0.5f;*/
-			
+
 			double time1 = glfwGetTime();
-			doTheSunlightEffect();
+			//doTheSunlightEffect();
 			double time2 = glfwGetTime() - time1; //ca 1,3*e-5 
 
 			compositingPass->doExecute();
@@ -437,14 +437,12 @@ namespace renderer {
 			//der langsame mode dauert 10-20ms
 
 
-
 			if (finalPass->param_fastExtraction == 0.0f)
 				finalPass->param_minAveMax = slowExtractionPass->minAveMax;
 			else
 				finalPass->minAveMaxTexture = fastExtractionPass->outputTexture;
 
 			finalPass->doExecute();
-
 
            
             //! Swap buffers

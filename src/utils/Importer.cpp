@@ -1,6 +1,8 @@
 //! @file Importer.cpp
 #include "Importer.h"
 
+static std::string SCENE_NAME = "house";
+
 namespace utils {
 	
 	Importer::Importer(void)
@@ -265,27 +267,50 @@ namespace utils {
 
                 //! --- Textures ---
                 //! Diffuse
-                aiString texture_path_diffuse;
-                current_material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path_diffuse);
+                aiString ai_texture_path_diffuse;
+				current_material->GetTexture(aiTextureType_DIFFUSE, 0, &ai_texture_path_diffuse);
+				std::string texture_path_diffuse = ai_texture_path_diffuse.C_Str();
+				unsigned int last_sperator = texture_path_diffuse.find_last_of("/");
+				std::string texture_name_diffuse = "/textures/" + SCENE_NAME;
+				if (last_sperator < texture_path_diffuse.length())
+				{
+					texture_name_diffuse.append( texture_path_diffuse.substr(last_sperator) );
+				}
+
                 //! Specular
-                aiString texture_path_specular;
-                current_material->GetTexture(aiTextureType_SPECULAR, 0, &texture_path_specular);
+                aiString ai_texture_path_specular;
+                current_material->GetTexture(aiTextureType_SPECULAR, 0, &ai_texture_path_specular);
+				std::string texture_path_specular = ai_texture_path_specular.C_Str();
+				last_sperator = texture_path_specular.find_last_of("/");
+				std::string texture_name_specular = "/textures/" + SCENE_NAME;
+				if (last_sperator < texture_path_specular.length())
+				{
+					texture_name_specular.append(texture_path_specular.substr(last_sperator));
+				}
+
                 //! Normal
-                aiString texture_path_normal;
-                current_material->GetTexture(aiTextureType_NORMALS, 0, &texture_path_normal);
+                aiString ai_texture_path_normal;
+				current_material->GetTexture(aiTextureType_NORMALS, 0, &ai_texture_path_normal);
+				std::string texture_path_normal = ai_texture_path_normal.C_Str();
+				last_sperator = texture_path_normal.find_last_of("/");
+				std::string texture_name_normal = "/textures/" + SCENE_NAME;
+				if (last_sperator < texture_path_normal.length())
+				{
+					texture_name_normal.append(texture_path_normal.substr(last_sperator));
+				}
 
                 //! Create new material
                 new_material = new scene::Material(material_id, // Index-number
                                                    glm::vec3(diffuse.r, // Diffuse Color
                                                              diffuse.g,
                                                              diffuse.b),
-                                                   scene::SceneManager::instance()->loadTexture(texture_path_diffuse.C_Str(),true),
+															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_diffuse, true),
                                                    glm::vec3(specular.r,
                                                              specular.g,
                                                              specular.b),
-                                                   scene::SceneManager::instance()->loadTexture(texture_path_specular.C_Str(),true),
-                                                   shininess,
-                                                   scene::SceneManager::instance()->loadTexture(texture_path_normal.C_Str(),true));
+															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_specular, true),
+															 shininess,
+															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_normal, true));
 
                 //! Add material to scene manager
                 scene::SceneManager::instance()->addMaterial(new_material);
@@ -294,12 +319,11 @@ namespace utils {
                 std::cout << "\n  * Material: " << material_id << std::endl;
                 std::cout << "      " << name.C_Str() << std::endl;
                 std::cout << "      Diffuse-Color:   (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
-                std::cout << "      Diffuse-Texture: (" << texture_path_diffuse.C_Str() << ")" << std::endl;
+				std::cout << "      Diffuse-Texture: (" << RESOURCES_PATH + texture_name_diffuse << ")" << std::endl;
                 std::cout << "      Specular-Color:  (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
-                std::cout << "      Specular-Texture:(" << texture_path_specular.C_Str() << ")" << std::endl;
+				std::cout << "      Specular-Texture:(" << RESOURCES_PATH + texture_name_sspecular << ")" << std::endl;
                 std::cout << "      Shininess:        " << shininess << std::endl;
-                std::cout << "      Normal-Texture:  (" << texture_path_normal.C_Str() << ")" << std::endl;
-
+				std::cout << "      Normal-Texture:  (" << RESOURCES_PATH + texture_name_normal << ")" << std::endl;
             }
 		}
 	}
