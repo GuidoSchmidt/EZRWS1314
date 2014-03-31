@@ -43,7 +43,11 @@ namespace utils {
 			//! \brief Returns the singleton instance
 			static Importer* instance(void);
 
-			//! \brief Imports a file from a given filepath
+			//! \brief Imports a file from a given filepath and a folder name for the texture files
+			/*
+				CAUTION! texture_folder_name is the name of the folder inside "resources/textures/".
+				Do not put the whole file-path string into the parameter, only the folder name!
+			*/
 			void importFile(const std::string& pathToFile, const std::string texture_folder_name);
 
 			//! \brief Processes the loaded assimp scene
