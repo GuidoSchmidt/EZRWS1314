@@ -277,7 +277,7 @@ namespace utils {
 					texture_name_diffuse.append(texture_path_diffuse.substr(last_sperator));
 				}
 				else
-					std::cerr << "PLEASE PUT THE TEXTURES INTO THE RESOURCES FOLDER UNDER /resources/textures/<SceneName>" << std:endl;
+					std::cerr << "PLEASE PUT THE TEXTURES INTO THE RESOURCES FOLDER UNDER /resources/textures/<SceneName>" << std::endl;
 
 
                 //! Specular
