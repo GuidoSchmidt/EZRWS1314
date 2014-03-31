@@ -36,6 +36,7 @@ endif(NOT CMAKE_BUILD_TYPE)
 message("* Current build type is : ${CMAKE_BUILD_TYPE}")
 
 find_package(OpenGL3 REQUIRED)
+find_package(FreeImage REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLFW3 REQUIRED)
 find_package(GLM REQUIRED)
@@ -43,8 +44,8 @@ find_package(ASSIMP REQUIRED)
 find_package(SOIL REQUIRED)
 
 #if("${CMAKE_SYSTEM}" MATCHES "Linux")
-#   find_package(X11)
-#   set(ALL_LIBRARIES ${ALL_LIBRARIES} ${X11_LIBRARIES} Xrandr Xxf86vm Xi pthread)
+# find_package(X11)
+# set(ALL_LIBRARIES ${ALL_LIBRARIES} ${X11_LIBRARIES} Xrandr Xxf86vm Xi pthread)
 #endif()
 
 ADD_SUBDIRECTORY(src)

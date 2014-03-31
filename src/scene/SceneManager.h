@@ -9,8 +9,11 @@
 #include "Geometry.h"
 #include "Light.h"
 
+
+
 #include <map>
 #include <SOIL/SOIL.h>
+#include <FreeImage.h>
 
 namespace scene
 {
@@ -60,9 +63,15 @@ namespace scene
       //! \brief Returns a texture handle by its index
       GLuint getTexture(unsigned int index);
 
-      //! \brief Loads a texture from a given filepath
-      //!  @return The index of the texture handle in the texture unit list
-      GLuint loadTexture(std::string filename);
+    //! \brief Loads a texture from a given filepath and returns the texture handle
+    GLuint loadTexture(std::string filename, bool repeat);
+
+    //! \brief Loads a hdr texture from a given filepath and returns the texture handle
+    GLuint loadHDRTexture(std::string filename);
+
+    GLuint loadCubeMap(std::string filename,bool HDR);
+
+    void deleteGeometryNode(const unsigned int index);
   };
 }
 

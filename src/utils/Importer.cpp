@@ -1,11 +1,14 @@
 //! @file Importer.cpp
 #include "Importer.h"
 
+static std::string SCENE_NAME = "house";
+
 namespace utils {
 	
 	Importer::Importer(void)
 	{
 		m_aiScene = 0;
+		FreeImage_Initialise(false);
 	}
 
 	Importer::~Importer(void)
@@ -18,8 +21,9 @@ namespace utils {
 		return &m_importer;
 	}
 
-	void Importer::importFile(const std::string& pathToFile)
+	void Importer::importFile(const std::string& pathToFile, const std::string texture_folder_name)
 	{
+		SCENE_NAME = texture_folder_name;
 		m_aiScene = m_aiImporter.ReadFile(pathToFile,  
             aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials);
 			
@@ -117,9 +121,9 @@ namespace utils {
 				//! Position & orientation
                 //! \todo blender currently has problems exporting the lights position
                 aiVector3D position         = current_light->mPosition;
-                position.x                  =   1.0;
-                position.y                  =   5.0;
-                position.z                  =   8.0;
+                position.x                  =   0.0;
+                position.y                  =   4.0;
+                position.z                  = -15.0;
                 aiVector3D direction        = current_light->mDirection;
                 aiLightSourceType lighttype = current_light->mType;
                 aiColor3D color             = current_light->mColorAmbient;
@@ -127,7 +131,7 @@ namespace utils {
                 new_light = new scene::Light(light_id,
                                              name.C_Str(),
                                              scene::Transform( glm::vec3(position.x, position.y, position.z),
-                                                               glm::quat(1.0f, glm::vec3(0, 0, 0) ),
+                                                               glm::quat(1.0f, glm::vec3(direction.x, direction.y, direction.z) ),
                                                                glm::vec3(1.0) ),
                                              glm::vec3(color.r, color.g, color.b), 1.0f);
 
@@ -264,27 +268,53 @@ namespace utils {
 
                 //! --- Textures ---
                 //! Diffuse
-                aiString texture_path_diffuse;
-                current_material->GetTexture(aiTextureType_DIFFUSE, 0, &texture_path_diffuse);
+                aiString ai_texture_path_diffuse;
+				current_material->GetTexture(aiTextureType_DIFFUSE, 0, &ai_texture_path_diffuse);
+				std::string texture_path_diffuse = ai_texture_path_diffuse.C_Str();
+				unsigned int last_sperator = texture_path_diffuse.find_last_of("/");
+				std::string texture_name_diffuse = "/textures/" + SCENE_NAME;
+				if (last_sperator < texture_path_diffuse.length())
+				{
+					texture_name_diffuse.append(texture_path_diffuse.substr(last_sperator));
+				}
+				else
+					std::cerr << "PLEASE PUT THE TEXTURES INTO THE RESOURCES FOLDER UNDER /resources/textures/<SceneName>" << std::endl;
+
+
                 //! Specular
-                aiString texture_path_specular;
-                current_material->GetTexture(aiTextureType_SPECULAR, 0, &texture_path_specular);
+                aiString ai_texture_path_specular;
+                current_material->GetTexture(aiTextureType_SPECULAR, 0, &ai_texture_path_specular);
+				std::string texture_path_specular = ai_texture_path_specular.C_Str();
+				last_sperator = texture_path_specular.find_last_of("/");
+				std::string texture_name_specular = "/textures/" + SCENE_NAME;
+				if (last_sperator < texture_path_specular.length())
+				{
+					texture_name_specular.append(texture_path_specular.substr(last_sperator));
+				}
+
                 //! Normal
-                aiString texture_path_normal;
-                current_material->GetTexture(aiTextureType_NORMALS, 0, &texture_path_normal);
+                aiString ai_texture_path_normal;
+				current_material->GetTexture(aiTextureType_NORMALS, 0, &ai_texture_path_normal);
+				std::string texture_path_normal = ai_texture_path_normal.C_Str();
+				last_sperator = texture_path_normal.find_last_of("/");
+				std::string texture_name_normal = "/textures/" + SCENE_NAME;
+				if (last_sperator < texture_path_normal.length())
+				{
+					texture_name_normal.append(texture_path_normal.substr(last_sperator));
+				}
 
                 //! Create new material
                 new_material = new scene::Material(material_id, // Index-number
                                                    glm::vec3(diffuse.r, // Diffuse Color
                                                              diffuse.g,
                                                              diffuse.b),
-                                                   scene::SceneManager::instance()->loadTexture(texture_path_diffuse.C_Str()),
+															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_diffuse, true),
                                                    glm::vec3(specular.r,
                                                              specular.g,
                                                              specular.b),
-                                                   scene::SceneManager::instance()->loadTexture(texture_path_specular.C_Str()),
-                                                   shininess,
-                                                   scene::SceneManager::instance()->loadTexture(texture_path_normal.C_Str()));
+															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_specular, true),
+															 shininess,
+															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_normal, true));
 
                 //! Add material to scene manager
                 scene::SceneManager::instance()->addMaterial(new_material);
@@ -293,12 +323,11 @@ namespace utils {
                 std::cout << "\n  * Material: " << material_id << std::endl;
                 std::cout << "      " << name.C_Str() << std::endl;
                 std::cout << "      Diffuse-Color:   (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
-                std::cout << "      Diffuse-Texture: (" << texture_path_diffuse.C_Str() << ")" << std::endl;
+				std::cout << "      Diffuse-Texture: (" << RESOURCES_PATH + texture_name_diffuse << ")" << std::endl;
                 std::cout << "      Specular-Color:  (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
-                std::cout << "      Specular-Texture:(" << texture_path_specular.C_Str() << ")" << std::endl;
+				std::cout << "      Specular-Texture:(" << RESOURCES_PATH + texture_name_specular << ")" << std::endl;
                 std::cout << "      Shininess:        " << shininess << std::endl;
-                std::cout << "      Normal-Texture:  (" << texture_path_normal.C_Str() << ")" << std::endl;
-
+				std::cout << "      Normal-Texture:  (" << RESOURCES_PATH + texture_name_normal << ")" << std::endl;
             }
 		}
 	}
@@ -313,6 +342,19 @@ namespace utils {
 		else
 		{
 			return m_geometry_node_list[index];
+		}
+	}
+
+	void Importer::deleteGeometryNode(const unsigned int index)
+	{
+		if (index > m_geometry_node_list.size())
+		{
+			std::cerr << "ERROR (Importer): wrong scene node index" << std::endl;
+			return;
+		}
+		else
+		{
+			m_geometry_node_list.erase(m_geometry_node_list.begin()+index);
 		}
 	}
 

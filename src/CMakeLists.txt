@@ -22,18 +22,16 @@ TARGET_LINK_LIBRARIES(
     ${project_BIN}
 
     ${GLFW3_LIBRARIES}
+    ${FREEIMAGE_LIBRARIES}
     ${GLEW_LIBRARIES}
     ${OpenGL3_LIBRARIES}
     ${ASSIMP_LIBRARIES}
     ${SOIL_LIBRARIES}
-    ${ROCKET_CORE_LIBRARY}
-    ${ROCKET_CONTROLS_LIBRARY}
-    ${ROCKET_DEBUGGER_LIBRARY}
 )
 
 IF("${CMAKE_SYSTEM}" MATCHES "Linux")
         TARGET_LINK_LIBRARIES(
-            ${project_BIN} 
+            ${project_BIN}
             X11
             Xxf86vm
             Xext

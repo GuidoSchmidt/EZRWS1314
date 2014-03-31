@@ -39,7 +39,7 @@ namespace renderer {
     
         //! \todo Loads models via utils::Importer
 
-        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/head.dae");
+        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
         m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
 
         //! \todo Create user interface
@@ -49,8 +49,7 @@ namespace renderer {
         int HEIGHT = m_context->getSize().y;
         glm::vec2 nearFar = glm::vec2(0.1,60.0);
 
-        renderloop();
-    }
+        renderloop();    }
     
     void Renderer::setupGL(void)
     {
@@ -97,8 +96,8 @@ namespace renderer {
     {
         //! Render calls here
         m_scene_camera = new scene::Camera(0,"scene_camera",
-                           glm::vec3(2.0f, 2.0f, 2.0f),
-                           glm::vec3(0.0f, 0.0f, 0.0f),
+                           glm::vec3(-3.51f, 7.0f, -14.55f),
+                           glm::vec3(0.0f, 2.0f, 0.0f),
                            glm::vec3(0.0f, 1.0f, 0.0f),
                            m_context->getSize());
 
@@ -142,6 +141,7 @@ namespace renderer {
                   m_scene_camera->Rotate(mouse_correct_x * camera_speed * 100.0f,
                                          mouse_correct_y * camera_speed * 100.0f);
             }
+
             //!  Moving camera
             if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
                   glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
