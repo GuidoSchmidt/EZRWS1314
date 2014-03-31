@@ -16,9 +16,7 @@ public:
 	//GLfloat* imageArray[];
 	vector<GLfloat>* imageVector;
 
-	GLfloat image_average;
-	GLfloat image_max;
-	GLfloat image_min;
+	glm::vec3 minAveMax;
 
 	int scale;
 

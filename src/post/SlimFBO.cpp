@@ -23,7 +23,7 @@ SlimFBO::~SlimFBO()
 		glDeleteRenderbuffers(1,&depthPointer);
 }
 
-SlimFBO::SlimFBO(int x, int y, int n, bool depth)
+SlimFBO::SlimFBO(int x, int y, int n, bool depth, int filter)
 {
 	cout << "create FBO and " << n << " attachments"<< endl;
 	glGenFramebuffers(1, &fboPointer);
@@ -48,8 +48,8 @@ SlimFBO::SlimFBO(int x, int y, int n, bool depth)
 		// Create texture for attachmentA
 		glGenTextures(1, &texPointer[a]);
 		glBindTexture(GL_TEXTURE_2D, texPointer[a]);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, filter);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, filter);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_CLAMP);
 		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_CLAMP);
 

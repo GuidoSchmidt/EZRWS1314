@@ -73,7 +73,7 @@ namespace scene
 		//m_transform.setRotation(glm::lookAt(pos,glm::vec3(0.0,0.0,0.0),glm::vec3(0.0,1.0,0.0)));
 			
 		//calc color
-		m_color = calcColor();
+		m_color = calcColor() *m_intensity;
 			
 		//calc blend
 		textureBlend = calcBlend();
