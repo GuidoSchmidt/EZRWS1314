@@ -274,8 +274,11 @@ namespace utils {
 				std::string texture_name_diffuse = "/textures/" + SCENE_NAME;
 				if (last_sperator < texture_path_diffuse.length())
 				{
-					texture_name_diffuse.append( texture_path_diffuse.substr(last_sperator) );
+					texture_name_diffuse.append(texture_path_diffuse.substr(last_sperator));
 				}
+				else
+					std::cerr << "PLEASE PUT THE TEXTURES INTO THE RESOURCES FOLDER UNDER /resources/textures/<SceneName>" << std:endl;
+
 
                 //! Specular
                 aiString ai_texture_path_specular;
@@ -321,7 +324,7 @@ namespace utils {
                 std::cout << "      Diffuse-Color:   (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
 				std::cout << "      Diffuse-Texture: (" << RESOURCES_PATH + texture_name_diffuse << ")" << std::endl;
                 std::cout << "      Specular-Color:  (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
-				std::cout << "      Specular-Texture:(" << RESOURCES_PATH + texture_name_sspecular << ")" << std::endl;
+				std::cout << "      Specular-Texture:(" << RESOURCES_PATH + texture_name_specular << ")" << std::endl;
                 std::cout << "      Shininess:        " << shininess << std::endl;
 				std::cout << "      Normal-Texture:  (" << RESOURCES_PATH + texture_name_normal << ")" << std::endl;
             }
