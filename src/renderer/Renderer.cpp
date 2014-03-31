@@ -41,7 +41,7 @@ namespace renderer {
 
         //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/baum_test.obj");
-		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/sky.obj");
+		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/sky.obj", "sky");
 		skyNode = utils::Importer::instance()->getGeometryNode(0);
 		utils::Importer::instance()->deleteGeometryNode(0);
 		scene::SceneManager::instance()->deleteGeometryNode(0);
@@ -49,7 +49,7 @@ namespace renderer {
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/ship.obj");
 		
 
-		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae");
+		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/house6.obj");
 
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/baum_test.dae");

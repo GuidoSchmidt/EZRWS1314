@@ -21,8 +21,9 @@ namespace utils {
 		return &m_importer;
 	}
 
-	void Importer::importFile(const std::string& pathToFile)
+	void Importer::importFile(const std::string& pathToFile, const std::string texture_folder_name)
 	{
+		SCENE_NAME = texture_folder_name;
 		m_aiScene = m_aiImporter.ReadFile(pathToFile,  
             aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_RemoveRedundantMaterials);
 			

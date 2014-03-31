@@ -44,7 +44,7 @@ namespace utils {
 			static Importer* instance(void);
 
 			//! \brief Imports a file from a given filepath
-			void importFile(const std::string& pathToFile);
+			void importFile(const std::string& pathToFile, const std::string texture_folder_name);
 
 			//! \brief Processes the loaded assimp scene
 			void processScene(void);
