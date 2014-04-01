@@ -32,7 +32,7 @@ namespace renderer {
 
 			Context* m_context;
             //! Shader programs
-            ShaderProgram* m_shaderProgram_forward;
+            ShaderProgram* m_shaderProgram_simple;
             ShaderProgram* m_shaderProgram_compositing;
             //! Framebuffer objects
             FrameBufferObject* m_fbo;

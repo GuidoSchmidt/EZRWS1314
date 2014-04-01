@@ -64,17 +64,12 @@ namespace renderer {
     void Renderer::setupShaderStages()
     {
         //! Simple forward rendering
-        m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
-                                                    GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl");
-        m_shaderProgram_forward->link();
-        m_fbo = new FrameBufferObject(m_context->getSize().x, m_context->getSize().y);
-        m_fbo->addColorAttachment(0);
-        m_fbo->addDepthAttachment_Texture(1);
+        m_shaderProgram_simple = new ShaderProgram(
+              GLSL::VERTEX, RESOURCES_PATH "/shader_source/simple.vert.glsl",
+              GLSL::FRAGMENT, RESOURCES_PATH "/shader_source/simple.frag.glsl");
 
-        //! Compositing rendering on fullscreen quad
-        m_shaderProgram_compositing = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/compositing/fullscreen.vs.glsl",
-                                                        GLSL::FRAGMENT, RESOURCES_PATH "/shader/compositing/compositing.fs.glsl");
-        m_shaderProgram_compositing->link();
+        m_shaderProgram_simple->link();
+
         m_fullscreen_triangle = new utils::FullscreenTriangle();
     }
 
@@ -103,26 +98,12 @@ namespace renderer {
 
         //! Uniform setup
         //! Forward shading
-        GLuint forward_uniform_loc_view             = m_shaderProgram_forward->getUniform("view");
-        GLuint forward_uniform_loc_projection       = m_shaderProgram_forward->getUniform("projection");
-        GLuint forward_uniform_loc_model            = m_shaderProgram_forward->getUniform("model");
-        GLuint forward_uniform_loc_diffuse_color    = m_shaderProgram_forward->getUniform("diffuse_color");
-        GLuint forward_uniform_loc_diffuse_tex      = m_shaderProgram_forward->getUniform("diffuse_map");
-        GLuint forward_uniform_loc_specular_color   = m_shaderProgram_forward->getUniform("specular_color");
-        GLuint forward_uniform_loc_specular_tex     = m_shaderProgram_forward->getUniform("specular_map");
-        GLuint forward_uniform_loc_shininess        = m_shaderProgram_forward->getUniform("shininess");
-        GLuint forward_uniform_loc_normal_tex       = m_shaderProgram_forward->getUniform("normal_map");
-        GLuint forward_uniform_loc_light_position   = m_shaderProgram_forward->getUniform("light_position");
-        GLuint forward_uniform_loc_mouse            = m_shaderProgram_forward->getUniform("mouse");
-        GLuint forward_uniform_loc_shadowMap        = m_shaderProgram_forward->getUniform("shadow_map");
-        GLuint forward_uniform_loc_shadowModel      = m_shaderProgram_forward->getUniform("light_model");
-        GLuint forward_uniform_loc_shadowView       = m_shaderProgram_forward->getUniform("light_view");
-        GLuint forward_uniform_loc_shadowProjection = m_shaderProgram_forward->getUniform("light_projection");
-        //! Compositing
-        GLuint compositing_uniform_loc_shadowMap    = m_shaderProgram_compositing->getUniform("shadowMap");
-        //GLuint compositing_uniform_loc_lightedMap   = m_shaderProgram_compositing->getUniform("lightedMap");
+        GLuint forward_uniform_loc_view             = m_shaderProgram_simple->getUniform("view");
+        GLuint forward_uniform_loc_projection       = m_shaderProgram_simple->getUniform("projection");
+        GLuint forward_uniform_loc_model            = m_shaderProgram_simple->getUniform("model");
+        GLuint forward_uniform_loc_diffuse_tex      = m_shaderProgram_simple->getUniform("diffuse_map");
 
-        float camera_speed = 0.01f;
+        float camera_speed = 0.025f;
 
         scene::SceneManager::instance()->getLight(0)->setupShadowMapping(glm::vec2(1024.0));
 
@@ -164,24 +145,6 @@ namespace renderer {
                   m_scene_camera->MoveX(-camera_speed);
             }
 
-            //!  Moving light source
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_J) )
-            {
-                scene::SceneManager::instance()->getLight(0)->getTransform()->translate(0.05, 0.0, 0.0);
-            }
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_L) )
-            {
-                scene::SceneManager::instance()->getLight(0)->getTransform()->translate(-0.05, 0.0, 0.0);
-            }
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_I) )
-            {
-                    scene::SceneManager::instance()->getLight(0)->getTransform()->translate(0.0, 0.05, 0.0);
-            }
-            if (glfwGetKey(m_context->getWindow(), GLFW_KEY_K) )
-            {
-                scene::SceneManager::instance()->getLight(0)->getTransform()->translate(0.0, -0.05, 0.0);
-            }
-
             if(glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
             {
               scroll = 60.0;
@@ -193,11 +156,11 @@ namespace renderer {
             //! Other keyboard events
             if (glfwGetKey(m_context->getWindow(), GLFW_KEY_1) )
             {
-                  m_shaderProgram_forward->reloadAllShaders();
+                m_shaderProgram_simple->reloadAllShaders();
             }
             if (glfwGetKey(m_context->getWindow(), GLFW_KEY_2) )
             {
-                m_shaderProgram_compositing->reloadAllShaders();
+                m_shaderProgram_simple->reloadAllShaders();
             }
 
 
@@ -223,79 +186,58 @@ namespace renderer {
 
             //! First shader program:
             //! ### GEOMETRY RENDER ############################################
-            m_shaderProgram_forward->use();
+            m_shaderProgram_simple->use();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             glCullFace(GL_BACK);
             glPolygonOffset(0.9, 1.0);
 
             glViewport(0, 0, m_context->getSize().x, m_context->getSize().y);
 
-            m_shaderProgram_forward->setUniform(forward_uniform_loc_light_position, scene::SceneManager::instance()->getLight(0)->getTransform()->getPosition() );
-            m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(mouse_correct_x, mouse_correct_y) );
-            m_shaderProgram_forward->setUniform(forward_uniform_loc_view, view);
-            m_shaderProgram_forward->setUniform(forward_uniform_loc_projection, projection);
-            //! shadow mapping
-            m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_shadowMap, scene::SceneManager::instance()->getLight(0)->getShadowMap(), 3);
-            m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowModel, scene::SceneManager::instance()->getLight(0)->getTransform()->getModelMatrix());
-            m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowView, scene::SceneManager::instance()->getLight(0)->getViewMatrix());
-            m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowProjection, scene::SceneManager::instance()->getLight(0)->getProjectionMatrix());
+            m_shaderProgram_simple->setUniform(forward_uniform_loc_view, view);
+
+            m_shaderProgram_simple->setUniform(forward_uniform_loc_projection, projection);
 
 
             for(unsigned int i = 0; i < m_renderqueue.size(); i++)
             {
-              m_shaderProgram_forward->setUniform(forward_uniform_loc_model, m_renderqueue[i]->getTransform()->getModelMatrix() );
-              m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_color, *(m_renderqueue[i]->getMaterial()->getDiffuseColor()) );
-              m_shaderProgram_forward->setUniform(forward_uniform_loc_specular_color, *(m_renderqueue[i]->getMaterial()->getSpecularColor()) );
-              m_shaderProgram_forward->setUniform(forward_uniform_loc_shininess, m_renderqueue[i]->getMaterial()->getShininess() );
-              m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
-              m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, m_renderqueue[i]->getMaterial()->getSpecularTexture(), 1);
-              m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 2);
-              m_renderqueue[i]->drawTriangles();
+                m_shaderProgram_simple->setUniform(forward_uniform_loc_model, m_renderqueue[i]->getTransform()->getModelMatrix() );
+
+                m_shaderProgram_simple->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
+
+                m_renderqueue[i]->drawTriangles();
             }
 
-
-
-            m_shaderProgram_forward->unuse();
-
-
-            m_shaderProgram_compositing->use();
-
-            glViewport(0, 0, 300, 300);
-
-            m_shaderProgram_compositing->setUniformSampler(compositing_uniform_loc_shadowMap, scene::SceneManager::instance()->getLight(0)->getShadowMap(), 0);
-            m_fullscreen_triangle->draw();
-
-            m_shaderProgram_compositing->unuse();
+            m_shaderProgram_simple->unuse();
 
             //! Swap buffers
             m_context->swapBuffers();
         }
     }
 
-	void Renderer::doTheSunlightEffect()
-	{
-		//downsample gbuffer color
-		SlimFBO::blit(gBuffer,sunlightFBO0);
-		
-		//blur horizontally
-		blurPass->outputFBO = sunlightFBO1;
-		blurPass->inputFBOs[0] = gBuffer;
-		blurPass->param_glowHorizontal = 1.0f;
-		blurPass->doExecute();
+    void Renderer::doTheSunlightEffect()
+    {
+        //downsample gbuffer color
+        SlimFBO::blit(gBuffer,sunlightFBO0);
 
-		//switch fbos
-		//blur vertically
-		blurPass->outputFBO = sunlightFBO2;
-		blurPass->inputFBOs[0] = sunlightFBO1;
-		blurPass->param_glowHorizontal = 0.0f;
-		blurPass->doExecute();
+        //blur horizontally
+        blurPass->outputFBO = sunlightFBO1;
+        blurPass->inputFBOs[0] = gBuffer;
+        blurPass->param_glowHorizontal = 1.0f;
+        blurPass->doExecute();
 
-		//calculate the radialMask
-		maskPass->param_ssSunPos=ssSunPos;
-		maskPass->doExecute();
+        //switch fbos
+        //blur vertically
+        blurPass->outputFBO = sunlightFBO2;
+        blurPass->inputFBOs[0] = sunlightFBO1;
+        blurPass->param_glowHorizontal = 0.0f;
+        blurPass->doExecute();
 
-		//calculate Luminace
-		luminancePass->param_ssSunPos=ssSunPos;
-		luminancePass->doExecute();
-	}
+        //calculate the radialMask
+        maskPass->param_ssSunPos=ssSunPos;
+        maskPass->doExecute();
+
+        //calculate Luminace
+        luminancePass->param_ssSunPos=ssSunPos;
+        luminancePass->doExecute();
+    }
 }
