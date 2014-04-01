@@ -39,7 +39,9 @@ namespace renderer {
     
         //! \todo Loads models via utils::Importer
 
-        utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
+        utils::Importer::instance()->importFile(
+                    RESOURCES_PATH "/scenes/dae/house.dae", "house");
+
         m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
 
         //! \todo Create user interface
@@ -82,7 +84,11 @@ namespace renderer {
         scroll += yoffset;
     }
 
-    void KeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
+    void KeyboardCallback(GLFWwindow* window,
+                          int key,
+                          int scancode,
+                          int action,
+                          int mods)
     {
 
     }
@@ -97,17 +103,25 @@ namespace renderer {
                            m_context->getSize());
 
         //! Uniform setup
-        //! Forward shading
-        GLuint forward_uniform_loc_view             = m_shaderProgram_simple->getUniform("view");
-        GLuint forward_uniform_loc_projection       = m_shaderProgram_simple->getUniform("projection");
-        GLuint forward_uniform_loc_model            = m_shaderProgram_simple->getUniform("model");
-        GLuint forward_uniform_loc_diffuse_tex      = m_shaderProgram_simple->getUniform("diffuse_map");
+        GLuint forward_uniform_loc_view        = m_shaderProgram_simple->
+                                                  getUniform("view");
+
+        GLuint forward_uniform_loc_projection  = m_shaderProgram_simple->
+                                                  getUniform("projection");
+
+        GLuint forward_uniform_loc_model       = m_shaderProgram_simple->
+                                                  getUniform("model");
+
+        GLuint forward_uniform_loc_diffuse_tex = m_shaderProgram_simple->
+                                                  getUniform("diffuse_map");
 
         float camera_speed = 0.025f;
 
-        scene::SceneManager::instance()->getLight(0)->setupShadowMapping(glm::vec2(1024.0));
+        scene::SceneManager::instance()->getLight(0)->setupShadowMapping(
+                                                        glm::vec2(1024.0));
 
-        while (m_context && m_context->isLive() && !glfwGetKey(m_context->getWindow(), GLFW_KEY_ESCAPE) )
+        while (m_context && m_context->isLive() &&
+               !glfwGetKey(m_context->getWindow(), GLFW_KEY_ESCAPE) )
         {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             
@@ -115,12 +129,13 @@ namespace renderer {
             double mouse_x, mouse_y;
             float  mouse_correct_x, mouse_correct_y;
             glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
-            mouse_correct_x = ((mouse_x / m_context->getSize().x) * 2.0f) - 1.0f;
-            mouse_correct_y = ((mouse_y / m_context->getSize().y) * 2.0f) - 1.0f;
+            mouse_correct_x = ((mouse_x / m_context->getSize().x) *2.0f) - 1.0f;
+            mouse_correct_y = ((mouse_y / m_context->getSize().y) *2.0f) - 1.0f;
+
             if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
             {
-                  m_scene_camera->Rotate(mouse_correct_x * camera_speed * 100.0f,
-                                         mouse_correct_y * camera_speed * 100.0f);
+                  m_scene_camera->Rotate(mouse_correct_x * camera_speed *100.0f,
+                                         mouse_correct_y * camera_speed*100.0f);
             }
 
             //!  Moving camera
@@ -167,24 +182,30 @@ namespace renderer {
 
             glm::mat4 view       = m_scene_camera->GetViewMatrix();
             glm::mat4 projection = m_scene_camera->GetProjectionMatrix();
+
             if (glfwGetKey(m_context->getWindow(), GLFW_KEY_0) )
             {
                 view       = m_scene_camera->GetViewMatrix();
                 projection = m_scene_camera->GetProjectionMatrix();
             }
+
             if (glfwGetKey(m_context->getWindow(), GLFW_KEY_9) )
             {
-                view       = scene::SceneManager::instance()->getLight(0)->getViewMatrix();
-                projection = scene::SceneManager::instance()->getLight(0)->getProjectionMatrix();
+                view       = scene::SceneManager::instance()->getLight(0)->
+                                getViewMatrix();
+
+                projection = scene::SceneManager::instance()->getLight(0)->
+                                getProjectionMatrix();
             }
 
             //! Normal camera mode
             glfwSetScrollCallback(m_context->getWindow(), ScrollCallback);
             glfwSetKeyCallback(m_context->getWindow(), KeyboardCallback);
 
-            scene::SceneManager::instance()->getLight(0)->generateShadowMap(&m_renderqueue);
+            scene::SceneManager::instance()->getLight(0)->generateShadowMap(
+                                                            &m_renderqueue);
 
-            //! First shader program:
+            //! Shader program:
             //! ### GEOMETRY RENDER ############################################
             m_shaderProgram_simple->use();
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -195,14 +216,22 @@ namespace renderer {
 
             m_shaderProgram_simple->setUniform(forward_uniform_loc_view, view);
 
-            m_shaderProgram_simple->setUniform(forward_uniform_loc_projection, projection);
+            m_shaderProgram_simple->setUniform(forward_uniform_loc_projection,
+                                               projection);
 
 
             for(unsigned int i = 0; i < m_renderqueue.size(); i++)
             {
-                m_shaderProgram_simple->setUniform(forward_uniform_loc_model, m_renderqueue[i]->getTransform()->getModelMatrix() );
+                m_shaderProgram_simple->setUniform(forward_uniform_loc_model,
+                                                   m_renderqueue[i]->
+                                                   getTransform()->
+                                                   getModelMatrix() );
 
-                m_shaderProgram_simple->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
+                m_shaderProgram_simple->setUniformSampler(
+                            forward_uniform_loc_diffuse_tex,
+                            m_renderqueue[i]->getMaterial()->
+                            getDiffuseTexture(),
+                            0);
 
                 m_renderqueue[i]->drawTriangles();
             }
@@ -212,32 +241,5 @@ namespace renderer {
             //! Swap buffers
             m_context->swapBuffers();
         }
-    }
-
-    void Renderer::doTheSunlightEffect()
-    {
-        //downsample gbuffer color
-        SlimFBO::blit(gBuffer,sunlightFBO0);
-
-        //blur horizontally
-        blurPass->outputFBO = sunlightFBO1;
-        blurPass->inputFBOs[0] = gBuffer;
-        blurPass->param_glowHorizontal = 1.0f;
-        blurPass->doExecute();
-
-        //switch fbos
-        //blur vertically
-        blurPass->outputFBO = sunlightFBO2;
-        blurPass->inputFBOs[0] = sunlightFBO1;
-        blurPass->param_glowHorizontal = 0.0f;
-        blurPass->doExecute();
-
-        //calculate the radialMask
-        maskPass->param_ssSunPos=ssSunPos;
-        maskPass->doExecute();
-
-        //calculate Luminace
-        luminancePass->param_ssSunPos=ssSunPos;
-        luminancePass->doExecute();
     }
 }
