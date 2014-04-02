@@ -11,7 +11,7 @@ in vec2 vsUV;
 layout (location = 0) out vec4 fragcolor;
 
 //*** Uniforms *****************************************************************
-uniform sampler2D diffuse_map;
+uniform sampler2D diffuse_tex;
 
 
 //*** Functions ****************************************************************
@@ -22,7 +22,7 @@ void main(void)
 {
     // vec3 vsN = normalize(vsNormal);
 
-    vec3 ambientColor = 1.0 * texture(diffuse_map, vsUV).rgb;
+    vec3 ambientColor = 1.0 * texture(diffuse_tex, vsUV).rgb;
 
     fragcolor = vec4(ambientColor, 1.0);
 }

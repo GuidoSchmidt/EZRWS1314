@@ -133,6 +133,11 @@ void Renderer::KeyboardCheck(void)
         scroll = 60.0;
     }
 
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_Q))
+    {
+        exit(0);
+    }
+
     //! Field of view
     m_scene_camera->SetFOV(scroll);
 
@@ -158,22 +163,35 @@ void Renderer::renderloop()
 
     //! Uniform setup
     //! Forward shading
-    GLuint forward_uniform_loc_view             = m_shaderProgram_simple->
-            getUniform("view");
-
-    GLuint forward_uniform_loc_projection       = m_shaderProgram_simple->
-            getUniform("projection");
-
-    GLuint forward_uniform_loc_model            = m_shaderProgram_simple->
+    GLuint forward_uniform_loc_model        = m_shaderProgram_simple->
             getUniform("model");
 
-    GLuint forward_uniform_loc_diffuse_tex      = m_shaderProgram_simple->
-            getUniform("diffuse_map");
+    GLuint forward_uniform_loc_view         = m_shaderProgram_simple->
+            getUniform("view");
+
+    GLuint forward_uniform_loc_projection   = m_shaderProgram_simple->
+            getUniform("projection");
+
+    GLuint forward_uniform_loc_modelview    = m_shaderProgram_simple->
+            getUniform("modelview");
+
+    GLuint forward_uniform_loc_normalmatrix = m_shaderProgram_simple->
+            getUniform("normalmatrix");
+
+    GLuint forward_uniform_loc_mvp          = m_shaderProgram_simple->
+            getUniform("mvp");
+
+    GLuint forward_uniform_loc_diffuse_tex  = m_shaderProgram_simple->
+            getUniform("diffuse_tex");
 
     float camera_speed = 0.025f;
 
     scene::SceneManager::instance()->getLight(0)->
     setupShadowMapping(glm::vec2(1024.0));
+
+    // set up some matrices
+    glm::mat4 model, view, modelview, projection, mvp;
+    glm::mat3 normalmatrix;
 
     while (m_context && m_context->isLive() && !glfwGetKey(
                 m_context->getWindow(), GLFW_KEY_ESCAPE) )
@@ -182,8 +200,8 @@ void Renderer::renderloop()
 
         KeyboardCheck();
 
-        glm::mat4 view       = m_scene_camera->GetViewMatrix();
-        glm::mat4 projection = m_scene_camera->GetProjectionMatrix();
+        view       = m_scene_camera->GetViewMatrix();
+        projection = m_scene_camera->GetProjectionMatrix();
         if (glfwGetKey(m_context->getWindow(), GLFW_KEY_0) )
         {
             view       = m_scene_camera->GetViewMatrix();
@@ -220,12 +238,27 @@ void Renderer::renderloop()
                                            projection);
 
 
+        // passing all the neccesary information to our shaders
         for(unsigned int i = 0; i < m_renderqueue.size(); i++)
         {
+            model = m_renderqueue[i]->getTransform()->getModelMatrix();
             m_shaderProgram_simple->setUniform(forward_uniform_loc_model,
-                                               m_renderqueue[i]->
-                                               getTransform()->
-                                               getModelMatrix() );
+                                               model );
+
+            modelview = view * model;
+            m_shaderProgram_simple->setUniform(forward_uniform_loc_modelview,
+                                               modelview );
+
+            normalmatrix = glm::mat3( glm::vec3(modelview[0]),
+                                      glm::vec3(modelview[1]),
+                                      glm::vec3(modelview[2])
+                                    );
+            m_shaderProgram_simple->setUniform(forward_uniform_loc_normalmatrix,
+                                               normalmatrix );
+
+            mvp = projection * modelview;
+            m_shaderProgram_simple->setUniform(forward_uniform_loc_mvp,
+                                               mvp );
 
             m_shaderProgram_simple->setUniformSampler(
                 forward_uniform_loc_diffuse_tex,
@@ -235,37 +268,12 @@ void Renderer::renderloop()
             m_renderqueue[i]->drawTriangles();
         }
 
+        m_shaderProgram_simple->printActiveUniforms();
+
         m_shaderProgram_simple->unuse();
 
         //! Swap buffers
         m_context->swapBuffers();
     }
-}
-
-void Renderer::doTheSunlightEffect()
-{
-    //downsample gbuffer color
-    SlimFBO::blit(gBuffer,sunlightFBO0);
-
-    //blur horizontally
-    blurPass->outputFBO = sunlightFBO1;
-    blurPass->inputFBOs[0] = gBuffer;
-    blurPass->param_glowHorizontal = 1.0f;
-    blurPass->doExecute();
-
-    //switch fbos
-    //blur vertically
-    blurPass->outputFBO = sunlightFBO2;
-    blurPass->inputFBOs[0] = sunlightFBO1;
-    blurPass->param_glowHorizontal = 0.0f;
-    blurPass->doExecute();
-
-    //calculate the radialMask
-    maskPass->param_ssSunPos=ssSunPos;
-    maskPass->doExecute();
-
-    //calculate Luminace
-    luminancePass->param_ssSunPos=ssSunPos;
-    luminancePass->doExecute();
 }
 }
