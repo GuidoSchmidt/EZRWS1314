@@ -253,6 +253,10 @@ void Renderer::renderloop()
                                       glm::vec3(modelview[1]),
                                       glm::vec3(modelview[2])
                                     );
+//            std::cout << normalmatrix[0][0] << std::endl;
+//            std::cout << normalmatrix[1][1] << std::endl;
+//            std::cout << normalmatrix[2][2] << std::endl;
+
             m_shaderProgram_simple->setUniform(forward_uniform_loc_normalmatrix,
                                                normalmatrix );
 

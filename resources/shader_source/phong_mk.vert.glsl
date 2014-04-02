@@ -9,7 +9,7 @@ layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 uv;
 
 //*** Output *******************************************************************
-out vec3 vsNormal;
+out vec3 m_normal;
 out vec3 m_position;
 out vec2 vsUV;
 
@@ -33,7 +33,7 @@ void main(void)
 //     passing uv coordinates to fragment shader
     vsUV = uv;
 
-    vsNormal    = normalize( normalmatrix * normal );
+    m_normal    = normalize( normalmatrix * normal );
     m_position  = vec3 ( modelview *
                     vec4 ( position, 1.0 ) );
 
