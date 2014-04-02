@@ -39,9 +39,8 @@ void Renderer::init()
 
     //! \todo Loads models via utils::Importer
 
-    utils::Importer::instance()->importFile(
-        RESOURCES_PATH "/scenes/dae/house.dae", "house");
-
+    utils::Importer::instance()->
+    importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
     m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
 
     //! \todo Create user interface
@@ -57,7 +56,7 @@ void Renderer::init()
 void Renderer::setupGL(void)
 {
     //! OpenGL settings
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.6f, 0.6f, 0.6f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_CULL_FACE);
@@ -85,13 +84,67 @@ void ScrollCallback(GLFWwindow * window, double xoffset, double yoffset)
     scroll += yoffset;
 }
 
-void KeyboardCallback(GLFWwindow* window,
-                      int key,
-                      int scancode,
-                      int action,
+void KeyboardCallback(GLFWwindow* window, int key, int scancode, int action,
                       int mods)
 {
 
+}
+
+void Renderer::KeyboardCheck(void)
+{
+    //! simple camera movement
+    float camera_speed = 0.025f;
+    double mouse_x, mouse_y;
+    float  mouse_correct_x, mouse_correct_y;
+    glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
+    mouse_correct_x = ((mouse_x / m_context->getSize().x) *2.0f) - 1.0f;
+    mouse_correct_y = ((mouse_y / m_context->getSize().y) *2.0f) - 1.0f;
+
+    if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
+    {
+        m_scene_camera->Rotate(mouse_correct_x * camera_speed *100.0f,
+                               mouse_correct_y * camera_speed*100.0f);
+    }
+
+    //!  Moving camera
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
+            glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
+    {
+        m_scene_camera->MoveZ( camera_speed);
+    }
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S) ||
+            glfwGetKey(m_context->getWindow(), GLFW_KEY_DOWN))
+    {
+        m_scene_camera->MoveZ(-camera_speed);
+    }
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D) ||
+            glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
+    {
+        m_scene_camera->MoveX( camera_speed);
+    }
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A) ||
+            glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
+    {
+        m_scene_camera->MoveX(-camera_speed);
+    }
+
+    if(glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
+    {
+        scroll = 60.0;
+    }
+
+    //! Field of view
+    m_scene_camera->SetFOV(scroll);
+
+    //! Other keyboard events
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_1) )
+    {
+        m_shaderProgram_simple->reloadAllShaders();
+    }
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_2) )
+    {
+        m_shaderProgram_simple->reloadAllShaders();
+    }
 }
 
 void Renderer::renderloop()
@@ -104,98 +157,38 @@ void Renderer::renderloop()
                                        m_context->getSize());
 
     //! Uniform setup
-    GLuint forward_uniform_loc_model        = m_shaderProgram_simple->
-            getUniform("Model");
+    //! Forward shading
+    GLuint forward_uniform_loc_view             = m_shaderProgram_simple->
+            getUniform("view");
 
-    GLuint forward_uniform_loc_view         = m_shaderProgram_simple->
-            getUniform("View");
+    GLuint forward_uniform_loc_projection       = m_shaderProgram_simple->
+            getUniform("projection");
 
-    GLuint forward_uniform_loc_projection   = m_shaderProgram_simple->
-            getUniform("Projection");
+    GLuint forward_uniform_loc_model            = m_shaderProgram_simple->
+            getUniform("model");
 
-    GLuint forward_uniform_loc_mvp          = m_shaderProgram_simple->
-            getUniform("MVP");
-
-    GLuint forward_uniform_loc_normalmatrix = m_shaderProgram_simple->
-            getUniform("NormalMatrix");
-
-    GLuint forward_uniform_loc_diffuse_tex  = m_shaderProgram_simple->
+    GLuint forward_uniform_loc_diffuse_tex      = m_shaderProgram_simple->
             getUniform("diffuse_map");
 
     float camera_speed = 0.025f;
 
-    scene::SceneManager::instance()->getLight(0)->setupShadowMapping(
-        glm::vec2(1024.0));
+    scene::SceneManager::instance()->getLight(0)->
+    setupShadowMapping(glm::vec2(1024.0));
 
-    while (m_context && m_context->isLive() &&
-            !glfwGetKey(m_context->getWindow(), GLFW_KEY_ESCAPE) )
+    while (m_context && m_context->isLive() && !glfwGetKey(
+                m_context->getWindow(), GLFW_KEY_ESCAPE) )
     {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        //! simple camera movement
-        double mouse_x, mouse_y;
-        float  mouse_correct_x, mouse_correct_y;
-        glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
-        mouse_correct_x = ((mouse_x / m_context->getSize().x) *2.0f) - 1.0f;
-        mouse_correct_y = ((mouse_y / m_context->getSize().y) *2.0f) - 1.0f;
-
-        if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_2))
-        {
-            m_scene_camera->Rotate(mouse_correct_x * camera_speed *100.0f,
-                                   mouse_correct_y * camera_speed*100.0f);
-        }
-
-        //!  Moving camera
-        if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
-                glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
-        {
-            m_scene_camera->MoveZ( camera_speed);
-        }
-        if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S) ||
-                glfwGetKey(m_context->getWindow(), GLFW_KEY_DOWN))
-        {
-            m_scene_camera->MoveZ(-camera_speed);
-        }
-        if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D) ||
-                glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
-        {
-            m_scene_camera->MoveX( camera_speed);
-        }
-        if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A) ||
-                glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
-        {
-            m_scene_camera->MoveX(-camera_speed);
-        }
-
-        if(glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
-        {
-            scroll = 60.0;
-        }
-
-        //! Field of view
-        m_scene_camera->SetFOV(scroll);
-
-        //! Other keyboard events
-        if (glfwGetKey(m_context->getWindow(), GLFW_KEY_1) )
-        {
-            m_shaderProgram_simple->reloadAllShaders();
-        }
-        if (glfwGetKey(m_context->getWindow(), GLFW_KEY_2) )
-        {
-            m_shaderProgram_simple->reloadAllShaders();
-        }
-
-
+        KeyboardCheck();
 
         glm::mat4 view       = m_scene_camera->GetViewMatrix();
         glm::mat4 projection = m_scene_camera->GetProjectionMatrix();
-
         if (glfwGetKey(m_context->getWindow(), GLFW_KEY_0) )
         {
             view       = m_scene_camera->GetViewMatrix();
             projection = m_scene_camera->GetProjectionMatrix();
         }
-
         if (glfwGetKey(m_context->getWindow(), GLFW_KEY_9) )
         {
             view       = scene::SceneManager::instance()->getLight(0)->
@@ -212,7 +205,7 @@ void Renderer::renderloop()
         scene::SceneManager::instance()->getLight(0)->generateShadowMap(
             &m_renderqueue);
 
-        //! Shader program:
+        //! First shader program:
         //! ### GEOMETRY RENDER ############################################
         m_shaderProgram_simple->use();
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -236,8 +229,7 @@ void Renderer::renderloop()
 
             m_shaderProgram_simple->setUniformSampler(
                 forward_uniform_loc_diffuse_tex,
-                m_renderqueue[i]->getMaterial()->
-                getDiffuseTexture(),
+                m_renderqueue[i]->getMaterial()->getDiffuseTexture(),
                 0);
 
             m_renderqueue[i]->drawTriangles();
@@ -248,5 +240,32 @@ void Renderer::renderloop()
         //! Swap buffers
         m_context->swapBuffers();
     }
+}
+
+void Renderer::doTheSunlightEffect()
+{
+    //downsample gbuffer color
+    SlimFBO::blit(gBuffer,sunlightFBO0);
+
+    //blur horizontally
+    blurPass->outputFBO = sunlightFBO1;
+    blurPass->inputFBOs[0] = gBuffer;
+    blurPass->param_glowHorizontal = 1.0f;
+    blurPass->doExecute();
+
+    //switch fbos
+    //blur vertically
+    blurPass->outputFBO = sunlightFBO2;
+    blurPass->inputFBOs[0] = sunlightFBO1;
+    blurPass->param_glowHorizontal = 0.0f;
+    blurPass->doExecute();
+
+    //calculate the radialMask
+    maskPass->param_ssSunPos=ssSunPos;
+    maskPass->doExecute();
+
+    //calculate Luminace
+    luminancePass->param_ssSunPos=ssSunPos;
+    luminancePass->doExecute();
 }
 }

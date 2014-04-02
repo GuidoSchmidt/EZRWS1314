@@ -4,22 +4,18 @@
 //*** Uniform block definitions ************************************************
 
 //*** Input ********************************************************************
-layout (location = 0) in vec3 VertexPosition;
-layout (location = 1) in vec3 VertexNormal;
+layout (location = 0) in vec3 position;
+layout (location = 1) in vec3 normal;
 layout (location = 2) in vec2 uv;
 
 //*** Output *******************************************************************
-out vec3 Normal;
+out vec3 vsNormal;
 out vec2 vsUV;
-out vec3 Position
 
 //*** Uniforms *****************************************************************
-uniform mat4 Model; // set
-uniform mat4 View; // set
-uniform mat4 Projection; // set
-uniform mat4 MVP;
-uniform mat3 NormalMatrix;
-
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
 //*** Functions ****************************************************************
 
@@ -27,12 +23,11 @@ uniform mat3 NormalMatrix;
 //*** Main *********************************************************************
 void main(void)
 {
-    Normal = normalize( NormalMatrix * VertexNormal);
+//     vsNormal = vec3(normalize(transpose(inverse(model * view)) *
+//                    vec4(normal, 0.0)));
 
-    // Vertex-Position without projection
-    Position = vec3( ModelViewMatrix * vec4(VertexPosition,1.0) );
+//     passing uv coordinates to fragment shader
+    vsUV = uv;
 
-    // Vertex-Postion with projection
-    gl_Position = MVP * vec4(VertexPosition,1.0);
-
+    gl_Position = projection * view * model * vec4(position, 1.0);
 }

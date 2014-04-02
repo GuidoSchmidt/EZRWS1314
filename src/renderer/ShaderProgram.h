@@ -88,7 +88,7 @@ namespace renderer {
             std::string log(void);
 
 			//! \brief Returns the shader program handle
-            GLint getHandle(void);
+            GLint getHandle(void);         
 
             //! \brief Returns a uniform handle by its name used in the prorgam
             GLuint getUniform(std::string uniform_name);
@@ -110,6 +110,9 @@ namespace renderer {
 
 			//! \brief Sets a uniform variable for a 4x4 matrix (mat4)
             void setUniform(GLuint uniform_location, const glm::mat4 &mat);
+
+            //! \brief Sets a uniform variable for a 3x3 matrix (mat3)
+            void setUniform(GLuint uniform_location, const glm::mat3 &mat);
 
 			//! \brief Sets a uniform variable for a float value
             void setUniform(GLuint uniform_location, float val);

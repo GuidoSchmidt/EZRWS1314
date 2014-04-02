@@ -204,6 +204,11 @@ namespace renderer
         glUniformMatrix4fv(uniform_location, 1, GL_FALSE, &mat[0][0]);
 	}
 
+    void ShaderProgram::setUniform(GLuint uniform_location, const glm::mat3 &mat)
+    {
+        glUniformMatrix4fv(uniform_location, 1, GL_FALSE, &mat[0][0]);
+    }
+
     void ShaderProgram::setUniform(GLuint uniform_location, const glm::vec3 &vec)
 	{
         glUniform3f(uniform_location, vec[0], vec[1], vec[2]);

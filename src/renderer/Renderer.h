@@ -79,6 +79,8 @@ private:
     //! \brief Sets the needes shader stages and fbos
     void setupShaderStages(void);
 
+    void KeyboardCheck(void);
+
 public:
     //! Returns the singleton instance
     static Renderer* instance(Context& context);
