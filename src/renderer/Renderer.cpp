@@ -68,8 +68,8 @@ void Renderer::setupShaderStages()
 {
     //! Simple forward rendering
     m_shaderProgram_simple = new ShaderProgram(
-        GLSL::VERTEX, RESOURCES_PATH "/shader_source/simple.vert.glsl",
-        GLSL::FRAGMENT, RESOURCES_PATH "/shader_source/simple.frag.glsl");
+        GLSL::VERTEX, RESOURCES_PATH "/shader_source/phong_mk.vert.glsl",
+        GLSL::FRAGMENT, RESOURCES_PATH "/shader_source/phong_mk.frag.glsl");
 
     m_shaderProgram_simple->link();
 
@@ -104,16 +104,22 @@ void Renderer::renderloop()
                                        m_context->getSize());
 
     //! Uniform setup
-    GLuint forward_uniform_loc_view        = m_shaderProgram_simple->
-            getUniform("view");
+    GLuint forward_uniform_loc_model        = m_shaderProgram_simple->
+            getUniform("Model");
 
-    GLuint forward_uniform_loc_projection  = m_shaderProgram_simple->
-            getUniform("projection");
+    GLuint forward_uniform_loc_view         = m_shaderProgram_simple->
+            getUniform("View");
 
-    GLuint forward_uniform_loc_model       = m_shaderProgram_simple->
-            getUniform("model");
+    GLuint forward_uniform_loc_projection   = m_shaderProgram_simple->
+            getUniform("Projection");
 
-    GLuint forward_uniform_loc_diffuse_tex = m_shaderProgram_simple->
+    GLuint forward_uniform_loc_mvp          = m_shaderProgram_simple->
+            getUniform("MVP");
+
+    GLuint forward_uniform_loc_normalmatrix = m_shaderProgram_simple->
+            getUniform("NormalMatrix");
+
+    GLuint forward_uniform_loc_diffuse_tex  = m_shaderProgram_simple->
             getUniform("diffuse_map");
 
     float camera_speed = 0.025f;
