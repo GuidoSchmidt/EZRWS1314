@@ -40,10 +40,8 @@ void Renderer::init()
     //! \todo Loads models via utils::Importer
 
     utils::Importer::instance()->
-    importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
+    importFile(RESOURCES_PATH "/scenes/dae/head.dae", "head");
     m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
-
-    //! \todo Create user interface
 
     //! \todo Use Context::getSize().x and .y!
     int WIDTH = m_context->getSize().x;
@@ -56,7 +54,7 @@ void Renderer::init()
 void Renderer::setupGL(void)
 {
     //! OpenGL settings
-    glClearColor(0.6f, 0.6f, 0.6f, 1.0f);
+    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_TEXTURE_2D);
     glEnable(GL_CULL_FACE);
@@ -154,6 +152,8 @@ void Renderer::KeyboardCheck(void)
 
 void Renderer::renderloop()
 {
+    float camera_speed = 0.025f;
+
     //! Render calls here
     m_scene_camera = new scene::Camera(0,"scene_camera",
                                        glm::vec3(-3.51f, 7.0f, -14.55f),
@@ -162,29 +162,38 @@ void Renderer::renderloop()
                                        m_context->getSize());
 
     //! Uniform setup
-    //! Forward shading
-    GLuint forward_uniform_loc_model        = m_shaderProgram_simple->
+    //! Standard Uniforms
+    GLuint forward_uniform_loc_model            = m_shaderProgram_simple->
             getUniform("model");
 
-    GLuint forward_uniform_loc_view         = m_shaderProgram_simple->
+    GLuint forward_uniform_loc_view             = m_shaderProgram_simple->
             getUniform("view");
 
-    GLuint forward_uniform_loc_projection   = m_shaderProgram_simple->
+    GLuint forward_uniform_loc_projection       = m_shaderProgram_simple->
             getUniform("projection");
 
-    GLuint forward_uniform_loc_modelview    = m_shaderProgram_simple->
+    GLuint forward_uniform_loc_modelview        = m_shaderProgram_simple->
             getUniform("modelview");
 
-    GLuint forward_uniform_loc_normalmatrix = m_shaderProgram_simple->
+    GLuint forward_uniform_loc_normalmatrix     = m_shaderProgram_simple->
             getUniform("normalmatrix");
 
-    GLuint forward_uniform_loc_mvp          = m_shaderProgram_simple->
+    GLuint forward_uniform_loc_mvp              = m_shaderProgram_simple->
             getUniform("mvp");
 
-    GLuint forward_uniform_loc_diffuse_tex  = m_shaderProgram_simple->
+    GLuint forward_uniform_loc_diffuse_tex      = m_shaderProgram_simple->
             getUniform("diffuse_tex");
 
-    float camera_speed = 0.025f;
+    //! Phong Shading Uniforms
+    GLuint forward_uniform_loc_specular_tex     = m_shaderProgram_simple->
+            getUniform("specular_tex");
+
+    GLuint forward_uniform_loc_lightposition    = m_shaderProgram_simple->
+            getUniform("LightPosition");
+
+    GLuint forward_uniform_loc_shininess        = m_shaderProgram_simple->
+            getUniform("Shininess");
+
 
     scene::SceneManager::instance()->getLight(0)->
     setupShadowMapping(glm::vec2(1024.0));
@@ -237,8 +246,20 @@ void Renderer::renderloop()
         m_shaderProgram_simple->setUniform(forward_uniform_loc_projection,
                                            projection);
 
+        glm::vec4 lightPosition = glm::vec4( scene::SceneManager::instance()->
+                                                  getLight(0)->
+                                                  getTransform()->
+                                                  getPosition(),
+                                             1.0);
 
-        // passing all the neccesary information to our shaders
+        m_shaderProgram_simple->setUniform(forward_uniform_loc_lightposition,
+                                           lightPosition);
+
+//        std::cout << lightPosition.x << std::endl;
+//        std::cout << lightPosition.y << std::endl;
+//        std::cout << lightPosition.z << std::endl;
+
+        // passing all the neccesary per fragment information to our shaders
         for(unsigned int i = 0; i < m_renderqueue.size(); i++)
         {
             model = m_renderqueue[i]->getTransform()->getModelMatrix();
@@ -253,9 +274,6 @@ void Renderer::renderloop()
                                       glm::vec3(modelview[1]),
                                       glm::vec3(modelview[2])
                                     );
-//            std::cout << normalmatrix[0][0] << std::endl;
-//            std::cout << normalmatrix[1][1] << std::endl;
-//            std::cout << normalmatrix[2][2] << std::endl;
 
             m_shaderProgram_simple->setUniform(forward_uniform_loc_normalmatrix,
                                                normalmatrix );
@@ -268,6 +286,15 @@ void Renderer::renderloop()
                 forward_uniform_loc_diffuse_tex,
                 m_renderqueue[i]->getMaterial()->getDiffuseTexture(),
                 0);
+
+            m_shaderProgram_simple->setUniformSampler(
+                forward_uniform_loc_specular_tex,
+                m_renderqueue[i]->getMaterial()->getSpecularTexture(),
+                1);
+
+            m_shaderProgram_simple->setUniform(
+                forward_uniform_loc_shininess,
+                m_renderqueue[i]->getMaterial()->getShininess());
 
             m_renderqueue[i]->drawTriangles();
         }
