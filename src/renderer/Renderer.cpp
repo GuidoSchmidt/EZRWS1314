@@ -65,8 +65,8 @@ void Renderer::setupShaderStages()
 {
     //! Simple forward rendering
     m_shaderProgram_simple = new ShaderProgram(
-        GLSL::VERTEX, RESOURCES_PATH "/shader_source/phong_fast_mk.vert.glsl",
-        GLSL::FRAGMENT, RESOURCES_PATH "/shader_source/phong_fast_mk.frag.glsl");
+        GLSL::VERTEX, RESOURCES_PATH "/shader_source/cel.vert.glsl",
+        GLSL::FRAGMENT, RESOURCES_PATH "/shader_source/cel.frag.glsl");
 
     m_shaderProgram_simple->link();
 
