@@ -91,7 +91,7 @@ void KeyboardCallback(GLFWwindow* window, int key, int scancode, int action,
 void Renderer::KeyboardCheck(void)
 {
     //! simple camera movement
-    float camera_speed = 0.025f;
+    float camera_speed = 0.015f;
     double mouse_x, mouse_y;
     float  mouse_correct_x, mouse_correct_y;
     glfwGetCursorPos(m_context->getWindow(), &mouse_x, &mouse_y);
@@ -105,26 +105,55 @@ void Renderer::KeyboardCheck(void)
     }
 
     //!  Moving camera
-    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W) ||
-            glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_W))
     {
         m_scene_camera->MoveZ( camera_speed);
     }
-    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S) ||
-            glfwGetKey(m_context->getWindow(), GLFW_KEY_DOWN))
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_S))
     {
         m_scene_camera->MoveZ(-camera_speed);
     }
-    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D) ||
-            glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_D))
     {
         m_scene_camera->MoveX( camera_speed);
     }
-    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A) ||
-            glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_A))
     {
         m_scene_camera->MoveX(-camera_speed);
     }
+
+    //!  Moving light
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
+    {
+        scene::SceneManager::instance()->getLight(0)->
+                             getTransform()->translate(0.0, 0.05, 0.0);
+    }
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_DOWN))
+    {
+        scene::SceneManager::instance()->getLight(0)->
+                             getTransform()->translate(0.0, -0.05, 0.0);
+    }
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
+    {
+        scene::SceneManager::instance()->getLight(0)->
+                             getTransform()->translate(0.05, 0.0, 0.0);
+    }
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
+    {
+        scene::SceneManager::instance()->getLight(0)->
+                             getTransform()->translate(-0.05, 0.00, 0.0);
+    }
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_E))
+    {
+        scene::SceneManager::instance()->getLight(0)->
+                             getTransform()->translate(0.0, 0.00, 0.05);
+    }
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_R))
+    {
+        scene::SceneManager::instance()->getLight(0)->
+                             getTransform()->translate(0.0, 0.05, -0.05);
+    }
+
 
     if(glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
     {
@@ -211,10 +240,6 @@ void Renderer::renderloop()
             getUniform("Shininess");
 
 
-
-    scene::SceneManager::instance()->getLight(0)->
-    setupShadowMapping(glm::vec2(1024.0));
-
     // set up some matrices
     glm::mat4 model, view, modelview, projection, mvp;
     glm::mat3 normalmatrix;
@@ -245,9 +270,6 @@ void Renderer::renderloop()
         //! Normal camera mode
         glfwSetScrollCallback(m_context->getWindow(), ScrollCallback);
         glfwSetKeyCallback(m_context->getWindow(), KeyboardCallback);
-
-        scene::SceneManager::instance()->getLight(0)->generateShadowMap(
-            &m_renderqueue);
 
         //! First shader program:
         //! ### GEOMETRY RENDER ############################################
