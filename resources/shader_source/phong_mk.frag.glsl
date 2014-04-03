@@ -13,18 +13,18 @@ layout (location = 0) out vec4 fragcolor;
 
 //*** Uniforms *****************************************************************
 uniform sampler2D diffuse_tex; // set
-uniform vec4 LightPosition;
-uniform vec3 LightIntensity;
-uniform vec3 Kd;         // Diffuse reflectivity
-uniform vec3 Ka;         // Ambient reflectivity
-uniform vec3 Ks;         // Specular reflectivity
-uniform float Shininess; // Specular shininess factor
+uniform vec4  LightPosition;
+uniform vec3  LightIntensity;
+uniform vec3  Kd;         // Diffuse reflectivity
+uniform vec3  Ka;         // Ambient reflectivity
+uniform vec3  Ks;         // Specular reflectivity
+uniform float Shininess;  // Specular shininess factor
 
 //*** Functions ****************************************************************
 vec3 ads()
 {
     vec3 n = normalize( m_normal );
-    vec3 s = normalize( vec3( LightPosition )- m_position );
+    vec3 s = normalize( vec3( LightPosition ) - m_position );
     vec3 v = normalize( vec3( -m_position ) );
     vec3 r = reflect( -s, n );
 
