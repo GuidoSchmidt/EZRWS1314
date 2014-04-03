@@ -17,11 +17,7 @@ uniform sampler2D   specular_tex;   // set
 uniform sampler2D   normal_tex;     // set
 uniform vec4        LightPosition;  // set
 uniform float       Shininess;      // set
-
-//*** Global *******************************************************************
-const int   levels = 5;
-const float scaleFactor = 1.0 / levels;
-
+uniform int         levels = 5;
 
 //*** Functions ****************************************************************
 // Normal mapping: calculate cotangents
@@ -65,7 +61,7 @@ vec3 celshade(vec3 normal_comp)
     float cosine = max( 0.0, dot( s, normal_comp ) );
     vec3 diffuse = texture(diffuse_tex, vsUV).rgb
                    * floor( cosine * levels )
-                   * scaleFactor;
+                   * ((1.0 / levels) + 0.2 );
 
     return diffuse;
 }

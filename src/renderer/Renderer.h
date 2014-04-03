@@ -28,6 +28,8 @@ class Renderer
 private:
     unsigned int m_framecount;
     int m_fps;
+    int m_cellLevels = 5;
+    float m_cellLevelsKon = 5.0;
     double m_current_time, m_previous_time;
 
     Context* m_context;

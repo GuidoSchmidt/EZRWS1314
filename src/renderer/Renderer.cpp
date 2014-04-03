@@ -163,6 +163,7 @@ void Renderer::KeyboardCheck(void)
     {
         exit(0);
     }
+    //! Print camera pose
     if (glfwGetKey(m_context->getWindow(), GLFW_KEY_P))
     {
         std::cout << "-----------------------------------------------------"
@@ -176,6 +177,22 @@ void Renderer::KeyboardCheck(void)
                   << m_scene_camera->getTransform()->getRotation().z
                   << ")"<< std::endl;
 
+    }
+
+    //! set shader properties
+    if(glfwGetKey(m_context->getWindow(), GLFW_KEY_F1))
+    {
+        if( m_cellLevels >= 2 )
+        {
+            // to get rid of button polling
+            m_cellLevelsKon -= 0.01;
+            m_cellLevels = (int)m_cellLevelsKon;
+        }
+    }
+    if(glfwGetKey(m_context->getWindow(), GLFW_KEY_F2))
+    {
+        m_cellLevelsKon += 0.01;
+        m_cellLevels = (int)m_cellLevelsKon;
     }
 
     //! Field of view
@@ -247,6 +264,10 @@ void Renderer::renderloop()
     GLuint forward_uniform_loc_shininess        = m_shaderProgram_simple->
             getUniform("Shininess");
 
+    //! Cel Shading Uniforms
+    GLuint forward_uniform_loc_cellevels        = m_shaderProgram_simple->
+            getUniform("levels");
+
 
     // set up some matrices
     glm::mat4 model, view, modelview, projection, mvp;
@@ -302,9 +323,8 @@ void Renderer::renderloop()
         m_shaderProgram_simple->setUniform(forward_uniform_loc_lightposition,
                                            lightPosition);
 
-//        std::cout << lightPosition.x << std::endl;
-//        std::cout << lightPosition.y << std::endl;
-//        std::cout << lightPosition.z << std::endl;
+        m_shaderProgram_simple->setUniform(forward_uniform_loc_cellevels,
+                                           m_cellLevels);
 
         // passing all the neccesary per fragment information to our shaders
         for(unsigned int i = 0; i < m_renderqueue.size(); i++)
