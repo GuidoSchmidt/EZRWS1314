@@ -33,7 +33,10 @@ void main(void)
 //     passing uv coordinates to fragment shader
     vsUV = uv;
 
-    m_normal    = normalize( normalmatrix * normal );
+//     calculating a proper normal
+    m_normal    = vec3 ( normalize(transpose(inverse(model * view))
+                    * vec4(normal, 0.0)) );
+
     m_position  = vec3 ( modelview *
                     vec4 ( position, 1.0 ) );
 

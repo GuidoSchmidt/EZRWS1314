@@ -130,10 +130,23 @@ void Renderer::KeyboardCheck(void)
     {
         scroll = 60.0;
     }
-
     if (glfwGetKey(m_context->getWindow(), GLFW_KEY_Q))
     {
         exit(0);
+    }
+    if (glfwGetKey(m_context->getWindow(), GLFW_KEY_P))
+    {
+        std::cout << "-----------------------------------------------------"
+                  << std::endl;
+        std::cout << "Scene Camera Pose: ("
+                  << m_scene_camera->GetPosition().x << ", "
+                  << m_scene_camera->GetPosition().y << ", "
+                  << m_scene_camera->GetPosition().z << ", "
+                  << m_scene_camera->getTransform()->getRotation().x << ", "
+                  << m_scene_camera->getTransform()->getRotation().y << ", "
+                  << m_scene_camera->getTransform()->getRotation().z
+                  << ")"<< std::endl;
+
     }
 
     //! Field of view
@@ -156,8 +169,8 @@ void Renderer::renderloop()
 
     //! Render calls here
     m_scene_camera = new scene::Camera(0,"scene_camera",
-                                       glm::vec3(-3.51f, 7.0f, -14.55f),
-                                       glm::vec3(0.0f, 2.0f, 0.0f),
+                                       glm::vec3(1.60502f, 1.79728f, 4.40802f),
+                                       glm::vec3(-1.5f, 2.2f, 0.0f),
                                        glm::vec3(0.0f, 1.0f, 0.0f),
                                        m_context->getSize());
 
@@ -188,11 +201,15 @@ void Renderer::renderloop()
     GLuint forward_uniform_loc_specular_tex     = m_shaderProgram_simple->
             getUniform("specular_tex");
 
+    GLuint forward_uniform_loc_normal_tex       = m_shaderProgram_simple->
+            getUniform("normal_tex");
+
     GLuint forward_uniform_loc_lightposition    = m_shaderProgram_simple->
             getUniform("LightPosition");
 
     GLuint forward_uniform_loc_shininess        = m_shaderProgram_simple->
             getUniform("Shininess");
+
 
 
     scene::SceneManager::instance()->getLight(0)->
@@ -282,6 +299,10 @@ void Renderer::renderloop()
             m_shaderProgram_simple->setUniform(forward_uniform_loc_mvp,
                                                mvp );
 
+            m_shaderProgram_simple->setUniform(
+                forward_uniform_loc_shininess,
+                m_renderqueue[i]->getMaterial()->getShininess());
+
             m_shaderProgram_simple->setUniformSampler(
                 forward_uniform_loc_diffuse_tex,
                 m_renderqueue[i]->getMaterial()->getDiffuseTexture(),
@@ -292,9 +313,10 @@ void Renderer::renderloop()
                 m_renderqueue[i]->getMaterial()->getSpecularTexture(),
                 1);
 
-            m_shaderProgram_simple->setUniform(
-                forward_uniform_loc_shininess,
-                m_renderqueue[i]->getMaterial()->getShininess());
+            m_shaderProgram_simple->setUniformSampler(
+                forward_uniform_loc_normal_tex,
+                m_renderqueue[i]->getMaterial()->getNormalTexture(),
+                2);
 
             m_renderqueue[i]->drawTriangles();
         }
