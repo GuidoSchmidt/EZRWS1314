@@ -203,6 +203,14 @@ void Renderer::renderloop()
                                        glm::vec3(0.0f, 1.0f, 0.0f),
                                        m_context->getSize());
 
+    glm::quat camera_rot = m_scene_camera->getTransform()->getRotation();
+    glm::vec3 camera_tra = m_scene_camera->getTransform()->getPosition();
+    glm::vec3 camera_sca = m_scene_camera->getTransform()->getScale();
+
+    scene::SceneManager::instance()->getLight(0)->setTransform(camera_tra,
+                                                               camera_rot,
+                                                               camera_sca);
+
     //! Uniform setup
     //! Standard Uniforms
     GLuint forward_uniform_loc_model            = m_shaderProgram_simple->

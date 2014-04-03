@@ -14,9 +14,8 @@ layout (location = 0) out vec4 fragcolor;
 //*** Uniforms *****************************************************************
 uniform sampler2D   diffuse_tex;    // set
 uniform sampler2D   specular_tex;   // set
-uniform sampler2D   normal_tex;     //
+uniform sampler2D   normal_tex;     // set
 uniform vec4        LightPosition;  // set
-//uniform vec3      LightIntensity; // not used here
 uniform float       Shininess;      // set
 
 
@@ -63,29 +62,19 @@ vec3 ads(vec3 normal_comp)
     vec3 v = normalize( vec3( -m_position ) );
     vec3 r = reflect( -s, n );
 
-//    return LightIntensity * ( Ka
-//            + Kd * max( dot(s, n), 0.0 )
-//            + Ks * pow( max( dot(r,v), 0.0 ), Shininess ) );
-
     return 1.0 * (texture(diffuse_tex, vsUV).rgb * max( dot(s, n), 0.0 )
                + texture(specular_tex, vsUV).rgb * pow( max( dot(v,r), 0.0 ),
                  Shininess ) );
-//    return vec3(1.0, 0.0, 1.0);
 }
 
 //*** Main *********************************************************************
 void main(void)
 {
-//    vec3 vsN = normalize(vsNormal);
 //    calculating the normal
     vec3 vsN = normalize(m_normal);
     vec3 vsV = normalize(m_position);
     vec3 vsPN = perturb_normal(vsN, vsV, vsUV);
     vec3 normal = vsPN;
 
-//    vec3 normal_comp  = texture(normal_tex, vsUV).rgb;
-//    vec3 ambientColor = 1.0 * texture(normal_tex, vsUV).rgb;
-
     fragcolor = vec4( ads(normal), 1.0 );
-//    fragcolor = vec4(normal, 1.0);
 }
