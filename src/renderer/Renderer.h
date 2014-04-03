@@ -102,7 +102,7 @@ namespace renderer {
 			void setRenderContext(Context& context);
 
 			//! \brief Setup the render loop
-			void Renderer::setupRenderer(GLFWwindow* window);
+            void setupRenderer(GLFWwindow* window);
 
 			//! \brief Calls the render loop
             void renderloop(GLFWwindow *window);
