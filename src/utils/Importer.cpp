@@ -301,7 +301,9 @@ namespace utils {
 				if (last_sperator < texture_path_normal.length())
 				{
 					texture_name_normal.append(texture_path_normal.substr(last_sperator));
-				}
+                }
+
+                std::cout << "Name normal tex: " << texture_name_normal << std::endl;
 
                 //! Create new material
                 new_material = new scene::Material(material_id, // Index-number
@@ -314,7 +316,7 @@ namespace utils {
                                                              specular.b),
 															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_specular, true),
 															 shininess,
-															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_normal, true));
+                                                             scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_normal, true));
 
                 //! Add material to scene manager
                 scene::SceneManager::instance()->addMaterial(new_material);
@@ -327,7 +329,7 @@ namespace utils {
                 std::cout << "      Specular-Color:  (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
 				std::cout << "      Specular-Texture:(" << RESOURCES_PATH + texture_name_specular << ")" << std::endl;
                 std::cout << "      Shininess:        " << shininess << std::endl;
-				std::cout << "      Normal-Texture:  (" << RESOURCES_PATH + texture_name_normal << ")" << std::endl;
+                std::cout << "      Normal-Texture:  (" << RESOURCES_PATH + texture_name_normal << ")" << std::endl;
             }
 		}
 	}

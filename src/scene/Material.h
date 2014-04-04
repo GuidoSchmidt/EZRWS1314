@@ -24,8 +24,6 @@ namespace scene
             int       m_cube_map_id;
             //! Normal/Bump
             GLuint    m_normal_map_ptr;
-            //! Translucency
-            GLuint    m_translucency_map_ptr;
 
         public:
             //! \brief Constructor: default
@@ -38,8 +36,7 @@ namespace scene
                      glm::vec3 sepcular_color,
                      GLuint specular_tex_id,
                      float specular_highlight_exponent,
-                     GLuint normal_map_id,
-                     GLuint translucency_map_id);
+                     GLuint normal_map_id);
 
             //! \brief Returns the materials index
             unsigned int getIndexNumber(void);
@@ -61,9 +58,6 @@ namespace scene
 
             //! \brief Returns the specular texture handle
             GLuint getNormalTexture(void);
-
-            //! \brief Returns the translucency texture handle
-            GLuint getTranslucencyTexture(void);
     };
 }
 

@@ -272,9 +272,13 @@ void Renderer::renderloop()
     GLuint forward_uniform_loc_translucency_tex = m_shaderProgram_simple->
             getUniform("translucency_tex");
 
+    std::string texture_name_translucency("/textures/head/translucency.png");
+    GLuint texture_loc_translucency = scene::SceneManager::instance()->
+                                      loadTexture(RESOURCES_PATH +
+                                                  texture_name_translucency,
+                                                  true);
 
-
-    // set up some matrices
+    //! General: set up some matrices
     glm::mat4 model, view, modelview, projection, mvp;
     glm::mat3 normalmatrix;
 
@@ -375,7 +379,7 @@ void Renderer::renderloop()
 
             m_shaderProgram_simple->setUniformSampler(
                 forward_uniform_loc_translucency_tex,
-                m_renderqueue[i]->getMaterial()->getNormalTexture(),
+                texture_loc_translucency,
                 3);
 
             m_renderqueue[i]->drawTriangles();
