@@ -58,6 +58,8 @@ vec3 celshade(vec3 normal_comp)
 {
     vec3 n = normalize( normal_comp );
     vec3 s = normalize( vec3( LightPosition.xyz ) - m_position.xyz );
+    vec3 v = normalize( vec3( -m_position ) );
+    vec3 h = normalize( v + s );
     float cosine = max( 0.0, dot( s, normal_comp ) );
     vec3 diffuse = texture(diffuse_tex, vsUV).rgb
                    * floor( cosine * levels )

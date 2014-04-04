@@ -14,15 +14,17 @@ namespace scene
                        glm::vec3 specular_color,
                        GLuint specular_tex_id,
                        float specular_exponent,
-                       GLuint normal_map_id)
+                       GLuint normal_map_id,
+                       GLuint translucency_map_id)
     {
-        m_index_number      = index;
-        m_diffuse_color     = diffuse_color;
-        m_diffuse_map_ptr   = diffuse_tex_id;
-        m_specular_color    = specular_color;
-        m_specular_map_ptr  = specular_tex_id;
-        m_specular_exponent = specular_exponent;
-        m_normal_map_ptr    = normal_map_id;
+        m_index_number          = index;
+        m_diffuse_color         = diffuse_color;
+        m_diffuse_map_ptr       = diffuse_tex_id;
+        m_specular_color        = specular_color;
+        m_specular_map_ptr      = specular_tex_id;
+        m_specular_exponent     = specular_exponent;
+        m_normal_map_ptr        = normal_map_id;
+        m_translucency_map_ptr  = translucency_map_id;
     }
 
     unsigned int Material::getIndexNumber(void)
@@ -59,4 +61,10 @@ namespace scene
     {
         return m_normal_map_ptr;
     }
+
+    GLuint Material::getTranslucencyTexture(void)
+    {
+        return m_translucency_map_ptr;
+    }
+
 }

@@ -65,8 +65,8 @@ void Renderer::setupShaderStages()
 {
     //! Simple forward rendering
     m_shaderProgram_simple = new ShaderProgram(
-        GLSL::VERTEX, RESOURCES_PATH "/shader_source/cel.vert.glsl",
-        GLSL::FRAGMENT, RESOURCES_PATH "/shader_source/cel.frag.glsl");
+        GLSL::VERTEX, RESOURCES_PATH "/shader_source/translucency.vert.glsl",
+        GLSL::FRAGMENT, RESOURCES_PATH "/shader_source/translucency.frag.glsl");
 
     m_shaderProgram_simple->link();
 
@@ -268,6 +268,11 @@ void Renderer::renderloop()
     GLuint forward_uniform_loc_cellevels        = m_shaderProgram_simple->
             getUniform("levels");
 
+    //! Translucency (Colin Barre-Brisebois)
+    GLuint forward_uniform_loc_translucency_tex = m_shaderProgram_simple->
+            getUniform("translucency_tex");
+
+
 
     // set up some matrices
     glm::mat4 model, view, modelview, projection, mvp;
@@ -367,6 +372,11 @@ void Renderer::renderloop()
                 forward_uniform_loc_normal_tex,
                 m_renderqueue[i]->getMaterial()->getNormalTexture(),
                 2);
+
+            m_shaderProgram_simple->setUniformSampler(
+                forward_uniform_loc_translucency_tex,
+                m_renderqueue[i]->getMaterial()->getNormalTexture(),
+                3);
 
             m_renderqueue[i]->drawTriangles();
         }
