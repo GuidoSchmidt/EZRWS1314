@@ -20,7 +20,6 @@ uniform vec4        LightPosition;      // set
 uniform float       Shininess;          // set
 
 
-
 //*** Functions ****************************************************************
 // Normal mapping: calculate cotangents
 // @source: http://www.thetenthplanet.de/archives/1180
@@ -68,6 +67,38 @@ vec3 ads(vec3 normal_comp)
                  Shininess ) );
 }
 
+// @source: http://gamedev.stackexchange.com/questions/56897/glsl-light-attenuation-color-and-intensity-formula
+float lightAttenuation()
+{
+    float result, minLight, radius, a, b;
+    minLight = 0.01;
+    a = 0.8;
+    b = 0.6;
+
+//    Computing distance from light to fragment
+    float dist = distance( vec3( LightPosition ), m_position );
+
+//    https://www.desmos.com/calculator/nmnaud1hrw
+    radius = sqrt(1.0 / (b * minLight));
+    result = clamp(1.0 - dist/radius, 0.0, 1.0);
+    result *= result;
+
+    return result;
+}
+
+//@ source: http://de.slideshare.net/colinbb/colin-barrebrisebois-gdc-2011-approximating-translucency-for-a-fast-cheap-and-convincing-subsurfacescattering-look-7170855
+vec3 translucencyFac(vec3 normal_comp)
+{
+
+    vec3 tFac;
+    float lightAtt;
+//    Computing Light Attenuation
+    lightAtt = lightAttenuation();
+
+
+    return texture(translucency_tex, vsUV).rgb;
+}
+
 //*** Main *********************************************************************
 void main(void)
 {
@@ -77,7 +108,17 @@ void main(void)
     vec3 vsPN = perturb_normal(vsN, vsV, vsUV);
     vec3 normal = vsPN;
 
-    vec3 ambientColor = 1.0 * texture(translucency_tex, vsUV).rgb;
+//    vec3 ambientColor = 1.0 * texture(translucency_tex, vsUV).rgb;
 
-    fragcolor = vec4( ambientColor, 1.0 );
+//    I. Calculate the fragcolor with the shading model you prefer
+    vec3 pre_color = ads( normal );
+
+//    II. Derive the translucency factor by the translucency map
+    vec3 transFac = translucencyFac( normal );
+
+//    III. Use this factor to brighten up (also change) the fragcolor
+    pre_color += transFac;
+
+//    Push it back to the pipeline
+    fragcolor = vec4( pre_color, 1.0 );
 }
