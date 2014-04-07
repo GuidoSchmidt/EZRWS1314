@@ -49,8 +49,10 @@ namespace renderer {
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/ship.obj");
 		
 
-		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
-		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/house6.obj");
+		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
+		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
+		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/BeachTest.obj", "beach");
+		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/house6.obj","house");
 
 		//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/baum_test.dae");
         //utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/simple_cube.dae");
@@ -120,12 +122,10 @@ namespace renderer {
 		skyScale = glm::mat4(10);
 		skyScale[3][3]=1;
 		scene::Transform trans = scene::Transform(glm::vec3(0),glm::toQuat(glm::mat4(1)),glm::vec3(1));
-		GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/common/sun.png",true);
-		sun = new scene::Sun(1337,"zunLigt", trans, glm::vec3(1),2000,990,sunTex);
-		sun->setHour(12);
-		sun->setMinute(0);
+		GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/niceSun.tga", true);
+		//GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sun.png", true);
+		sun = new scene::Sun(1337,"zunLigt", trans, glm::vec3(1),10,990,19,sunTex);
         renderloop();
-
     }
     
     void Renderer::setupGL(void)
@@ -144,8 +144,12 @@ namespace renderer {
         m_shaderProgram_forward->link();
 
 		m_shaderProgram_sky = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
-		                                            GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/sky.fs.glsl");
+		                                        GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/sky.fs.glsl");
         m_shaderProgram_sky->link();
+
+		m_shaderProgram_sun = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/sun.vs.glsl",
+												GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/sun.fs.glsl");
+		m_shaderProgram_sun->link();
         //m_fbo = new FrameBufferObject(m_context->getSize().x, m_context->getSize().y);
         //m_fbo->addColorAttachment(0);
         //m_fbo->addDepthAttachment_Texture(1);
@@ -175,18 +179,14 @@ namespace renderer {
 
     void Renderer::renderloop()
     {
-		glm::vec4 wsSunPos = glm::vec4(0,10,2000,1);
 
 		GLuint night_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/common/night.jpg",true);
-		GLuint day_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/common/day.jpg",true);
-		//GLuint ldr_diffuse_cube = scene::SceneManager::instance()->loadCubeMap(RESOURCES_PATH "/textures/ldr-cross/beach_small_diffuse_cross", false);
-		//GLuint ldr_reflective_cube = scene::SceneManager::instance()->loadCubeMap(RESOURCES_PATH "/textures/ldr-cross/beach_small_reflective_cross", false);
-
-
+		GLuint day_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/common/day.jpg", true);
+		
         //! Render calls here
         m_scene_camera = new scene::Camera(0,"scene_camera",
-                           glm::vec3(30.0f, 30.0f, 30.0f),
-                           glm::vec3(0.0f, 0.0f, 0.0f),
+                           glm::vec3(30.0f, 10.0f, 10.0f),
+                           glm::vec3(0.0f, 10.0f, 10.0f),
                            glm::vec3(0.0f, 1.0f, 0.0f),
                            m_context->getSize());
 		m_scene_camera->SetFarPlane(3000);
@@ -204,10 +204,12 @@ namespace renderer {
         GLuint forward_uniform_loc_shininess        = m_shaderProgram_forward->getUniform("shininess");
         GLuint forward_uniform_loc_normal_tex       = m_shaderProgram_forward->getUniform("normal_map");
         GLuint forward_uniform_loc_light_position   = m_shaderProgram_forward->getUniform("light_position");
-		GLuint forward_uniform_loc_light_color      = m_shaderProgram_forward->getUniform("light_color");
+		GLuint forward_uniform_loc_light_color		= m_shaderProgram_forward->getUniform("light_color");
+		GLuint forward_uniform_loc_ambient_amount   = m_shaderProgram_forward->getUniform("ambient_amount");
+		GLuint forward_uniform_loc_diffuse_amount   = m_shaderProgram_forward->getUniform("diffuse_amount");
         GLuint forward_uniform_loc_mouse            = m_shaderProgram_forward->getUniform("mouse");
 
-		//! Sky shading
+		//! Sky shader
         GLuint sky_uniform_loc_model		    = m_shaderProgram_sky->getUniform("model");
         GLuint sky_uniform_loc_view             = m_shaderProgram_sky->getUniform("view");
         GLuint sky_uniform_loc_projection       = m_shaderProgram_sky->getUniform("projection");
@@ -215,6 +217,13 @@ namespace renderer {
         GLuint sky_uniform_loc_night_tex        = m_shaderProgram_sky->getUniform("night_tex");
         GLuint sky_uniform_loc_blend			= m_shaderProgram_sky->getUniform("blend");
         GLuint sky_uniform_loc_color            = m_shaderProgram_sky->getUniform("color");
+
+		//! Sun shader
+		GLuint sun_uniform_loc_model = m_shaderProgram_sun->getUniform("model");
+		GLuint sun_uniform_loc_view = m_shaderProgram_sun->getUniform("view");
+		GLuint sun_uniform_loc_projection = m_shaderProgram_sun->getUniform("projection");
+		GLuint sun_uniform_loc_tex = m_shaderProgram_sun->getUniform("tex");
+		GLuint sun_uniform_loc_color = m_shaderProgram_sun->getUniform("color");
 
 
         //! Compositing
@@ -267,24 +276,27 @@ namespace renderer {
 			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_UP))
 			{
-				sun->setHour(sun->getHour() + 1);
+				sun->incHour();
 			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_DOWN))
 			{
-				sun->setHour(sun->getHour() - 1);
+				sun->decHour();
 			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_LEFT))
 			{
-
-				sun->setMinute(sun->getMinute() - 1);
-				if (sun->getMinute() == 0)
-					sun->setHour(sun->getHour() - 1);
+				sun->decMinute();
 			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_RIGHT))
 			{
-				if (sun->getMinute() == 59)
-					sun->setHour(sun->getHour() + 1);
-				sun->setMinute(sun->getMinute() + 1);
+				sun->incMinute();
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_O))
+			{
+				sun->tone_factor += 0.1;
+			}
+			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_I))
+			{
+				sun->tone_factor -= 0.1;
 			}
 			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_KP_2))
 			{
@@ -326,10 +338,6 @@ namespace renderer {
 			{
 				sun->setHour(21);
 				sun->setMinute(0);
-			}
-			if (glfwGetKey(m_context->getWindow(), GLFW_KEY_I))
-			{
-				scene::SceneManager::instance()->getLight(0)->getTransform()->translate(0.0, 1.0f, 0.0f);
 			}
 			if (glfwGetMouseButton(m_context->getWindow(), GLFW_MOUSE_BUTTON_3))
 			{
@@ -378,30 +386,58 @@ namespace renderer {
 			//! First shader program
 
 			//render sky
-			m_shaderProgram_sky->use();
 
+			//sun->ambientAmount = (float)(mouse_x / m_context->getSize().x);
+			//sun->diffuseAmount = (float)(mouse_y / m_context->getSize().y);
+			
 			//uniforms
+			m_shaderProgram_sky->use();
 			sun->update(projection, view);
 			m_shaderProgram_sky->setUniform(sky_uniform_loc_view, view);
 			m_shaderProgram_sky->setUniform(sky_uniform_loc_model, skyScale);
 			m_shaderProgram_sky->setUniform(sky_uniform_loc_projection, projection);
-			m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_day_tex, day_tex, 0); //sonne
-			m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_night_tex, night_tex, 1); //sonne
-			m_shaderProgram_sky->setUniform(sky_uniform_loc_blend, sun->textureBlend);  //sonne
-			m_shaderProgram_sky->setUniform(sky_uniform_loc_color, sun->getColor()); //sonne
+			m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_day_tex, day_tex, 0); 
+			m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_night_tex, night_tex, 1);
+			m_shaderProgram_sky->setUniform(sky_uniform_loc_blend, sun->textureBlend);  
+			m_shaderProgram_sky->setUniform(sky_uniform_loc_color, sun->getColor()*(sun->ambientAmount)); 
 			skyNode->drawTriangles();
 
+
+			//draw sun
+			m_shaderProgram_sun->use();
+			m_shaderProgram_sun->setUniform(sun_uniform_loc_view, view);
+			m_shaderProgram_sun->setUniform(sun_uniform_loc_model, sun->getTransform()->getModelMatrix());
+			m_shaderProgram_sun->setUniform(sun_uniform_loc_projection, projection);
+			m_shaderProgram_sun->setUniformSampler(sun_uniform_loc_tex, sun->sunTexture, 0); 
+			m_shaderProgram_sun->setUniform(sun_uniform_loc_color, sun->getColor());
+			glDisable(GL_DEPTH_TEST);
+			glEnable(GL_BLEND);
+			glDepthMask(GL_FALSE);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			sun->render();
+			glDepthMask(GL_TRUE);
+			glDisable(GL_BLEND);
+			glEnable(GL_DEPTH_TEST);
+
+
+
 			m_shaderProgram_forward->use();
-			//m_shaderProgram_forward->SetUniform(uniform_loc_light_position, scene::SceneManager::instance()->getLight(0)->getTransform()->getPosition() );
 			m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(mouse_correct_x, mouse_correct_y));
 			m_shaderProgram_forward->setUniform(forward_uniform_loc_view, view);
 			m_shaderProgram_forward->setUniform(forward_uniform_loc_projection, projection);
-			glm::vec3 p = sun->getTransform()->getPosition();
 			m_shaderProgram_forward->setUniform(forward_uniform_loc_light_position, sun->getTransform()->getPosition());
 			m_shaderProgram_forward->setUniform(forward_uniform_loc_light_color, sun->getColor());
+			//m_shaderProgram_forward->setUniform(forward_uniform_loc_ambient_amount, sun->ambientAmount);
+			//m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_amount, sun->diffuseAmount);
+
+			
+			m_shaderProgram_forward->setUniform(forward_uniform_loc_ambient_amount, sun->ambientAmount);
+			m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_amount, sun->diffuseAmount);
+
 
 			//render geometry nodes 
 			for (unsigned int i = 0; i < m_renderqueue.size(); i++)
+			//for (unsigned int i = 0; i < 0; i++)
 			{
 				m_shaderProgram_forward->setUniform(forward_uniform_loc_model, m_renderqueue[i]->getTransform()->getModelMatrix());
 				m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_color, *(m_renderqueue[i]->getMaterial()->getDiffuseColor()));
@@ -415,20 +451,20 @@ namespace renderer {
 			}
 
 
+
 			m_shaderProgram_forward->unuse();
+			gBuffer->unbind();
 
 			double forwardTime2 = glfwGetTime() - forwardTime1; //ca 1-10ms
 
 			m_framecount++;
 
-			/*ssSunPos = projection * view * wsSunPos;
-			ssSunPos.x=(ssSunPos.x/ssSunPos.z)/2.0f+0.5f;
-			ssSunPos.y=(ssSunPos.y/ssSunPos.z)/2.0f+0.5f;*/
 
 			double time1 = glfwGetTime();
-			//doTheSunlightEffect();
+			doTheSunlightEffect();
 			double time2 = glfwGetTime() - time1; //ca 1,3*e-5 
 
+			compositingPass->param_bloomAmount = sun->bloomAmount;
 			compositingPass->doExecute();
 
 			time1 = glfwGetTime();
@@ -442,6 +478,8 @@ namespace renderer {
 			else
 				finalPass->minAveMaxTexture = fastExtractionPass->outputTexture;
 
+			finalPass->param_sunColor = sun->getColor();
+			finalPass->param_factor = sun->tone_factor;
 			finalPass->doExecute();
 
            
@@ -452,8 +490,8 @@ namespace renderer {
 
 	void Renderer::doTheSunlightEffect()
 	{
-		//downsample gbuffer color
-		SlimFBO::blit(gBuffer,sunlightFBO0);
+		//downsample gbuffer color52c393ae654a41589ff789a2daff23b16101c5f2
+		//SlimFBO::blit(gBuffer,sunlightFBO0);
 		
 		//blur horizontally
 		blurPass->outputFBO = sunlightFBO1;
@@ -472,7 +510,7 @@ namespace renderer {
 		maskPass->param_ssSunPos = glm::vec4(sun->ssPos,1);
 		maskPass->doExecute();
 
-		//calculate Luminace
+		//calculate blooming
 		luminancePass->param_ssSunPos=glm::vec4(sun->ssPos,1);
 		luminancePass->doExecute();
 	}
@@ -493,19 +531,6 @@ namespace renderer {
 			finalPass->minAveMaxTexture = 0;
 			finalPass->param_fastExtraction = 0.0f;
 		}
-		//MipMapExtractionPass* ex = dynamic_cast<MipMapExtractionPass*>(extractionPass);
-		//if (ex != 0) {
-		//	//extractionPass is MipMap change to CPU
-		//	extractionPass = slowExtractionPass;
-		//	finalPass->minAveMaxTexture = 0;
-		//	finalPass->param_fastExtraction = 0.0f;
-		//}
-		//else
-		//{
-		//	extractionPass = fastExtractionPass;
-		//	finalPass->minAveMaxTexture = fastExtractionPass->outputTexture;
-		//	finalPass->param_fastExtraction = 1.0f;
-		//}
 	}
 
 }

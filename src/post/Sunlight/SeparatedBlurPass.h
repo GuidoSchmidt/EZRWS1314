@@ -12,6 +12,7 @@ public:
 	virtual void doExecute();
 
 	GLint colorUniform;
+	GLint maskUniform;
 	GLint horizontalUniform;
 	GLint glowRangeUniform;
 	GLint glowBrightnessUniform;

@@ -23,7 +23,10 @@ namespace scene
         private:
 			float cycleTime; //zwischen 0 und 1;
 			glm::vec3 calcColor();
+			float calcBloomAmount();
 			float calcBlend();
+			glm::vec3 calcAmounts();
+			float blendSmooth1(float in);
         public:
 
 			glm::vec3 color_night;
@@ -38,9 +41,12 @@ namespace scene
 			int TexDay;
 			int TexNight;
 			float distance;
+			float bloomAmount; // 0 = night // 1 = day
 			float textureBlend; // 0 = night // 1 = day
 			float speed;
-			float min;
+			float ambientAmount;
+			float diffuseAmount;
+			float tone_factor;
 
 			GLint sunTexture;
 			SlimQuad* billboard;
@@ -51,13 +57,19 @@ namespace scene
                  Transform transform,
                  glm::vec3 color,
                  float intensity,
-				 float pDistance,
+				 float pDistance, 
+				 int pHour,
 				 GLint billboardTex);
         
 			void render();    
 			void update(glm::mat4 projection, glm::mat4 view);
 
 			void setHour(int pHour);
+			void incHour();
+			void decHour();
+
+			void incMinute();
+			void decMinute();
 
 			void setMinute(int pMinute);
 			

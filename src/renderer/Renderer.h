@@ -39,6 +39,7 @@ namespace renderer {
             //! Shader programs
             ShaderProgram* m_shaderProgram_forward;
 			ShaderProgram* m_shaderProgram_sky;
+			ShaderProgram* m_shaderProgram_sun;
             ShaderProgram* m_shaderProgram_compositing;
             //! Framebuffer objects
             FrameBufferObject* m_fbo;

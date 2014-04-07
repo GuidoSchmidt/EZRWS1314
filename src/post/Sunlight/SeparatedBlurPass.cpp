@@ -11,6 +11,7 @@ SeparatedBlurPass::SeparatedBlurPass(SlimQuad* pQuad, int pWidth, int pHeight)
 	renderPassShader = new SlimShader(RESOURCES_PATH "/shader_source/", "post.vert.glsl", "separatedBlur.frag.glsl");
 
 	colorUniform = glGetUniformLocation(renderPassShader->shaderProgram, "color");
+	maskUniform = glGetUniformLocation(renderPassShader->shaderProgram, "mask");
 
 	horizontalUniform = glGetUniformLocation(renderPassShader->shaderProgram, "horizontal");
 	glowRangeUniform = glGetUniformLocation(renderPassShader->shaderProgram, "range");
@@ -38,8 +39,15 @@ void SeparatedBlurPass::doExecute() {
 		renderPassShader->enable();
 
 			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[0]);
+			if (param_glowHorizontal == 1.0)
+				glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[1]);
+			else
+				glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[0]);
 			glUniform1i(colorUniform, 0);
+
+			/*glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[1]);
+			glUniform1i(maskUniform, 1);*/
 
 			glUniform1f(glowBrightnessUniform, param_glowBrightness);
 			glUniform1f(glowRangeUniform, param_glowRange);
