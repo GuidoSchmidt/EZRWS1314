@@ -40,15 +40,15 @@ void main()
 	//colorOut.rgb = vec3(that);
 	//colorOut = that;
 	vec4 tap = texture(color,UV+dir*2.0*DELTA);
-	sum += tap*1*tap.a;
+	sum += tap*1; //*tap.a;
 	tap = texture(color,UV-dir*1.0*DELTA);
-	sum += tap*2*tap.a;
+	sum += tap*2; //*tap.a;
 	tap = texture(color,UV+dir*0.0*DELTA);
-	sum += tap*3*tap.a;
+	sum += tap*3; //*tap.a;
 	tap = texture(color,UV+dir*1.0*DELTA);
-	sum += tap*2*tap.a;
+	sum += tap*2; //*tap.a;
 	tap = texture(color,UV-dir*2.0*DELTA);
-	sum += tap*1*tap.a;
+	sum += tap*1; //*tap.a;
 
 	// for (float i=-range;i<=range;i+=1.0)
 	// {
