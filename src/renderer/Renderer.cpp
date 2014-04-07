@@ -182,17 +182,15 @@ void Renderer::KeyboardCheck(void)
     //! set shader properties
     if(glfwGetKey(m_context->getWindow(), GLFW_KEY_F1))
     {
-        if( m_cellLevels >= 2 )
-        {
-            // to get rid of button polling
-            m_cellLevelsKon -= 0.01;
-            m_cellLevels = (int)m_cellLevelsKon;
-        }
+            m_tScale -= 0.01;
+
+            std::cout << "m_fLTScale: " << m_tScale << std::endl;
     }
     if(glfwGetKey(m_context->getWindow(), GLFW_KEY_F2))
     {
-        m_cellLevelsKon += 0.01;
-        m_cellLevels = (int)m_cellLevelsKon;
+        m_tScale += 0.01;
+
+        std::cout << "m_fLTScale: " << m_tScale << std::endl;
     }
 
     //! Field of view
@@ -278,6 +276,12 @@ void Renderer::renderloop()
                                                   texture_name_translucency,
                                                   true);
 
+    GLuint forward_uniform_loc_tScale = m_shaderProgram_simple->
+            getUniform("tScale");
+
+    GLuint forward_uniform_loc_tAmbient = m_shaderProgram_simple->
+            getUniform("tAmbient");
+
     //! General: set up some matrices
     glm::mat4 model, view, modelview, projection, mvp;
     glm::mat3 normalmatrix;
@@ -334,6 +338,13 @@ void Renderer::renderloop()
 
         m_shaderProgram_simple->setUniform(forward_uniform_loc_cellevels,
                                            m_cellLevels);
+
+        m_shaderProgram_simple->setUniform(forward_uniform_loc_tScale,
+                                           m_tScale);
+
+        glm::vec3 m_tAmbient( 1.0, 0.6, 0.6 );
+        m_shaderProgram_simple->setUniform(forward_uniform_loc_tAmbient,
+                                           m_tAmbient);
 
         // passing all the neccesary per fragment information to our shaders
         for(unsigned int i = 0; i < m_renderqueue.size(); i++)

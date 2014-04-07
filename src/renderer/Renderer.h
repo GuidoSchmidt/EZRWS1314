@@ -30,6 +30,7 @@ private:
     int m_fps;
     int m_cellLevels = 5;
     float m_cellLevelsKon = 5.0;
+    float m_tScale = 0.0;
     double m_current_time, m_previous_time;
 
     Context* m_context;

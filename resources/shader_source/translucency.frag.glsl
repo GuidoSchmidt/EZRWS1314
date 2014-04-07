@@ -18,6 +18,8 @@ uniform sampler2D   specular_tex;       // set
 uniform sampler2D   normal_tex;         // set
 uniform vec4        LightPosition;      // set
 uniform float       Shininess;          // set
+uniform float       tScale;             // set
+uniform vec3        tAmbient;          // Ambient value, visible from all angles
 
 
 //*** Functions ****************************************************************
@@ -92,24 +94,20 @@ vec3 translucencyFac(vec3 normal_comp, vec3 tEye)
 
     vec3  tFac;
     float lightAtt;     // Distance of Light influences the light-strenght
-    vec3  tAmbient;     // Ambient value, visible from all angles
     float tPower;       // Value for direct translucency ( lightsource behind )
     float tDistortion;  // Subsurface Distortion ( shift the light vector )
-    vec3  tThickness;   // Thickness Texture
-    float tScale;       // Light behind
+    vec3  tThickness;   // Thickness Texturer
 
     lightAtt    =   lightAttenuation();
-    tAmbient    =   vec3( 1.0, 0.6, 0.6 );
-    tPower      =   12.0;
-    tDistortion =   1.0;
+    tPower      =   4.0;
+    tDistortion =   0.2;
     tThickness  =   texture(translucency_tex, vsUV).rgb;
-    tScale      =   1.0;
 
     vec3 tLight = vec3( LightPosition ) + normal_comp * tDistortion;
 
 //    Originally here is used saturate(), with glsl it will only work on NVIDIA
 //    GPUs. So we rewrite this using clamp()
-    float tDot  = pow( clamp( dot( tEye, -tLight ), 0.0, 1.0 ), tPower )
+    float tDot  = pow( clamp( dot( tEye, -tLight ), 0.0, 1.0 ),tPower )
                     * tScale;
     vec3 tLT    = lightAtt * ( tDot + tAmbient ) * tThickness;
 
