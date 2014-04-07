@@ -10,6 +10,7 @@ in vec2 vsUV;
 
 //*** Output *******************************************************************
 layout (location = 0) out vec4 fragcolor;
+layout (location = 1) out vec4 fragcolor2;
 
 //*** Uniforms *****************************************************************
 //uniform samplerCube diffuse_cube;
@@ -26,6 +27,8 @@ uniform sampler2D normal_map;
 uniform vec3 light_position;
 uniform vec3 light_color;
 uniform vec2 mouse;
+uniform float ambient_amount;
+uniform float diffuse_amount;
 
 //*** Functions ****************************************************************
 // Normal mapping: calculate cotangents
@@ -66,24 +69,21 @@ vec3 phong(in vec3 position, in vec4 light, in vec3 normal, in vec3 diffuse_colo
 	vec3 light_vector = normalize(position - light.xyz);
 	float cosin = max( dot( normalize(normal), light_vector), 0.0);
 
-	vec3 ambient_term  = vec3(0.05);
+	vec3 ambient_term  = texture(diffuse_map, vsUV).rgb * light_color;
 
-	vec3 diffuse_term  = texture(diffuse_map, vsUV).rgb * cosin*light_color;
+	vec3 diffuse_term  = texture(diffuse_map, vsUV).rgb * cosin * light_color;
    	diffuse_term = max(diffuse_term, 0.0);
 
 	vec3 specular_term = texture(specular_map, vsUV).rgb * pow(cosin, shininess);
    	specular_term = max(specular_term, 0.0); 
 
-	vec3 shaded = ambient_term + diffuse_term + specular_term;
+	vec3 shaded = ambient_amount * ambient_term + diffuse_amount * diffuse_term;// + specular_term;
 	return max(shaded, 0.0);
 }
 
 //*** Main *********************************************************************
 void main(void)
 {
-	if (texture(diffuse_map,vsUV).a<=0.5)
-    	discard;
-
 	vec3 vsN = vsNormal;
   	vec3 vsV = normalize(vsPosition);
   	vec3 vsPN = perturb_normal(vsN, vsV, vsUV);
@@ -96,5 +96,6 @@ void main(void)
 
     // fragcolor.rgb  = vsN;
     // fragcolor.a = 0;
-    fragcolor = vec4(shaded, 0.0);
+    fragcolor = vec4(shaded, texture(diffuse_map,vsUV).a);
+    fragcolor2 = vec4(0.0);
 }
