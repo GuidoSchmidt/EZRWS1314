@@ -79,34 +79,54 @@ float lightAttenuation()
     float dist = distance( vec3( LightPosition ), m_position );
 
 //    https://www.desmos.com/calculator/nmnaud1hrw
-    radius = sqrt(1.0 / (b * minLight));
-    result = clamp(1.0 - dist/radius, 0.0, 1.0);
+    radius  = sqrt(1.0 / (b * minLight));
+    result  = clamp(1.0 - dist/radius, 0.0, 1.0);
     result *= result;
 
     return result;
 }
 
 //@ source: http://de.slideshare.net/colinbb/colin-barrebrisebois-gdc-2011-approximating-translucency-for-a-fast-cheap-and-convincing-subsurfacescattering-look-7170855
-vec3 translucencyFac(vec3 normal_comp)
+vec3 translucencyFac(vec3 normal_comp, vec3 tEye)
 {
 
-    vec3 tFac;
-    float lightAtt;
-//    Computing Light Attenuation
-    lightAtt = lightAttenuation();
+    vec3  tFac;
+    float lightAtt;     // Distance of Light influences the light-strenght
+    float tAmbient;     // Ambient value, visible from all angles
+    float tPower;       // Value for direct translucency ( lightsource behind )
+    float tDistortion;  // Subsurface Distortion ( shift the light vector )
+    vec3  tThickness;   // Thickness Texture
+    float tScale;       // Light behind
 
+    lightAtt    =   lightAttenuation();
+    tAmbient    =   0.1;
+    tPower      =   4.0;
+    tDistortion =   0.2;
+    tThickness  =   texture(translucency_tex, vsUV).rgb;
+    tScale      =   1.0;
 
-    return texture(translucency_tex, vsUV).rgb;
+    vec3 tLight = vec3( LightPosition ) + normal_comp * tDistortion;
+
+//    Originally here is used saturate(), with glsl it will only work on NVIDIA
+//    GPUs. So we rewrite this using clamp()
+    float tDot  = pow( clamp( dot( tEye, -tLight ), 0.0, 1.0 ), tPower )
+                    * tScale;
+    vec3 tLT    = lightAtt * ( tDot + tAmbient ) * tThickness;
+
+    return tLT;
 }
 
 //*** Main *********************************************************************
 void main(void)
 {
 //    calculating the normal
-    vec3 vsN = normalize(m_normal);
-    vec3 vsV = normalize(m_position);
-    vec3 vsPN = perturb_normal(vsN, vsV, vsUV);
-    vec3 normal = vsPN;
+    vec3 vsN    =   normalize(m_normal);
+    vec3 vsV    =   normalize(m_position);
+    vec3 vsPN   =   perturb_normal(vsN, vsV, vsUV);
+    vec3 normal =   vsPN;
+
+//    calculating eye-vector
+    vec3 tEye   =   -m_position;
 
 //    vec3 ambientColor = 1.0 * texture(translucency_tex, vsUV).rgb;
 
@@ -114,7 +134,7 @@ void main(void)
     vec3 pre_color = ads( normal );
 
 //    II.   Derive the translucency factor by the translucency map
-    vec3 transFac = translucencyFac( normal );
+    vec3 transFac = translucencyFac( normal, tEye );
 
 //    III.  Use this factor to brighten up (also change) the fragcolor
     pre_color += transFac;
