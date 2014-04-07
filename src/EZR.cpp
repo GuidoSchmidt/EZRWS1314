@@ -120,8 +120,9 @@ int main(void)
     {
         //--- EZR rendering ------------------------------------------------------------------------
         glEnable(GL_DEPTH_TEST);
-        renderer::Renderer::instance()->renderloop(glfwindow);
-    
+        //renderer::Renderer::instance()->renderloop(glfwindow);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
         //--- libRocket ----------------------------------------------------------------------------
         // LibRocket input handling
 		int x = 0;

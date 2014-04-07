@@ -40,6 +40,7 @@ namespace renderer {
 		setupGL();
 		setupShaderStages();
 
+		/*
 		utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/sky.obj", "sky");
 		skyNode = utils::Importer::instance()->getGeometryNode(0);
 		utils::Importer::instance()->deleteGeometryNode(0);
@@ -130,18 +131,12 @@ namespace renderer {
 
     void Renderer::setupShaderStages()
     {
-        //! Simple forward rendering
         m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
                                                     GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl");
-        m_shaderProgram_forward->link();
-
         m_shaderProgram_sky = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
                                                 GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/sky.fs.glsl");
-        m_shaderProgram_sky->link();
-
         m_shaderProgram_sun = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/sun.vs.glsl",
                                                 GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/sun.fs.glsl");
-        m_shaderProgram_sun->link();
     }
 
 //! ---- Input Handling --------------------------------------------------------
@@ -211,6 +206,7 @@ namespace renderer {
 
     void Renderer::setupRenderer(GLFWwindow* window)
     {
+		/*
         glfwSetScrollCallback(window, ScrollCallback);
         glfwSetKeyCallback(window, KeyboardCallback);
 
@@ -292,6 +288,7 @@ namespace renderer {
         sun_uniform_loc_projection = m_shaderProgram_sun->getUniform("projection");
         sun_uniform_loc_tex = m_shaderProgram_sun->getUniform("tex");
         sun_uniform_loc_color = m_shaderProgram_sun->getUniform("color");
+		*/
     }
     
 
@@ -300,6 +297,7 @@ namespace renderer {
         glm::vec3 camera_position = glm::vec3(1.0f);
         float camera_speed = 1;
 
+		/*
         //scene::SceneManager::instance()->getLight(0)->setupShadowMapping(glm::vec2(512));
 
         double mouse_x, mouse_y, old_x, old_y;
@@ -464,10 +462,8 @@ namespace renderer {
         glDepthMask(GL_TRUE);
         glDisable(GL_BLEND);
         glEnable(GL_DEPTH_TEST);
-		*/
 
 		// Forward rendering
-		/*
         m_shaderProgram_forward->use();
         m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(mouse_correct_x, mouse_correct_y));
         m_shaderProgram_forward->setUniform(forward_uniform_loc_view, view);
@@ -476,7 +472,6 @@ namespace renderer {
         m_shaderProgram_forward->setUniform(forward_uniform_loc_light_color, sun->getColor());
         //m_shaderProgram_forward->setUniform(forward_uniform_loc_ambient_amount, sun->ambientAmount);
         //m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_amount, sun->diffuseAmount);
-		*/
 
         //m_shaderProgram_forward->setUniform(forward_uniform_loc_ambient_amount, sun->ambientAmount);
         //m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_amount, sun->diffuseAmount);
