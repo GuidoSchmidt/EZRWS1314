@@ -92,16 +92,16 @@ vec3 translucencyFac(vec3 normal_comp, vec3 tEye)
 
     vec3  tFac;
     float lightAtt;     // Distance of Light influences the light-strenght
-    float tAmbient;     // Ambient value, visible from all angles
+    vec3  tAmbient;     // Ambient value, visible from all angles
     float tPower;       // Value for direct translucency ( lightsource behind )
     float tDistortion;  // Subsurface Distortion ( shift the light vector )
     vec3  tThickness;   // Thickness Texture
     float tScale;       // Light behind
 
     lightAtt    =   lightAttenuation();
-    tAmbient    =   0.1;
-    tPower      =   4.0;
-    tDistortion =   0.2;
+    tAmbient    =   vec3( 1.0, 0.6, 0.6 );
+    tPower      =   12.0;
+    tDistortion =   1.0;
     tThickness  =   texture(translucency_tex, vsUV).rgb;
     tScale      =   1.0;
 

@@ -272,7 +272,7 @@ void Renderer::renderloop()
     GLuint forward_uniform_loc_translucency_tex = m_shaderProgram_simple->
             getUniform("translucency_tex");
 
-    std::string texture_name_translucency("/textures/head/translucency_green.png");
+    std::string texture_name_translucency("/textures/head/translucency.png");
     GLuint texture_loc_translucency = scene::SceneManager::instance()->
                                       loadTexture(RESOURCES_PATH +
                                                   texture_name_translucency,
