@@ -110,15 +110,15 @@ void main(void)
 
 //    vec3 ambientColor = 1.0 * texture(translucency_tex, vsUV).rgb;
 
-//    I. Calculate the fragcolor with the shading model you prefer
+//    I.    Calculate the fragcolor with the shading model your coice
     vec3 pre_color = ads( normal );
 
-//    II. Derive the translucency factor by the translucency map
+//    II.   Derive the translucency factor by the translucency map
     vec3 transFac = translucencyFac( normal );
 
-//    III. Use this factor to brighten up (also change) the fragcolor
+//    III.  Use this factor to brighten up (also change) the fragcolor
     pre_color += transFac;
 
-//    Push it back to the pipeline
+//    IV.   Push it back to the pipeline
     fragcolor = vec4( pre_color, 1.0 );
 }
