@@ -156,7 +156,7 @@ namespace scene
 		ambientAmount = p.x;
 		diffuseAmount = p.y;
 		tone_factor = p.z;
-		std::cout << "time: " << hour << ":" << minute << "\t factor : " << tone_factor << std::endl;
+		//std::cout << "time: " << hour << ":" << minute << "\t factor : " << tone_factor << std::endl;
 	}
 		
 	void Sun::render()
