@@ -39,6 +39,7 @@ namespace renderer {
             //! Shader programs
             ShaderProgram* m_shaderProgram_forward;
 			ShaderProgram* m_shaderProgram_sky;
+			ShaderProgram* m_shaderProgram_sun;
             ShaderProgram* m_shaderProgram_compositing;
             //! Framebuffer objects
             FrameBufferObject* m_fbo;
@@ -107,12 +108,15 @@ namespace renderer {
 			//! \brief Calls the render loop
             void renderloop(GLFWwindow *window);
 
+			//! \brief Creates the sunlight
 			void doTheSunlightEffect(void);
-
-			void switchExtractionStrategy();
 
             //! \brief Returns the source code of a shader of a shader program
             std::string getShaderSourceOf(GLSL::GLSLShaderType shaderType, unsigned int &lineCount);
+
+			//! \brief Switches some ... stuff... or sth... you knwo?!
+			void switchExtractionStrategy(bool fast);
+
 	};
 }
 #endif //H_RENDERER

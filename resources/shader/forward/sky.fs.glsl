@@ -10,6 +10,8 @@ in vec2 vsUV;
 
 //*** Output *******************************************************************
 layout (location = 0) out vec4 fragcolor;
+layout (location = 1) out vec4 fragcolor2;
+
 
 //*** Uniforms *****************************************************************
 uniform mat4 model;
@@ -23,8 +25,9 @@ uniform vec3 color;
 //*** Main *********************************************************************
 void main(void)
 {
-    fragcolor = mix(texture(night_tex,vsUV),texture(day_tex,vsUV),blend);
-    fragcolor.rgb * color;
-    fragcolor.a = 1;
-    //fragcolor.rgb = vec3(1,0,0);
+    //fragcolor = mix(texture(night_tex,vsUV),texture(day_tex,vsUV),blend);
+    fragcolor2 = mix(texture(night_tex,vsUV),texture(day_tex,vsUV),blend);
+    //fragcolor.rgb *= color;
+    fragcolor2.rgb *= color;
+    //fragcolor2.rgb = vec3(1,0,0);
 }

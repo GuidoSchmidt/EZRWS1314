@@ -52,7 +52,6 @@ void ShellRenderInterfaceOpenGL::RenderGeometry(Rocket::Core::Vertex* vertices, 
 	glActiveTexture(GL_TEXTURE0);
 	glDisable(GL_DEPTH_TEST);
 
-	glClearColor(0, 0, 0, 1);
 	glEnableClientState(GL_VERTEX_ARRAY);
 	glEnableClientState(GL_COLOR_ARRAY);
 

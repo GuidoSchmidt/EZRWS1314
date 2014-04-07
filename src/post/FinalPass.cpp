@@ -15,11 +15,14 @@ FinalPass::FinalPass(SlimQuad* pQuad, int pWidth, int pHeight)
 	lowerLeftUniform  = glGetUniformLocation(renderPassShader->shaderProgram, "lowerLeft");
 	lowerRightUniform = glGetUniformLocation(renderPassShader->shaderProgram, "lowerRight");
 	minAveMaxTextureUniform = glGetUniformLocation(renderPassShader->shaderProgram, "minAveMaxTexture");
+	factorUniform = glGetUniformLocation(renderPassShader->shaderProgram, "factor");
 	
 	fastExtractionUniform = glGetUniformLocation(renderPassShader->shaderProgram, "fastExtraction");
 	screenSizeUniform = glGetUniformLocation(renderPassShader->shaderProgram, "screenSize");
 
 	minAveMaxUniform = glGetUniformLocation(renderPassShader->shaderProgram, "minAveMaxUni");
+	sunColorUniform = glGetUniformLocation(renderPassShader->shaderProgram, "sunColor");
+	
 	//params
 }
 
@@ -55,7 +58,9 @@ void FinalPass::doExecute() {
 
 			glUniform2i(screenSizeUniform, (GLint)width, (GLint)height);
 			glUniform3f(minAveMaxUniform, param_minAveMax.x, param_minAveMax.y, param_minAveMax.z);
+			glUniform3f(sunColorUniform, param_sunColor.x, param_sunColor.y, param_sunColor.z);
 			glUniform1f(fastExtractionUniform, param_fastExtraction);
+			glUniform1f(factorUniform, param_factor);
 			quad->draw();
 		
 		renderPassShader->disable();

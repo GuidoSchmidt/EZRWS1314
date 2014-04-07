@@ -60,7 +60,7 @@ namespace scene
         if(m_scene_node_list.at(node)->getType() == GEOMETRY)
         {
             Geometry* current = static_cast<Geometry*>(m_scene_node_list.at(node));
-            current->setMaterialTo(m_material_index_map.at(current->getMaterialIndex()));
+			//current->setMaterialTo(m_material_index_map.at(current->getMaterialIndex()));
             render_queue.push_back( current );
         }
         else

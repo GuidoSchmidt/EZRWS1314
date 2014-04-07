@@ -2,7 +2,7 @@ FILE (GLOB_RECURSE project_SRCS *.cpp *.cxx *.cc *.C *.c *.h *.hpp)
 SET (project_MOC_HEADERS app.h)
 SET (project_BIN ${PROJECT_NAME})
 
-#set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs")
+set(CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS} -g -ftest-coverage -fprofile-arcs")
 
 include_directories(
     ${OpenGL3_INCLUDE_PATH}
@@ -29,9 +29,7 @@ TARGET_LINK_LIBRARIES(
     ${OpenGL3_LIBRARIES}
     ${ASSIMP_LIBRARIES}
     ${SOIL_LIBRARIES}
-    ${ROCKET_CORE_LIBRARY}
-    ${ROCKET_CONTROLS_LIBRARY}
-    ${ROCKET_DEBUGGER_LIBRARY}
+    ${ROCKET_LIBRARIES}
 )
 
 IF("${CMAKE_SYSTEM}" MATCHES "Linux")

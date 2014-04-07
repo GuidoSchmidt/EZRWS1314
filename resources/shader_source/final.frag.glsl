@@ -11,11 +11,12 @@ uniform sampler2D minAveMaxTexture;
 uniform float fastExtraction;
 uniform ivec2 screenSize;
 uniform vec3 minAveMaxUni;
+uniform vec3 sunColor;
+uniform float factor; //ToDo Uniform
 
 vec3 minAveMax;
 in vec2 UV;
 
-float factor = 0.0; //ToDo Uniform
 
 float lum(vec3 rgb)
 {
@@ -65,6 +66,13 @@ void main()
 	else if (gl_FragCoord.x < screenSize.x/2 && gl_FragCoord.y < screenSize.y/2 )
 		colorOut = reinhard(texture(lowerLeft,UV*2));
 
+
+
+	if (gl_FragCoord.x < screenSize.x/4 && gl_FragCoord.y < screenSize.y/4 )
+		colorOut = reinhard(vec4(sunColor,1));
+
+
+
 	// if (gl_FragCoord.x < screenSize.x/2 && gl_FragCoord.y > screenSize.y/2 )
 	// 	colorOut = texture(topLeft,UV*2-vec2(0,1));
 	// else if (gl_FragCoord.x > screenSize.x/2 && gl_FragCoord.y > screenSize.y/2 )
@@ -82,10 +90,8 @@ void main()
 	// float bloom_luminance = lum3(bloom);
 	//colorOut = reinhard(texture(topLeft,UV)+texture(lowerRight,UV));
 	//colorOut = texture(topLeft,UV);
-	//colorOut = texture(lowerRight,UV);
 	// colorOut = mix(texture(topLefgdt,UV),texture(lowerRight,UV),bloom_luminance);
 	// colorOut = reinhard(texture(topLeft,UV))+reinhard(texture(lowerRight,UV)); 
-	//colorOut = reinhard(texture(lowerRight,UV));
 	//colorOut = vec4(1,0,0,1);
 
 	//if (gl_FragCoord.x < screenSize.x/4 && gl_FragCoord.y < screenSize.y/4 )
@@ -97,4 +103,8 @@ void main()
 	//if (gl_FragCoord.y > screenSize.y*0.8-1 && gl_FragCoord.y < screenSize.y*0.8+1 )
 //		colorOut = vec4(1,0,0,1);
 	//colorOut = mix(texture(sunlight3,UV),texture(sunlight3,UV),texture(gBuffer1,UV));
+	
+
+	// colorOut = texture(lowerRight,UV);
+	colorOut = reinhard(texture(lowerRight,UV));
 }

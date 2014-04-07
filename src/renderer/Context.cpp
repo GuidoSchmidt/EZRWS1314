@@ -107,7 +107,7 @@ namespace renderer {
 
     glm::ivec2 Context::getSize(void)
     {
-        return m_size;
+        return glm::ivec2(1024, 768);
     }
 
 	float Context::getAspectRatio(void)

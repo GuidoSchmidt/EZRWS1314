@@ -1,6 +1,6 @@
 #version 330
 
-#define nSamples 50
+#define nSamples 32
 
 layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec2 inTexCos;
@@ -17,7 +17,7 @@ out vec2 radialUV1[nSamples/2];
 out vec2 radialUV2[nSamples/2];
 out vec2 UV;
 
-float scale = -3.5;
+float scale = -1.5;
 
 vec2 nTexcoord(vec2 UV, int index, vec3 c) 
 {

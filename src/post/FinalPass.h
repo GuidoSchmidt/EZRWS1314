@@ -17,6 +17,8 @@ public:
 	GLint lowerRightUniform;
 	GLint screenSizeUniform;
 	GLint minAveMaxTextureUniform;
+	GLint sunColorUniform;
+	GLint factorUniform;
 
 	GLint fastExtractionUniform;
 
@@ -25,6 +27,8 @@ public:
 	GLint minAveMaxTexture;
 	float param_fastExtraction;
 	glm::vec3 param_minAveMax;
+	glm::vec3 param_sunColor;
+	float param_factor;
 };
 
 #endif /* FINALPASS_H_ */

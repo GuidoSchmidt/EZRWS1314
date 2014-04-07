@@ -10,7 +10,8 @@ CompositingPass::CompositingPass(SlimQuad* pQuad, int pWidth, int pHeight)
 	height = pHeight;
 	renderPassShader = new SlimShader(RESOURCES_PATH "/shader_source/", "post.vert.glsl", "compositing.frag.glsl");
 
-	colorTextureUniform  = glGetUniformLocation(renderPassShader->shaderProgram, "color");
+	sceneTextureUniform = glGetUniformLocation(renderPassShader->shaderProgram, "scene");
+	skyTextureUniform = glGetUniformLocation(renderPassShader->shaderProgram, "sky");
 	bloomTextureUniform = glGetUniformLocation(renderPassShader->shaderProgram, "bloom");
 	bloomAmountUniform = glGetUniformLocation(renderPassShader->shaderProgram, "bloomAmount");
 	
@@ -31,11 +32,15 @@ void CompositingPass::doExecute() {
 
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[0]);
-			glUniform1i(colorTextureUniform, 0);
-
+			glUniform1i(sceneTextureUniform, 0);
+			
 			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[1]);
+			glUniform1i(sceneTextureUniform, 1);
+
+			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, inputFBOs[1]->texPointer[0]);
-			glUniform1i(bloomTextureUniform, 1);
+			glUniform1i(bloomTextureUniform, 2);
 
 
 

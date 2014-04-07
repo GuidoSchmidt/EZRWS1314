@@ -12,7 +12,8 @@ public:
 	virtual void doExecute();
 	GLint bloomAmountUniform;
 
-	GLint colorTextureUniform;
+	GLint sceneTextureUniform;
+	GLint skyTextureUniform;
 	GLint bloomTextureUniform;
 
 

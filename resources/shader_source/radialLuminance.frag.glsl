@@ -1,6 +1,6 @@
 #version 330
 
-#define nSamples 50
+#define nSamples 32
 
 layout(location = 0) out vec4 colorOut;
  
@@ -19,13 +19,6 @@ vec3 l = vec3(0.2126, 0.7152, 0.0722);
 
 float nSamples_2 = nSamples/2.0;
 float STEP=(1.0/nSamples);
-
-//scale texcoord
-vec2 nTexcoord (vec2 uv, float index, vec3 c) 
-{
-	float scale = sqrt(index) * c.z + 1.0;
-	return (uv - c.xy) * scale + c.xy;
-}
 
 void main() 
 { 
