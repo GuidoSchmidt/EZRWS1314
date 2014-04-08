@@ -373,7 +373,7 @@ void Renderer::renderloop(GLFWwindow *window)
 
 	//! First shader program:
 	//! ### GEOMETRY RENDER ############################################   
-	gBuffer->write();
+	//gBuffer->write();
 	double forwardTime1 = glfwGetTime();
 
 	// Set uniforms
@@ -400,10 +400,10 @@ void Renderer::renderloop(GLFWwindow *window)
 	glDepthMask(GL_FALSE);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	sun->render();
+	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
-	glEnable(GL_DEPTH_TEST);
-
+	
 	// Forward rendering
 	m_shaderProgram_forward->use();
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(mouse_correct_x, mouse_correct_y));
@@ -432,9 +432,12 @@ void Renderer::renderloop(GLFWwindow *window)
 		m_renderqueue[i]->drawTriangles();
 	}
 
-	m_shaderProgram_forward->unuse();
-	gBuffer->unbind();
 
+	m_shaderProgram_forward->unuse();
+	//gBuffer->unbind();
+
+
+	/*
 	double time1 = glfwGetTime();
 	doTheSunlightEffect();
 	double time2 = glfwGetTime() - time1; //ca 1,3*e-5 
@@ -455,6 +458,7 @@ void Renderer::renderloop(GLFWwindow *window)
 	finalPass->param_sunColor = sun->getColor();
 	finalPass->param_factor = sun->tone_factor;
 	finalPass->doExecute();
+	*/
 
 	//! Clear all used shader programs
 	m_framecount++;
