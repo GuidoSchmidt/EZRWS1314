@@ -1,6 +1,8 @@
 //! @file Importer.cpp
 #include "Importer.h"
 
+
+extern bool g_log;
 static std::string SCENE_NAME = "house";
 
 namespace utils {
@@ -44,13 +46,16 @@ namespace utils {
 		aiString root_name = m_aiScene->mRootNode->mName;
 
 		//! Log
-		std::cout << "\n--- IMPORTER -------------------------------------------------------------" << std::endl;
-		std::cout << "Root node name: " << root_name.C_Str() << std::endl;
-		std::cout << "Mesh count: " << m_aiScene->mNumMeshes << std::endl;
-		std::cout << "Material count: " << m_aiScene->mNumMaterials << std::endl;
-		std::cout << "Light count: " << m_aiScene->mNumLights << std::endl;
-		std::cout << "Camera count: " << m_aiScene->mNumCameras << std::endl;
-		std::cout << "\nList of Nodes:" << std::endl;
+		if (g_log)
+		{
+			std::cout << "\n--- IMPORTER -------------------------------------------------------------" << std::endl;
+			std::cout << "Root node name: " << root_name.C_Str() << std::endl;
+			std::cout << "Mesh count: " << m_aiScene->mNumMeshes << std::endl;
+			std::cout << "Material count: " << m_aiScene->mNumMaterials << std::endl;
+			std::cout << "Light count: " << m_aiScene->mNumLights << std::endl;
+			std::cout << "Camera count: " << m_aiScene->mNumCameras << std::endl;
+			std::cout << "\nList of Nodes:" << std::endl;
+		}
 
 
 		//! ------ Cameras ------------------------------------------  
@@ -88,14 +93,17 @@ namespace utils {
 				scene::SceneManager::instance()->addSceneNode(new_camera);
 
 				//! Log
-				std::cout << "\n  * Camera: " << camera_id << std::endl;
-				std::cout << "    Name: " << name.C_Str() << std::endl;
-				std::cout << "    Position (" << position.x << ", " << position.y << ", " << position.z << ")" << std::endl;
-				std::cout << "    Look At (" << lookat.x << ", " << lookat.y << ", " << lookat.z << ")" << std::endl;
-				std::cout << "    Up (" << up.x << ", " << up.y << ", " << up.z << ")" << std::endl;
-				std::cout << "    Aspect:" << aspect << std::endl;
-				std::cout << "    FOV: " << field_of_view << std::endl;
-				std::cout << "    Frustum, Near:" << near_plane << "Far: " << far_plane << std::endl;
+				if (g_log)
+				{
+					std::cout << "\n  * Camera: " << camera_id << std::endl;
+					std::cout << "    Name: " << name.C_Str() << std::endl;
+					std::cout << "    Position (" << position.x << ", " << position.y << ", " << position.z << ")" << std::endl;
+					std::cout << "    Look At (" << lookat.x << ", " << lookat.y << ", " << lookat.z << ")" << std::endl;
+					std::cout << "    Up (" << up.x << ", " << up.y << ", " << up.z << ")" << std::endl;
+					std::cout << "    Aspect:" << aspect << std::endl;
+					std::cout << "    FOV: " << field_of_view << std::endl;
+					std::cout << "    Frustum, Near:" << near_plane << "Far: " << far_plane << std::endl;
+				}
 			}
 		}
 
@@ -140,20 +148,26 @@ namespace utils {
 				scene::SceneManager::instance()->addLight(new_light);
 
 				//! Log
-				std::cout << "\n  * Light: " << light_id << std::endl;
-				std::cout << "    Name: " << name.C_Str() << std::endl;
-				std::cout << "    Type: " << light_type_str[lighttype] << std::endl;
-				std::cout << "    Position  (" << position.x << ", " << position.y << ", " << position.z << ")" << std::endl;
-				std::cout << "    Direction (" << direction.x << ", " << direction.y << ", " << direction.z << ")" << std::endl;
-				std::cout << "    Color:    (" << color.r << ", " << color.g << ", " << color.b << ")" << std::endl;
+				if (g_log)
+				{
+					std::cout << "\n  * Light: " << light_id << std::endl;
+					std::cout << "    Name: " << name.C_Str() << std::endl;
+					std::cout << "    Type: " << light_type_str[lighttype] << std::endl;
+					std::cout << "    Position  (" << position.x << ", " << position.y << ", " << position.z << ")" << std::endl;
+					std::cout << "    Direction (" << direction.x << ", " << direction.y << ", " << direction.z << ")" << std::endl;
+					std::cout << "    Color:    (" << color.r << ", " << color.g << ", " << color.b << ")" << std::endl;
+				}
 			}
 		}
 
 		//! ------ Meshes ------------------------------------------
 		if (m_aiScene->HasMeshes())
 		{
-			std::cout << "Number meshes in Root Node: " << m_aiScene->mRootNode->mNumMeshes << std::endl;
-			std::cout << "Number meshes in m_aiScene: " << m_aiScene->mNumMeshes << std::endl;
+			if (g_log)
+			{
+				std::cout << "Number meshes in Root Node: " << m_aiScene->mRootNode->mNumMeshes << std::endl;
+				std::cout << "Number meshes in m_aiScene: " << m_aiScene->mNumMeshes << std::endl;
+			}
 
 			//! Get root transformtaion matrix
 			aiMatrix4x4 root_transform = m_aiScene->mRootNode->mTransformation;
@@ -234,12 +248,15 @@ namespace utils {
 				scene::SceneManager::instance()->addSceneNode(new_geometry);
 
 				//! Log
-				std::cout << "\n  * Mesh: " << mesh_id << std::endl;
-				std::cout << "    Name: " << name.C_Str() << std::endl;
-				std::cout << "    Vertex count: " << current_mesh->mNumVertices << std::endl;
-				std::cout << "    Faces count: " << current_mesh->mNumFaces << std::endl;
-				std::cout << "    Normals count: " << current_mesh->mNumVertices << std::endl;
-				std::cout << "    Material index: " << material_index << std::endl;
+				if (g_log)
+				{
+					std::cout << "\n  * Mesh: " << mesh_id << std::endl;
+					std::cout << "    Name: " << name.C_Str() << std::endl;
+					std::cout << "    Vertex count: " << current_mesh->mNumVertices << std::endl;
+					std::cout << "    Faces count: " << current_mesh->mNumFaces << std::endl;
+					std::cout << "    Normals count: " << current_mesh->mNumVertices << std::endl;
+					std::cout << "    Material index: " << material_index << std::endl;
+				}
 			}
 		}
 
@@ -253,7 +270,6 @@ namespace utils {
 			{
 				aiMaterial* current_material = m_aiScene->mMaterials[material_id];
 
-
 				aiString name;
 				current_material->Get(AI_MATKEY_NAME, name);
 
@@ -266,49 +282,43 @@ namespace utils {
 				float shininess;
 				current_material->Get(AI_MATKEY_SHININESS, shininess);
 
+				//! Using emsisive as alpha map indicator
+				aiColor3D emmisive;
+				current_material->Get(AI_MATKEY_COLOR_EMISSIVE, emmisive);
+				//std::cout << emmisive.r << emmisive.g << emmisive.b << std::endl;
+
+				//! does not work
+				aiColor3D trans;
+				current_material->Get(AI_MATKEY_COLOR_TRANSPARENT, trans);
+				//std::cout << trans.r << trans.g << trans.b << std::endl;
+
 				//! --- Textures ---
 				//! Diffuse
 				aiString ai_texture_path_diffuse;
 				current_material->GetTexture(aiTextureType_DIFFUSE, 0, &ai_texture_path_diffuse);
 				std::string texture_path_diffuse = ai_texture_path_diffuse.C_Str();
-				unsigned int last_sperator = texture_path_diffuse.find_last_of("/");
-				std::string texture_name_diffuse = "/textures/" + SCENE_NAME;
-				if (last_sperator < texture_path_diffuse.length())
-				{
-					texture_name_diffuse.append(texture_path_diffuse.substr(last_sperator));
-				}
-				else
-					std::cerr << "PLEASE PUT THE TEXTURES INTO THE RESOURCES FOLDER UNDER /resources/textures/<SceneName>" << std::endl;
+				std::string texture_name_diffuse = getRelativeTexturePathCompressed(texture_path_diffuse);
 
 				//! Specular
 				aiString ai_texture_path_specular;
 				current_material->GetTexture(aiTextureType_SPECULAR, 0, &ai_texture_path_specular);
-				std::cout << "SPECULAR PATH" << ai_texture_path_specular.C_Str() << std::endl;
 				std::string texture_path_specular = ai_texture_path_specular.C_Str();
-				last_sperator = texture_path_specular.find_last_of("/");
-				std::string texture_name_specular = "/textures/" + SCENE_NAME;
-				if (last_sperator < texture_path_specular.length())
-				{
-					texture_name_specular.append(texture_path_specular.substr(last_sperator));
-				}
+				std::string texture_name_specular = getRelativeTexturePathCompressed(texture_path_specular);
 
 				//! Normal
 				aiString ai_texture_path_normal;
 				current_material->GetTexture(aiTextureType_NORMALS, 0, &ai_texture_path_normal);
 				std::string texture_path_normal = ai_texture_path_normal.C_Str();
-				last_sperator = texture_path_normal.find_last_of("/");
-				std::string texture_name_normal = "/textures/" + SCENE_NAME;
-				if (last_sperator < texture_path_normal.length())
-				{
-					texture_name_normal.append(texture_path_normal.substr(last_sperator));
-				}
+				std::string texture_name_normal = getRelativeTexturePathCompressed(texture_path_normal);
+
+				GLuint diffuse_texture = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_diffuse, true);
 
 				//! Create new material
 				new_material = new scene::Material(material_id, // Index-number
 												   glm::vec3(diffuse.r, // Diffuse Color
 															 diffuse.g,
 															 diffuse.b),
-															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_diffuse, true),
+															 diffuse_texture,
 												   glm::vec3(specular.r,
 															 specular.g,
 															 specular.b),
@@ -319,19 +329,55 @@ namespace utils {
 				//! Add material to scene manager
 				scene::SceneManager::instance()->addMaterial(new_material);
 
-				/*
 				//! Log
-				std::cout << "\n  * Material: " << material_id << std::endl;
-				std::cout << "      " << name.C_Str() << std::endl;
-				std::cout << "      Diffuse-Color:   (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
-				std::cout << "      Diffuse-Texture: (" << RESOURCES_PATH + texture_name_diffuse << ")" << std::endl;
-				std::cout << "      Specular-Color:  (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
-				std::cout << "      Specular-Texture:(" << RESOURCES_PATH + texture_name_specular << ")" << std::endl;
-				std::cout << "      Shininess:        " << shininess << std::endl;
-				std::cout << "      Normal-Texture:  (" << RESOURCES_PATH + texture_name_normal << ")" << std::endl;
-				*/
+				if (g_log)
+				{
+					std::cout << "\n  * Material: " << material_id << std::endl;
+					std::cout << "      " << name.C_Str() << std::endl;
+					std::cout << "      Diffuse-Color:   (" << diffuse.r << ", " << diffuse.g << ", " << diffuse.b << ")" << std::endl;
+					std::cout << "      Diffuse-Texture: (" << RESOURCES_PATH + texture_name_diffuse << ")" << std::endl;
+					std::cout << "      Specular-Color:  (" << specular.r << ", " << specular.g << ", " << specular.b << ")" << std::endl;
+					std::cout << "      Specular-Texture:(" << RESOURCES_PATH + texture_name_specular << ")" << std::endl;
+					std::cout << "      Shininess:        " << shininess << std::endl;
+					std::cout << "      Normal-Texture:  (" << RESOURCES_PATH + texture_name_normal << ")" << std::endl;
+				}
 			}
 		}
+	}
+
+	std::string Importer::getRelativeTexturePath(std::string filepath)
+	{
+		std::string texture_path = filepath;
+		unsigned int last_sperator = texture_path.find_last_of("/");
+		std::string corrected_texture_path = "/textures/" + SCENE_NAME;
+		if (last_sperator < texture_path.length())
+		{
+			corrected_texture_path.append(texture_path.substr(last_sperator));
+		}
+		return corrected_texture_path;
+	}
+
+	std::string Importer::getRelativeTexturePathCompressed(std::string filepath)
+	{
+		std::string texture_path = filepath;
+		unsigned int last_sperator = texture_path.find_last_of("/");
+
+		std::string corrected_texture_path = "/textures/" + SCENE_NAME + "/dds/";
+		if (last_sperator < texture_path.length())
+		{
+			// Extract texture name
+			std::string texname_plus_extension = texture_path.substr(last_sperator+1);
+			//std::cout << "Texture name + extension: " << texname_plus_extension << std::endl;
+			
+			// Extract file extension
+			unsigned int last_point = texname_plus_extension.find_last_of('.');
+			std::string file_extension = texname_plus_extension.substr(last_point);
+			std::string texname = texname_plus_extension.substr(0, last_point);
+			
+			//std::cout << "Texture Name: " << texname << " with Extension: " << file_extension << std::endl;
+			corrected_texture_path.append(texname + ".dds");
+		}
+		return corrected_texture_path;
 	}
 
 	scene::Geometry* Importer::getGeometryNode(const unsigned int index)

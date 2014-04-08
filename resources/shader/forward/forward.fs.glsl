@@ -49,7 +49,7 @@ mat3 cotangent_frame(vec3 N, vec3 p, vec2 uv)
  
     // construct a scale-invariant frame 
     float invmax = inversesqrt( max( dot(T,T), dot(B,B) ) );
-    return mat3( T * invmax, B * invmax, 1.5 * N );
+    return mat3( T * invmax, B * invmax, 0.5 * N );
 }
 
 // Normal mapping: 
@@ -72,6 +72,8 @@ vec3 phong(in vec3 position, in vec4 light, in vec3 normal, in vec3 diffuse_colo
 
     vec3 ambient_term  = texture(diffuse_map, vsUV).rgb * light_color;
 
+    if(texture(diffuse_map, vsUV).a < 0.2)
+        discard;
     vec3 diffuse_term  = texture(diffuse_map, vsUV).rgb * cosin * light_color;
     diffuse_term = max(diffuse_term, 0.0);
 

@@ -105,6 +105,6 @@ void main()
 	//colorOut = mix(texture(sunlight3,UV),texture(sunlight3,UV),texture(gBuffer1,UV));
 	
 
-	// colorOut = texture(lowerRight,UV);
-	//colorOut = reinhard(texture(lowerRight,UV));
+	//colorOut = texture(lowerRight,UV);
+	colorOut = reinhard(texture(lowerRight,UV));
 }

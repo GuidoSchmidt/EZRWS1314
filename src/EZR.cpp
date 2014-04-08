@@ -120,7 +120,6 @@ int main(void)
     {
         //--- EZR rendering ------------------------------------------------------------------------
 		glEnable(GL_DEPTH_TEST);
-		glClearColor(0.42, 1.0, 0.5, 1.0);
         renderer::Renderer::instance()->renderloop(glfwindow);
 
 

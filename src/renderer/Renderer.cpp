@@ -103,7 +103,7 @@ void Renderer::init(GLFWwindow *window)
 	
 void Renderer::setupGL(void)
 {
-
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
 void Renderer::setupShaderStages()
@@ -195,9 +195,11 @@ void Renderer::setupRenderer(GLFWwindow* window)
 		glm::vec3(30.0f, 10.0f, 10.0f),
 		glm::vec3(0.0f, 10.0f, 10.0f),
 		glm::vec3(0.0f, 1.0f, 0.0f),
-		m_context->getSize());
-	m_scene_camera->SetFarPlane(3000);
+		glm::ivec2(WIDTH, HEIGHT));
+	m_scene_camera->SetFarPlane(3000.0);
 	m_scene_camera->SetNearPlane(0.1);
+	glm::vec3 camera_position = glm::vec3(1.0f);
+	m_scene_camera->SetFOV(scroll);
 
 	//--- KEYBOARD & MOUSE ----------------------------------------------------------------------------------------
 	glfwSetScrollCallback(window, ScrollCallback);
@@ -245,13 +247,7 @@ void Renderer::setupRenderer(GLFWwindow* window)
 
 void Renderer::renderloop(GLFWwindow *window)
 {
-	glm::vec3 camera_position = glm::vec3(1.0f);
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	//scene::SceneManager::instance()->getLight(0)->setupShadowMapping(glm::vec2(512));
-	//! Field of view
-	m_scene_camera->SetFOV(scroll);
 
 	//--- INPUT HANDLING -------------------------------------------------------------------------------------		
 	//! Simple camera movement
@@ -343,10 +339,6 @@ void Renderer::renderloop(GLFWwindow *window)
 		sun->setHour(21);
 		sun->setMinute(0);
 	}
-	if (glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_3))
-	{
-		scroll = 60.0;
-	}
 	if (glfwGetKey(glfwindow, GLFW_KEY_1))
 	{
 		m_shaderProgram_forward->reloadAllShaders();
@@ -373,7 +365,7 @@ void Renderer::renderloop(GLFWwindow *window)
 
 	//! First shader program:
 	//! ### GEOMETRY RENDER ############################################   
-	//gBuffer->write();
+	gBuffer->write();
 	double forwardTime1 = glfwGetTime();
 
 	// Set uniforms
@@ -404,6 +396,8 @@ void Renderer::renderloop(GLFWwindow *window)
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 	
+	//glEnable(GL_BLEND);
+	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// Forward rendering
 	m_shaderProgram_forward->use();
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(mouse_correct_x, mouse_correct_y));
@@ -425,19 +419,16 @@ void Renderer::renderloop(GLFWwindow *window)
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_specular_color, *(m_renderqueue[i]->getMaterial()->getSpecularColor()));
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_shininess, m_renderqueue[i]->getMaterial()->getShininess());
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_light_color, sun->getColor());
-
 		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
 		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, m_renderqueue[i]->getMaterial()->getSpecularTexture(), 1);
 		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 2);
 		m_renderqueue[i]->drawTriangles();
 	}
 
-
 	m_shaderProgram_forward->unuse();
-	//gBuffer->unbind();
+	gBuffer->unbind();
+	glDisable(GL_BLEND);
 
-
-	/*
 	double time1 = glfwGetTime();
 	doTheSunlightEffect();
 	double time2 = glfwGetTime() - time1; //ca 1,3*e-5 
@@ -458,12 +449,12 @@ void Renderer::renderloop(GLFWwindow *window)
 	finalPass->param_sunColor = sun->getColor();
 	finalPass->param_factor = sun->tone_factor;
 	finalPass->doExecute();
-	*/
 
 	//! Clear all used shader programs
 	m_framecount++;
 	glUseProgram(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	
 }
 
 std::string Renderer::getShaderSourceOf(GLSL::GLSLShaderType shaderType, unsigned int &lineCount)

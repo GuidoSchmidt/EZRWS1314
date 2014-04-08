@@ -21,7 +21,7 @@ uniform vec3 color;
 void main(void)
 {
     //fragcolor = texture(tex,vsUV);
-    fragcolor2 = texture(tex,vsUV)*1.067-0.0669;
+    fragcolor2 = texture(tex,vsUV) * 1.067-0.0669;
     //if (fragcolor.a<=0.5)
     //	discard;
     //fragcolor.rgb *= color;
