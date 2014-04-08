@@ -244,11 +244,11 @@ void Renderer::setupRenderer(GLFWwindow* window)
 	
 
 void Renderer::renderloop(GLFWwindow *window)
-{  
+{
 	glm::vec3 camera_position = glm::vec3(1.0f);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
+
 	//scene::SceneManager::instance()->getLight(0)->setupShadowMapping(glm::vec2(512));
 	//! Field of view
 	m_scene_camera->SetFOV(scroll);
@@ -382,8 +382,8 @@ void Renderer::renderloop(GLFWwindow *window)
 	m_shaderProgram_sky->setUniform(sky_uniform_loc_view, view);
 	m_shaderProgram_sky->setUniform(sky_uniform_loc_model, skyScale);
 	m_shaderProgram_sky->setUniform(sky_uniform_loc_projection, projection);
-	m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_day_tex, day_tex, 0);
-	m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_night_tex, night_tex, 1);
+	m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_day_tex, day_tex, 1);
+	m_shaderProgram_sky->setUniformSampler(sky_uniform_loc_night_tex, night_tex, 2);
 	m_shaderProgram_sky->setUniform(sky_uniform_loc_blend, sun->textureBlend);
 	m_shaderProgram_sky->setUniform(sky_uniform_loc_color, sun->getColor()*(sun->ambientAmount));
 	skyNode->drawTriangles();
@@ -393,7 +393,7 @@ void Renderer::renderloop(GLFWwindow *window)
 	m_shaderProgram_sun->setUniform(sun_uniform_loc_view, view);
 	m_shaderProgram_sun->setUniform(sun_uniform_loc_model, sun->getTransform()->getModelMatrix());
 	m_shaderProgram_sun->setUniform(sun_uniform_loc_projection, projection);
-	m_shaderProgram_sun->setUniformSampler(sun_uniform_loc_tex, sun->sunTexture, 0);
+	m_shaderProgram_sun->setUniformSampler(sun_uniform_loc_tex, sun->sunTexture, 1);
 	m_shaderProgram_sun->setUniform(sun_uniform_loc_color, sun->getColor());
 	glDisable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
@@ -425,6 +425,7 @@ void Renderer::renderloop(GLFWwindow *window)
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_specular_color, *(m_renderqueue[i]->getMaterial()->getSpecularColor()));
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_shininess, m_renderqueue[i]->getMaterial()->getShininess());
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_light_color, sun->getColor());
+
 		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
 		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, m_renderqueue[i]->getMaterial()->getSpecularTexture(), 1);
 		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 2);
@@ -458,6 +459,7 @@ void Renderer::renderloop(GLFWwindow *window)
 	//! Clear all used shader programs
 	m_framecount++;
 	glUseProgram(0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 std::string Renderer::getShaderSourceOf(GLSL::GLSLShaderType shaderType, unsigned int &lineCount)

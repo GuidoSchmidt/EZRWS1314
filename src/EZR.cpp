@@ -122,7 +122,7 @@ int main(void)
 		glEnable(GL_DEPTH_TEST);
 		glClearColor(0.42, 1.0, 0.5, 1.0);
         renderer::Renderer::instance()->renderloop(glfwindow);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+
 
         //--- libRocket ----------------------------------------------------------------------------
         // LibRocket input handling
@@ -180,8 +180,8 @@ int main(void)
             contentBox->SetProperty("left", Rocket::Core::Property(m_contentXPos, Rocket::Core::Property::PX));
         }
 
-		//context->Update();
-		//context->Render();
+		context->Update();
+		context->Render();
 
         glfwSwapBuffers(glfwindow);
         glfwPollEvents();

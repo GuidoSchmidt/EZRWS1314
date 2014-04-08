@@ -13,7 +13,6 @@
 #include "../post/SlimFBO.h"
 #include "../post/SlimShader.h"
 #include "../post/SlimQuad.h"
-#include "../post/GlowPass.h"
 #include "../post/Sunlight/SeparatedBlurPass.h"
 #include "../post/Sunlight/RadialGlowMaskPass.h"
 #include "../post/Sunlight/RadialLuminancePass.h"
