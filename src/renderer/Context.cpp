@@ -5,11 +5,21 @@
 */
 #include "Context.h"
 
+//! \todo replace
+#include "../ui/shell/x11/InputX11.h"
+#include "../ui/shell/ShellFileInterface.h"
+#include <sys/types.h>
+//#include <sys/time.h>
+#include <time.h>
+#include <Rocket/Core/Core.h>
+
+//static timeval start_time;
+static ShellFileInterface* file_interface = NULL;
+
 namespace renderer {
     Context::Context(const glm::ivec2& size)
     {
         m_size = size;
-        createWindow("TEST");
     }
 
     Context::~Context()
@@ -30,6 +40,9 @@ namespace renderer {
             std::cerr << "ERROR (GLFW): Initialization failed!\n";
         }
 
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		m_window = glfwCreateWindow(m_size.x, m_size.y, title.c_str(), 0, 0);
         if(!m_window)
         {
@@ -63,6 +76,21 @@ namespace renderer {
         std::cout << glinfo_openglVersion_ptr << std::endl;;
         std::cout << "GLSL Version:      ";
         std::cout << glinfo_glslVersion_ptr  << std::endl;
+
+        // Set up the GL state.
+        glClearColor(0, 0, 0, 1);
+        glEnableClientState(GL_VERTEX_ARRAY);
+        glEnableClientState(GL_COLOR_ARRAY);
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        glOrtho(0, 1024, 768, 0, -1, 1);
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
     }
 
 
@@ -79,7 +107,7 @@ namespace renderer {
 
     glm::ivec2 Context::getSize(void)
     {
-        return m_size;
+        return glm::ivec2(1024, 768);
     }
 
 	float Context::getAspectRatio(void)
@@ -90,5 +118,19 @@ namespace renderer {
     GLFWwindow* Context::getWindow(void)
     {
         return m_window;
+    }
+
+    void Context::SetLoop(IdleFunction loop)
+    {
+        while(!glfwWindowShouldClose(m_window))
+        {
+            loop();
+            glfwPollEvents();
+        }
+    }
+
+    float Context::GetElapsedTime()
+    {
+        return static_cast<float>(glfwGetTime());
     }
 }

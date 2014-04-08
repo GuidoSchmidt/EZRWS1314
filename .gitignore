@@ -1,3 +1,4 @@
+build-vs/
 *.blend1
 *.blend2
 CMakeLists.txt.user

@@ -42,6 +42,10 @@ void SlimQuad::draw()
 	glEnableVertexAttribArray(1);
 
 	glDrawArrays(GL_QUADS,0,4);
+
+	glDisableVertexAttribArray(0);
+	glDisableVertexAttribArray(1);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
 SlimQuad::~SlimQuad() {

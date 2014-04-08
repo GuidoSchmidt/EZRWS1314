@@ -1,5 +1,9 @@
 # Blender MTL File: 'house5.blend'
+<<<<<<< HEAD
+# Material Count: 11
+=======
 # Material Count: 7
+>>>>>>> dd6b68f84b22fe82a6f944741f4465b657069460
 
 newmtl Material
 Ns 96.078431
@@ -38,7 +42,11 @@ Kd 0.8 0.8 0.8
 Ks 0.8 0.8 0.8
 d 1
 illum 2
+<<<<<<< HEAD
+map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\house\house.jpg
+=======
 map_Kd //house.jpg
+>>>>>>> dd6b68f84b22fe82a6f944741f4465b657069460
 
 newmtl None_house.tga
 Ns 0
@@ -48,6 +56,52 @@ Ks 0.8 0.8 0.8
 d 1
 illum 2
 map_Kd //house.jpg
+
+newmtl None_stuff.tga
+Ns 0
+Ka 0.000000 0.000000 0.000000
+Kd 0.8 0.8 0.8
+Ks 0.8 0.8 0.8
+d 1
+illum 2
+map_Kd C:\Users\Andi\Dropbox\EZR-Documents\Test Model Krams Gedöns\house5\house 5\tex\stuff.tga
+
+newmtl _46b809b_dds
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Andi\Dropbox\EZR-Documents\Test Model Krams Gedöns\house5\house 5\tex\stuff.tga
+
+newmtl _c3a5ba5_dds
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl _cb4cd6d_dds
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+
+newmtl _e6c013e_dds
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
 
 newmtl house
 Ns 96.078431
@@ -67,4 +121,18 @@ Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
+<<<<<<< HEAD
+map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\house\roof.jpg
+
+newmtl wagen
+Ns 96.078431
+Ka 0.000000 0.000000 0.000000
+Kd 0.640000 0.640000 0.640000
+Ks 0.500000 0.500000 0.500000
+Ni 1.000000
+d 1.000000
+illum 2
+map_Kd C:\Users\Andi\Documents\GitHub\EZRWS1314\resources\textures\wagen.jpg
+=======
 map_Kd //roof.jpg
+>>>>>>> dd6b68f84b22fe82a6f944741f4465b657069460

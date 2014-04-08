@@ -36,29 +36,25 @@ SeparatedBlurPass::~SeparatedBlurPass() {
 void SeparatedBlurPass::doExecute() {
 
 	outputFBO->write();
-		renderPassShader->enable();
+	renderPassShader->enable();
 
-			glActiveTexture(GL_TEXTURE0);
-			if (param_glowHorizontal == 1.0)
-				glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[1]);
-			else
-				glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[0]);
-			glUniform1i(colorUniform, 0);
+	glActiveTexture(GL_TEXTURE1);
+	if (param_glowHorizontal == 1.0)
+		glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[1]);
+	else
+		glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[0]);
+	glUniform1i(colorUniform, 1);
 
-			/*glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, inputFBOs[0]->texPointer[1]);
-			glUniform1i(maskUniform, 1);*/
+	glUniform1f(glowBrightnessUniform, param_glowBrightness);
+	glUniform1f(glowRangeUniform, param_glowRange);
+	glUniform1f(glowThreshholdUniform, param_glowThreshhold);
+	glUniform1f(horizontalUniform, param_glowHorizontal);
+	glUniform2i(screenSizeUniform, (GLint)width, (GLint)height);
 
-			glUniform1f(glowBrightnessUniform, param_glowBrightness);
-			glUniform1f(glowRangeUniform, param_glowRange);
-			glUniform1f(glowThreshholdUniform, param_glowThreshhold);
-			glUniform1f(horizontalUniform, param_glowHorizontal);
-			glUniform2i(screenSizeUniform, (GLint)width, (GLint)height);
+	glViewport(0, 0, width, height);
+	quad->draw();
 
-			glViewport(0, 0, width, height);
-			quad->draw();
-
-		renderPassShader->disable();
+	renderPassShader->disable();
 	outputFBO->unbind();
 	glViewport(0, 0, width*4, height*4);
 }

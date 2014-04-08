@@ -52,6 +52,7 @@ namespace utils {
 		std::cout << "Camera count: " << m_aiScene->mNumCameras << std::endl;
 		std::cout << "\nList of Nodes:" << std::endl;
 
+
 		//! ------ Cameras ------------------------------------------  
         if (m_aiScene->HasCameras())
 		{
@@ -245,26 +246,25 @@ namespace utils {
 		//! ------ Materials ------------------------------------------
 		if (m_aiScene->HasMaterials())
 		{
-            scene::Material* new_material;
+			scene::Material* new_material;
 
-            //! Read materials and textures and organize them: HashMap, Smart-Pointers
-            for(unsigned int material_id = 0; material_id < m_aiScene->mNumMaterials; material_id++)
-            {
-                aiMaterial* current_material = m_aiScene->mMaterials[material_id];
+			//! Read materials and textures and organize them: HashMap, Smart-Pointers
+			for (unsigned int material_id = 0; material_id < m_aiScene->mNumMaterials; material_id++)
+			{
+				aiMaterial* current_material = m_aiScene->mMaterials[material_id];
 
 
-                aiString name;
-                current_material->Get(AI_MATKEY_NAME, name);
+				aiString name;
+				current_material->Get(AI_MATKEY_NAME, name);
 
-                aiColor3D diffuse;
-                current_material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
+				aiColor3D diffuse;
+				current_material->Get(AI_MATKEY_COLOR_DIFFUSE, diffuse);
 
-                aiColor3D specular;
-                current_material->Get(AI_MATKEY_COLOR_SPECULAR, specular);
+				aiColor3D specular;
+				current_material->Get(AI_MATKEY_COLOR_SPECULAR, specular);
 
-                float shininess;
-                current_material->Get(AI_MATKEY_SHININESS, shininess);
-
+				float shininess;
+				current_material->Get(AI_MATKEY_SHININESS, shininess);
 
                 //! --- Textures ---
                 //! Diffuse
@@ -316,8 +316,8 @@ namespace utils {
 															 shininess,
 															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_normal, true));
 
-                //! Add material to scene manager
-                scene::SceneManager::instance()->addMaterial(new_material);
+				//! Add material to scene manager
+				scene::SceneManager::instance()->addMaterial(new_material);
 
                 //! Log
                 std::cout << "\n  * Material: " << material_id << std::endl;

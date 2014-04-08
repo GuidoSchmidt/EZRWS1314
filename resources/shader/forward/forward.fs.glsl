@@ -64,35 +64,39 @@ vec3 perturb_normal( vec3 N, vec3 V, vec2 texcoord )
     return normalize(TBN * map);
 }
 
+// Phong shading
 vec3 phong(in vec3 position, in vec4 light, in vec3 normal, in vec3 diffuse_color, in vec3 specular_color, in float shininess)
 {
-	vec3 light_vector = normalize(position - light.xyz);
-	float cosin = max( dot( normalize(normal), light_vector), 0.0);
+    vec3 light_vector = normalize(position - light.xyz);
+    float cosin = max( dot( normalize(normal), light_vector), 0.0);
 
-	vec3 ambient_term  = texture(diffuse_map, vsUV).rgb * light_color;
+    vec3 ambient_term  = texture(diffuse_map, vsUV).rgb * light_color;
 
-	vec3 diffuse_term  = texture(diffuse_map, vsUV).rgb * cosin * light_color;
-   	diffuse_term = max(diffuse_term, 0.0);
+    vec3 diffuse_term  = texture(diffuse_map, vsUV).rgb * cosin * light_color;
+    diffuse_term = max(diffuse_term, 0.0);
 
-	vec3 specular_term = texture(specular_map, vsUV).rgb * pow(cosin, shininess);
-   	specular_term = max(specular_term, 0.0); 
+    vec3 viewVector = position;
+    float cosinSpec = max( dot( normalize(normal), normalize(viewVector)), 0.0);
+    vec3 specular_term = texture(specular_map, vsUV).rgb * pow(cosinSpec, shininess);
+    specular_term = max(specular_term, 0.0); 
 
-	vec3 shaded = ambient_amount * ambient_term + diffuse_amount * diffuse_term;// + specular_term;
-	return max(shaded, 0.0);
+    vec3 shaded = ambient_amount * ambient_term + diffuse_amount * diffuse_term;// + specular_term;
+    return max(shaded, 0.0);
 }
 
 //*** Main *********************************************************************
 void main(void)
 {
-	vec3 vsN = vsNormal;
-  	vec3 vsV = normalize(vsPosition);
-  	vec3 vsPN = perturb_normal(vsN, vsV, vsUV);
-	vec3 normal = vsPN;
-	
-	vec4 lightpos = vec4( light_position , 1.0);
-	//lightpos.y += mouse.y * 100.0;
-	lightpos = view * lightpos;
-	vec3 shaded = phong(vsPosition, lightpos, normal, diffuse_color, specular_color, shininess);
+    vec3 vsN = vsNormal;
+    vec3 vsV = normalize(vsPosition);
+    vec3 vsPN = perturb_normal(vsN, vsV, vsUV);
+    vec3 normal = vsPN;
+    
+    vec4 lightpos = vec4( light_position , 1.0);
+    //lightpos.y += mouse.y * 100.0;
+    lightpos = view * lightpos;
+    //vec3 shaded = texture(diffuse_map, vsUV).rgb; // <-- Use for testing
+    vec3 shaded = phong(vsPosition, lightpos, normal, diffuse_color, specular_color, shininess);
 
     // fragcolor.rgb  = vsN;
     // fragcolor.a = 0;

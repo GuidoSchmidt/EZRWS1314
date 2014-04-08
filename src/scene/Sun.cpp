@@ -155,7 +155,8 @@ namespace scene
 		glm::vec3 p = calcAmounts();
 		ambientAmount = p.x;
 		diffuseAmount = p.y;
-		//tone_factor = p.z;
+
+		tone_factor = p.z;
 		//std::cout << "time: " << hour << ":" << minute << "\t factor : " << tone_factor << std::endl;
 	}
 

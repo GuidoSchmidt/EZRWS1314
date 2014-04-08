@@ -12,13 +12,15 @@
 #include <vector>
 #include <fstream>
 #include <iostream>
+#include <algorithm>
+#include <cctype>
 
 namespace renderer {
 	//! Shader program helper function
 	namespace GLSL{
 		enum GLSLShaderType{
 			VERTEX = 0,
-			FRAGMENT = 1,
+            FRAGMENT = 1,
 			GEOMETRY = 2,
 			TESS_CONTROL = 3,
 			TESS_EVALUATION = 4
@@ -39,8 +41,9 @@ namespace renderer {
 	{
 		private:
 			GLint m_shaderProgram_ID;
-			std::vector<GLint> m_shader_IDs;
-			std::vector<std::string> m_shader_sources;
+            std::map<GLSL::GLSLShaderType, GLint> m_shader_IDs;
+            //std::vector<std::string> m_shader_sources;
+            std::map<GLSL::GLSLShaderType, std::string> m_shader_sources;
 			bool m_islinked;
 			bool m_activeUniformsWritten;
 			bool m_activeAttributesWritten;
@@ -82,7 +85,7 @@ namespace renderer {
             void reloadAllShaders(void);
 
 			//! \brief Reloads a specific shader
-            void reloadShader(int i);
+            void ReloadShader(GLSL::GLSLShaderType shaderType);
 
 			//! \brief Returns the program log
             std::string log(void);
@@ -134,6 +137,9 @@ namespace renderer {
 
 			//! \brief Prints all active attributes
             void printActiveAttributes(void);
+
+            //! \brief Returns the code of a shader
+			std::string getShaderCodeOf(GLSL::GLSLShaderType shaderType, unsigned int &lineCount);
 	};
 }
 #endif //H_SHADERPROGRAM

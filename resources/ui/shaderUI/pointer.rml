@@ -1,0 +1,17 @@
+<rml>
+	<head>
+		<style>
+			body
+			{
+				width: 12px;
+				height: 19px;
+				
+				<!-- Add a simple image decorator onto the body element. -->
+				cursor-decorator: image;
+				cursor-image: ./img/pointer.tga 0px 0px 366px 389px;
+			}
+		</style>
+	</head>
+	<body>
+	</body>
+</rml>

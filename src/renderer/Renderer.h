@@ -13,7 +13,6 @@
 #include "../post/SlimFBO.h"
 #include "../post/SlimShader.h"
 #include "../post/SlimQuad.h"
-#include "../post/GlowPass.h"
 #include "../post/Sunlight/SeparatedBlurPass.h"
 #include "../post/Sunlight/RadialGlowMaskPass.h"
 #include "../post/Sunlight/RadialLuminancePass.h"
@@ -78,37 +77,45 @@ namespace renderer {
 			scene::Geometry* skyNode;
 
 
-			//Rocket::Core::Context* context;
-			//Shell* shell;
-
 			//! \brief Constructor (singleton)
 			Renderer(void);
 
 			//! \brief Destructor (singleton)
 			~Renderer(void);
 
-			//! \brief Initializes the renderer
-			void init(void);
+
 
 			//! \brief Sets needed OpenGL states
 			void setupGL(void);
 
-                        //! \brief Sets the needes shader stages and fbos
-                        void setupShaderStages(void);
+            //! \brief Sets the needes shader stages and fbos
+			void setupShaderStages(void);
 				
 		public:
 			//! Returns the singleton instance
-			static Renderer* instance(Context& context);
+            static Renderer* instance();
+
+			//! \brief Initializes the renderer
+			void init(GLFWwindow* window);
 
 			//! \brief Sets the context to render to
 			void setRenderContext(Context& context);
 
-			//! \brief Calls the render loop
-			void renderloop(void);
+			//! \brief Setup the render loop
+			void Renderer::setupRenderer(GLFWwindow* window);
 
+			//! \brief Calls the render loop
+            void renderloop(GLFWwindow *window);
+
+			//! \brief Creates the sunlight
 			void doTheSunlightEffect(void);
 
+            //! \brief Returns the source code of a shader of a shader program
+            std::string getShaderSourceOf(GLSL::GLSLShaderType shaderType, unsigned int &lineCount);
+
+			//! \brief Switches some ... stuff... or sth... you knwo?!
 			void switchExtractionStrategy(bool fast);
+
 	};
 }
 #endif //H_RENDERER

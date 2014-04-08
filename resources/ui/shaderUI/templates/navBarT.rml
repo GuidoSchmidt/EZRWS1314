@@ -1,0 +1,6 @@
+<template name="window">
+<head>
+</head>
+<body class="window">
+</body>
+</template>

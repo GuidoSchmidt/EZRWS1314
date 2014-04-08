@@ -1,0 +1,67 @@
+body
+{
+    font-family: Roboto;
+    font-weight: Bold;
+    font-style: normal;
+    font-size: 13;
+    color: white;
+    width: 1024px;
+    height: 35px;
+}
+
+body.window
+{
+    width       : 1024px;
+    height      : 32px;
+    background  : rgba(0, 0, 0, 128);
+    line-height : 30px;
+    opacity: 0.1;
+}
+
+div {
+    color: white;
+    text-align: center;
+    padding: 1px;
+}
+
+/* Colors are in LAB: 58, 33, -88 */
+div#vs{
+    position: absolute;
+    width: 256px;
+}
+
+div#vs:hover {
+    background: rgb(255, 0, 112);
+}
+
+div#ts{
+    position: absolute;
+    width: 256px;
+    left: 256px;
+}
+
+div#ts:hover {
+    background: rgb(213, 109, 0);
+}
+
+div#gs {
+    position: absolute;
+    width: 256px;
+    left: 512px;
+}
+
+div#gs:hover {
+    background: rgb(0, 171, 99);
+    width: 256px;
+}
+
+div#fs {
+    position: absolute;
+    width: 256px;
+    left: 768px;
+}
+
+div#fs:hover {
+    background: rgb(99, 123, 255);
+    width: 256px;
+}

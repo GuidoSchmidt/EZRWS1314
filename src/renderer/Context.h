@@ -13,9 +13,9 @@ namespace renderer {
 	class Context
 	{
 		private:
-			GLFWwindow* m_window;
-			glm::ivec2 m_size;
-			std::string m_title;
+            GLFWwindow* m_window;
+            glm::ivec2 m_size;
+            std::string m_title;
 
 		public:
 			//! \brief Constructor
@@ -40,7 +40,14 @@ namespace renderer {
 			GLFWwindow* getWindow(void);
 
 			//! \brief Creates a window
-			void createWindow(std::string title);
+            void createWindow(std::string title);
+
+            //! \brief Sets the render loop
+            typedef void (*IdleFunction)();
+            void SetLoop(IdleFunction loop);
+
+            //! \brief Returns the number of seconds that have passed since shell startup.
+            float GetElapsedTime();
 	};
 }
 
