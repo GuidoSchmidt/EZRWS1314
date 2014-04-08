@@ -316,6 +316,9 @@ namespace utils {
 															 shininess,
 															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_normal, true));
 
+				//! Add material to scene manager
+				scene::SceneManager::instance()->addMaterial(new_material);
+
                 //! Log
                 std::cout << "\n  * Material: " << material_id << std::endl;
                 std::cout << "      " << name.C_Str() << std::endl;

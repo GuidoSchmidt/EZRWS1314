@@ -79,7 +79,7 @@ int main(void)
     }
 
     // Load and show the demo document.
-    //Rocket::Debugger::Initialise(context);
+    Rocket::Debugger::Initialise(context);
     Input::SetContext(context);
 
     Shell::LoadFonts(RESOURCES_PATH "/ui/fonts/");
@@ -119,8 +119,9 @@ int main(void)
     while (!glfwWindowShouldClose(glfwindow))
     {
         //--- EZR rendering ------------------------------------------------------------------------
-        glEnable(GL_DEPTH_TEST);
-        //renderer::Renderer::instance()->renderloop(glfwindow);
+		glEnable(GL_DEPTH_TEST);
+		glClearColor(0.42, 1.0, 0.5, 1.0);
+        renderer::Renderer::instance()->renderloop(glfwindow);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 
         //--- libRocket ----------------------------------------------------------------------------
@@ -179,8 +180,8 @@ int main(void)
             contentBox->SetProperty("left", Rocket::Core::Property(m_contentXPos, Rocket::Core::Property::PX));
         }
 
-        context->Update();
-        context->Render();
+		//context->Update();
+		//context->Render();
 
         glfwSwapBuffers(glfwindow);
         glfwPollEvents();

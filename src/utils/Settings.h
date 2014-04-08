@@ -1,0 +1,1 @@
+float camera_speed = 0.5;

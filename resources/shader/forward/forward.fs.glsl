@@ -64,6 +64,7 @@ vec3 perturb_normal( vec3 N, vec3 V, vec2 texcoord )
     return normalize(TBN * map);
 }
 
+// Phong shading
 vec3 phong(in vec3 position, in vec4 light, in vec3 normal, in vec3 diffuse_color, in vec3 specular_color, in float shininess)
 {
     vec3 light_vector = normalize(position - light.xyz);
@@ -92,6 +93,7 @@ void main(void)
     vec4 lightpos = vec4( light_position , 1.0);
     //lightpos.y += mouse.y * 100.0;
     lightpos = view * lightpos;
+    //vec3 shaded = texture(diffuse_map, vsUV).rgb; // <-- Use for testing
     vec3 shaded = phong(vsPosition, lightpos, normal, diffuse_color, specular_color, shininess);
 
     // fragcolor.rgb  = vsN;

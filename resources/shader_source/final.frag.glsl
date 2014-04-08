@@ -68,8 +68,8 @@ void main()
 
 
 
-	if (gl_FragCoord.x < screenSize.x/4 && gl_FragCoord.y < screenSize.y/4 )
-		colorOut = reinhard(vec4(sunColor,1));
+	//if (gl_FragCoord.x < screenSize.x/4 && gl_FragCoord.y < screenSize.y/4 )
+	//	colorOut = reinhard(vec4(sunColor,1));
 
 
 
@@ -106,5 +106,5 @@ void main()
 	
 
 	// colorOut = texture(lowerRight,UV);
-	colorOut = reinhard(texture(lowerRight,UV));
+	//colorOut = reinhard(texture(lowerRight,UV));
 }

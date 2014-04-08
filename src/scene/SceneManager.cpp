@@ -60,7 +60,7 @@ namespace scene
         if(m_scene_node_list.at(node)->getType() == GEOMETRY)
         {
             Geometry* current = static_cast<Geometry*>(m_scene_node_list.at(node));
-			//current->setMaterialTo(m_material_index_map.at(current->getMaterialIndex()));
+			current->setMaterialTo(m_material_index_map.at(current->getMaterialIndex()));
             render_queue.push_back( current );
         }
         else
@@ -89,8 +89,11 @@ namespace scene
     GLuint SceneManager::loadTexture(std::string filename, bool repeat)
     {
         GLuint tex_2d;
-            
-        glActiveTexture(GL_TEXTURE0);	
+		
+		FREE_IMAGE_FORMAT format = FreeImage_GetFileType(filename.c_str(), 0); //should be FIF_HDR or FIF_EXR
+		if (format == -1)
+			return 0;
+
         glGenTextures( 1, &tex_2d );
         glBindTexture( GL_TEXTURE_2D, tex_2d );
 
@@ -112,7 +115,6 @@ namespace scene
             glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP);
         }
 		glBindTexture(GL_TEXTURE_2D, 0);
-		glActiveTexture(0);
 
         return tex_2d;
     }
@@ -122,7 +124,6 @@ namespace scene
         GLuint cube_map;
         glGenTextures(1, &cube_map);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cube_map);
-        glActiveTexture(GL_TEXTURE0);
         
         std::string sides[6] = { "_pos_x", "_neg_x", "_pos_y", "_neg_y", "_pos_z", "_neg_z"};
         for (int i = 0; i < 6; i++)
@@ -160,7 +161,6 @@ namespace scene
   GLuint SceneManager::loadHDRTexture(std::string filename) {
         GLuint tex_2d;
 
-        glActiveTexture(GL_TEXTURE0);
         glGenTextures(1, &tex_2d);
         glBindTexture(GL_TEXTURE_2D, tex_2d);
         
