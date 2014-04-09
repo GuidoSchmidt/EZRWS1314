@@ -15,6 +15,7 @@
 #include <SOIL/SOIL.h>
 #include <FreeImage/FreeImage.h>
 
+
 namespace scene
 {
   class SceneManager
