@@ -169,14 +169,23 @@ namespace scene
 
 	glm::vec3 Sun::calcAmounts() {
 		//vec2 (ambient,diffuse,tonefactor)
-		if (hour <= 5 || hour >= 18)
+		if (hour <= 5 || hour > 17)
 		{
-			return glm::vec3(1, 0.1, 3);
+			return glm::vec3(1.0, 0.01, 4);
 		}
-		if (hour >= 6 || hour <= 17)
+		if (hour == 6)
 		{
-			float blend = -cos((cycleTime * 2 - 0.5) * 2 * M_PI) / 2 + 0.5;
-			return glm::vec3(1, blend, 3 - 3 * blend);
+			float blend = blendSmooth1((float)minute / 60.0f);
+			return glm::vec3(1.0, blend, 4.0 - 2.0 * blend);
+		}
+		if (hour > 6 && hour < 17)
+		{
+			return glm::vec3(1.0, 1.0, 2);
+		}
+		if (hour == 17)
+		{
+			float blend = 1 - blendSmooth1((float)minute / 60.0f);
+			return glm::vec3(1.0, blend, 4.0 - 2.0 * blend);
 		}
 	}
 

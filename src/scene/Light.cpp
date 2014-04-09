@@ -43,7 +43,7 @@ namespace scene
     glm::mat4 Light::getProjectionMatrix(void)
     {
 		float length = glm::length(m_transform.getPosition());
-		m_projection = glm::perspective(4.0f, 1.0f, length*0.9f, length*1.3f);
+		m_projection = glm::perspective(4.0f, 1.0f, length*0.95f, length*1.15f);
 		//m_projection = glm::ortho(-30,30,-30,30);
         return m_projection;
     }
