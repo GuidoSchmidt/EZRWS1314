@@ -16,9 +16,7 @@ float  mouse_correct_y = 0.0f;;
 glm::vec3 camera_position = glm::vec3(1.0f);
 double scroll = 32.0;
 extern GLFWwindow *glfwindow;
-int WIDTH = 1280;
-int HEIGHT = 720;
-
+extern glm::ivec2 size;
 
 //--- UNIFORM LOCATION NAMES ---------------------------------------------------------------
 GLuint night_tex;
@@ -81,11 +79,6 @@ Renderer* Renderer::instance()
 	return &m_instance;
 }
 
-void Renderer::setRenderContext(Context& context)
-{
-	m_context = &context;
-}
-
 void Renderer::init(GLFWwindow *window)
 {
 	std::cout << "Renderer initialized successfully" << std::endl;
@@ -93,7 +86,7 @@ void Renderer::init(GLFWwindow *window)
 	setupGL();
 	setupShaderStages();
 
-	utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/obj/sky.obj", "sky");
+	utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/sky.dae", "sky");
 	skyNode = utils::Importer::instance()->getGeometryNode(0);
 	utils::Importer::instance()->deleteGeometryNode(0);
 	scene::SceneManager::instance()->deleteGeometryNode(0);
@@ -106,50 +99,51 @@ void Renderer::init(GLFWwindow *window)
 void Renderer::setupGL(void)
 {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(0.96, 1.0);
 }
 
 void Renderer::setupShaderStages()
 {
 	//--- FRAMEBUFFER OBJECTS ------------------------------------------------------------------------------------
-	gBuffer = new SlimFBO(WIDTH, HEIGHT, 2, true, GL_LINEAR);
-	sunlightFBO0 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
-	sunlightFBO1 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
-	sunlightFBO2 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
-	sunlightFBO3 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
-	sunlightFBO4 = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
-	compositingFBO = new SlimFBO(WIDTH, HEIGHT, 1, false, GL_LINEAR);
-	downsampledExtractionFBO = new SlimFBO(WIDTH / 4, HEIGHT / 4, 1, false, GL_LINEAR);
+	gBuffer = new SlimFBO(size.x, size.y, 2, true, GL_LINEAR);
+	sunlightFBO0 = new SlimFBO(size.x / 4, size.y / 4, 1, false, GL_LINEAR);
+	sunlightFBO1 = new SlimFBO(size.x / 4, size.y / 4, 1, false, GL_LINEAR);
+	sunlightFBO2 = new SlimFBO(size.x / 4, size.y / 4, 1, false, GL_LINEAR);
+	sunlightFBO3 = new SlimFBO(size.x / 4, size.y / 4, 1, false, GL_LINEAR);
+	sunlightFBO4 = new SlimFBO(size.x / 4, size.y / 4, 1, false, GL_LINEAR);
+	compositingFBO = new SlimFBO(size.x, size.y, 1, false, GL_LINEAR);
+	downsampledExtractionFBO = new SlimFBO(size.x / 4, size.y / 4, 1, false, GL_LINEAR);
 
 	fsq = new SlimQuad();
 
 	//--- RENDER PASSES ------------------------------------------------------------------------------------------
-	blurPass = new SeparatedBlurPass(fsq, WIDTH / 4, HEIGHT / 4);
+	blurPass = new SeparatedBlurPass(fsq, size.x / 4, size.y / 4);
 	blurPass->inputFBOs.push_back(gBuffer);
 
-	maskPass = new RadialGlowMaskPass(fsq, WIDTH / 4, HEIGHT / 4);
+	maskPass = new RadialGlowMaskPass(fsq, size.x / 4, size.y / 4);
 	maskPass->outputFBO = sunlightFBO3;
 	maskPass->inputFBOs.push_back(sunlightFBO2);
 
-	luminancePass = new RadialLuminancePass(fsq, WIDTH / 4, HEIGHT / 4);
+	luminancePass = new RadialLuminancePass(fsq, size.x / 4, size.y / 4);
 	luminancePass->outputFBO = sunlightFBO4;
 	luminancePass->inputFBOs.push_back(sunlightFBO3);
 
-	compositingPass = new CompositingPass(fsq, WIDTH, HEIGHT);
+	compositingPass = new CompositingPass(fsq, size.x, size.y);
 	compositingPass->outputFBO = compositingFBO;
 	compositingPass->inputFBOs.push_back(gBuffer);
 	compositingPass->inputFBOs.push_back(sunlightFBO4);
 
-
-	slowExtractionPass = new CPUExtractionPass(fsq, WIDTH, HEIGHT);
+	slowExtractionPass = new CPUExtractionPass(fsq, size.x, size.y);
 	slowExtractionPass->inputFBOs.push_back(compositingFBO);
 	slowExtractionPass->inputFBOs.push_back(downsampledExtractionFBO);
 
-	fastExtractionPass = new MipMapExtractionPass(fsq, WIDTH, HEIGHT);
+	fastExtractionPass = new MipMapExtractionPass(fsq, size.x, size.y);
 	fastExtractionPass->inputFBOs.push_back(compositingFBO);
 
 	extractionPass = fastExtractionPass;
 
-	finalPass = new FinalPass(fsq, WIDTH, HEIGHT);
+	finalPass = new FinalPass(fsq, size.x, size.y);
 	finalPass->outputFBO = lightingFBO;
 	finalPass->inputFBOs.push_back(gBuffer);
 	finalPass->inputFBOs.push_back(sunlightFBO3);
@@ -187,27 +181,22 @@ void KeyboardCallback(GLFWwindow* window, int key, int scancode, int action, int
 
 void Renderer::setupRenderer(GLFWwindow* window)
 {
-	//glm::vec4 wsSunPos = glm::vec4(0, 10, 2000, 1);
-	night_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sky/night.jpg", true);
-	day_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sky/day.jpg", true);
-	//GLuint ldr_diffuse_cube = scene::SceneManager::instance()->loadCubeMap(RESOURCES_PATH "/textures/ldr-cross/beach_small_diffuse_cross", false);
-	//GLuint ldr_reflective_cube = scene::SceneManager::instance()->loadCubeMap(RESOURCES_PATH "/textures/ldr-cross/beach_small_reflective_cross", false);
+	glm::vec4 wsSunPos = glm::vec4(0, 10, 2000, 1);
+	night_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sky/night.dds", true);
+	day_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sky/day.dds", true);
 
 	//--- CAMERA --------------------------------------------------------------------------------------------------
-	m_scene_camera = new scene::Camera(0, "scene_camera",
-		glm::vec3(30.0f, 10.0f, 10.0f),
-		glm::vec3(0.0f, 10.0f, 10.0f),
-		glm::vec3(0.0f, 1.0f, 0.0f),
-		glm::ivec2(WIDTH, HEIGHT));
-	m_scene_camera->SetFarPlane(3000.0);
-	m_scene_camera->SetNearPlane(0.1);
+	m_scene_camera = new scene::Camera( 0, "scene_camera",
+										glm::vec3(30.0f, 10.0f, 10.0f),
+										glm::vec3(0.0f, 10.0f, 10.0f),
+										glm::vec3(0.0f, 1.0f, 0.0f),
+										glm::ivec2(size.x, size.y));
 	glm::vec3 camera_position = glm::vec3(1.0f);
-	m_scene_camera->SetFOV(scroll);
+	m_scene_camera->SetProjection(scroll, (float)size.x / (float)size.y, 0.1, 3000.0);
 
 	//--- KEYBOARD & MOUSE ----------------------------------------------------------------------------------------
 	glfwSetScrollCallback(window, ScrollCallback);
 	glfwSetKeyCallback(window, KeyboardCallback);
-
 
 	//--- UNIFORM SETUP -------------------------------------------------------------------------------------------
 	//! Forward shading
@@ -255,8 +244,8 @@ void Renderer::renderloop(GLFWwindow *window)
 	//--- INPUT HANDLING -------------------------------------------------------------------------------------		
 	//! Simple camera movement
 	glfwGetCursorPos(window, &mouse_x, &mouse_y);
-	mouse_correct_x = ((mouse_x / WIDTH) * 2.0f) - 1.0f;
-	mouse_correct_y = ((mouse_y / HEIGHT) * 2.0f) - 1.0f;
+	mouse_correct_x = ((mouse_x / size.x) * 2.0f) - 1.0f;
+	mouse_correct_y = ((mouse_y / size.y) * 2.0f) - 1.0f;
 
 	if (glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2))
 	{
@@ -367,13 +356,11 @@ void Renderer::renderloop(GLFWwindow *window)
 	glfwSetKeyCallback(glfwindow, KeyboardCallback);
 
 
-
 	//! ### RENDER SHADOW MAP ############################################   
 	sun->update(projection, view);
 	sun->generateShadowMap(&m_renderqueue);
 	
-	
-	
+	glViewport(0, 0, size.x, size.y);
 	//! First shader program:
 	//! ### GEOMETRY RENDER ############################################   
 	gBuffer->write();

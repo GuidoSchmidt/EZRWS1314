@@ -80,15 +80,6 @@ namespace utils {
 				float aspect		= current_camera->mAspect;
 				float near_plane	= current_camera->mClipPlaneNear;
 				float far_plane		= current_camera->mClipPlaneFar;
-			
-				//! Create a camera
-				new_camera = new scene::Camera(camera_id, name.C_Str(),
-								   glm::vec3(position.x, position.y, position.z),
-								   glm::vec3(lookat.x, lookat.y, lookat.z),
-								   glm::vec3(up.x, up.y, up.z),
-								   glm::ivec2(1024, 1024));
-
-				new_camera->SetProjection(field_of_view, aspect, near_plane, far_plane);
 
 				//! Add to scene manager
 				scene::SceneManager::instance()->addSceneNode(new_camera);

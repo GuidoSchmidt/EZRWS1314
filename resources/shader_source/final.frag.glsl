@@ -105,12 +105,6 @@ void main()
 //		colorOut = vec4(1,0,0,1);
 	//colorOut = mix(texture(sunlight3,UV),texture(sunlight3,UV),texture(gBuffer1,UV));
 	
-
-<<<<<<< HEAD
 	//colorOut = texture(lowerRight,UV);
 	colorOut = reinhard(texture(lowerRight,UV));
-=======
-	// colorOut = texture(lowerRight,UV);
-	colorOut = reinhard(texture(topLeft,UV));
->>>>>>> 73c2f27dddb906eb4776aef3b54f37ff201d5632
 }

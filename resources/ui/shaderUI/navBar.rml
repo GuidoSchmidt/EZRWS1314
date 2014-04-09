@@ -4,17 +4,6 @@
     <link type="text/css" href="./rcss/navBar.rcss" />
     <title>Navbar</title>
 </head>
-<style>
-	body
-	{
-		width: 12px;
-		height: 19px;
-		
-		<!-- Add a simple image decorator onto the body element. -->
-		cursor-decorator: image;
-		cursor-image: /img/pointer.tga 0px 0px 236px 251px;
-	}
-</style>
 <body template="window">
     <div id="vs">Vertex Shader</div><!-- vs = Vertex Shader -->
     <div id="ts">Tesselation Shader</div><!-- ts = Tesselation Shader -->
