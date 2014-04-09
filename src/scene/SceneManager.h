@@ -72,6 +72,8 @@ namespace scene
 
 	GLuint loadCubeMap(std::string filename,bool HDR);
 
+	GLuint loadDDS(std::string filename);
+
 	void deleteGeometryNode(const unsigned int index);
   };
 }

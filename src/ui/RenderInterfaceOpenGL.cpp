@@ -30,6 +30,7 @@
 #include "RenderInterfaceOpenGL.h"
 #include <Rocket/Core.h>
 
+extern glm::ivec2 size;
 #define GL_CLAMP_TO_EDGE 0x812F
 
 ShellRenderInterfaceOpenGL::ShellRenderInterfaceOpenGL()
@@ -60,7 +61,7 @@ void ShellRenderInterfaceOpenGL::RenderGeometry(Rocket::Core::Vertex* vertices, 
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, 1280, 720, 0, -1, 1);
+    glOrtho(0, size.x, size.y, 0, -1, 1);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

@@ -38,7 +38,6 @@ namespace utils {
 
             GLuint tex_2d;
 
-
 		public:
 			//! \brief Returns the singleton instance
 			static Importer* instance(void);
@@ -55,6 +54,12 @@ namespace utils {
 
 			//! \brief Processes the loaded geometry from assimp scene
 			void processGeometry(const unsigned int& mesh_index, scene::Transform* node_transform);
+
+			//! \brief Helper function for loading textures from RESOURCES_PATH
+			std::string getRelativeTexturePath(std::string filepath);
+
+			//! \brief Helper function for loading compressed dds textures from RESOURCES_PATH
+			std::string Importer::getRelativeTexturePathCompressed(std::string filepath);
 
 			//! \brief Returns a geometry node of the scene by index
 			scene::Geometry* getGeometryNode(const unsigned int index);

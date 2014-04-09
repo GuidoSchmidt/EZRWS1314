@@ -5,7 +5,7 @@ body
     font-style: normal;
     font-size: 15;
     color: white;
-    width: 612px;
+    width: 1024px;
     left: 412px;
     top: 32px;
     height: 736px;

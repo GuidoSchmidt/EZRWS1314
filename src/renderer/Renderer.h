@@ -3,7 +3,6 @@
 #ifndef H_RENDERER
 #define H_RENDERER
 
-#include "Context.h"
 #include "ShaderProgram.h"
 #include "FrameBufferObject.h"
 #include "../scene/SceneNode.h"
@@ -34,7 +33,6 @@ namespace renderer {
 			int m_fps;
 			double m_current_time, m_previous_time;
 
-			Context* m_context;
             //! Shader programs
             ShaderProgram* m_shaderProgram_forward;
 			ShaderProgram* m_shaderProgram_sky;
@@ -97,9 +95,6 @@ namespace renderer {
 
 			//! \brief Initializes the renderer
 			void init(GLFWwindow* window);
-
-			//! \brief Sets the context to render to
-			void setRenderContext(Context& context);
 
 			//! \brief Setup the render loop
 			void Renderer::setupRenderer(GLFWwindow* window);
