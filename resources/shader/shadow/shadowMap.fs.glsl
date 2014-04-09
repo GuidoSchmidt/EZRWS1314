@@ -4,10 +4,11 @@
 //*** Uniform block definitions ************************************************
 
 //*** Input ********************************************************************
-in vec3 ssPosition;
+//in vec3 ssPosition;
 
 //*** Output *******************************************************************
-layout (location = 0) out vec4 fragcolor;
+// layout (location = 0) out vec4 fragcolor;
+layout (location = 0) out float fragDepth;
 
 //*** Uniforms *****************************************************************
 
@@ -16,5 +17,6 @@ layout (location = 0) out vec4 fragcolor;
 //*** Main *********************************************************************
 void main(void)
 {
-    fragcolor = vec4(0.0, 0.0, 0.0 , 1.0);
+    // fragcolor = vec4(vec3(gl_FragCoord.z), 1.0);
+    fragDepth = gl_FragCoord.z;
 }

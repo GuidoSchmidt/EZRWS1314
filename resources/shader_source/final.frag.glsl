@@ -6,6 +6,7 @@ uniform sampler2D topLeft;
 uniform sampler2D topRight;
 uniform sampler2D lowerLeft;
 uniform sampler2D lowerRight;
+uniform sampler2D shadowMap;
 uniform sampler2D minAveMaxTexture;
 
 uniform float fastExtraction;
@@ -106,5 +107,5 @@ void main()
 	
 
 	// colorOut = texture(lowerRight,UV);
-	//colorOut = reinhard(texture(lowerRight,UV));
+	colorOut = reinhard(texture(topLeft,UV));
 }

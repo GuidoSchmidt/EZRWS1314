@@ -155,7 +155,10 @@ namespace scene
         }
         glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 
-        return cube_map;
+		return cube_map;
+
+        return 0;
+
     }
 
   GLuint SceneManager::loadHDRTexture(std::string filename) {
@@ -164,7 +167,6 @@ namespace scene
         glGenTextures(1, &tex_2d);
         glBindTexture(GL_TEXTURE_2D, tex_2d);
         
-
         // load a HDR RGB Float image
         FREE_IMAGE_FORMAT format = FreeImage_GetFileType(filename.c_str(),0); //should be FIF_HDR or FIF_EXR
         FIBITMAP *src = FreeImage_Load(format, filename.c_str(), 0);
@@ -180,8 +182,24 @@ namespace scene
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-        FreeImage_Unload(src);
-        return tex_2d;
+        //// load a HDR RGB Float image
+        //FREE_IMAGE_FORMAT format = FreeImage_GetFileType(filename.c_str(),0); //should be FIF_HDR or FIF_EXR
+        //FIBITMAP *src = FreeImage_Load(format, filename.c_str(), 0);
+        //int depth = FreeImage_GetBPP(src);
+        //FREE_IMAGE_TYPE type = FreeImage_GetImageType(src); //should be FIt_RGBF
+        //FREE_IMAGE_COLOR_TYPE color = FreeImage_GetColorType(src); //should be FIC_RGB
+        //BYTE *bits = (BYTE*)FreeImage_GetBits(src);
+        //FIRGBF *rgbFsrc = (FIRGBF*)bits;
+
+        //glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, FreeImage_GetWidth(src), FreeImage_GetHeight(src), 0, GL_RGB, GL_FLOAT, rgbFsrc);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        //glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+
+        //FreeImage_Unload(src);
+        return 0;
 
     }
 }

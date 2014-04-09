@@ -87,7 +87,7 @@ namespace renderer {
 
         glMatrixMode(GL_PROJECTION);
         glLoadIdentity();
-        glOrtho(0, 1024, 768, 0, -1, 1);
+        glOrtho(0, 1280, 720, 0, -1, 1);
 
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
@@ -107,7 +107,7 @@ namespace renderer {
 
     glm::ivec2 Context::getSize(void)
     {
-        return glm::ivec2(1024, 768);
+		return glm::ivec2(1280,720);
     }
 
 	float Context::getAspectRatio(void)

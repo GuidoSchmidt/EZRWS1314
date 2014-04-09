@@ -15,8 +15,8 @@ float  mouse_correct_y = 0.0f;;
 glm::vec3 camera_position = glm::vec3(1.0f);
 double scroll = 32.0;
 extern GLFWwindow *glfwindow;
-int WIDTH = 1024;
-int HEIGHT = 768;
+int WIDTH = 1280;
+int HEIGHT = 720;
 
 
 //--- UNIFORM LOCATION NAMES ---------------------------------------------------------------
@@ -99,6 +99,7 @@ void Renderer::init(GLFWwindow *window)
 
 	utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
 	m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
+
 }
 	
 void Renderer::setupGL(void)
@@ -159,7 +160,8 @@ void Renderer::setupShaderStages()
 	skyScale[3][3] = 1;
 	scene::Transform trans = scene::Transform(glm::vec3(0), glm::toQuat(glm::mat4(1)), glm::vec3(1));
 	GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/niceSun.tga", true);
-	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 10, 990, 19, sunTex);
+	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 10, 99, 16, sunTex);
+	sun->setupShadowMapping(glm::vec2(1024));
 
 	//--- SHADER PROGRAMS ------------------------------------------------------------------------------------
 	m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
@@ -249,15 +251,14 @@ void Renderer::renderloop(GLFWwindow *window)
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//scene::SceneManager::instance()->getLight(0)->setupShadowMapping(glm::vec2(512));
 	//! Field of view
 	m_scene_camera->SetFOV(scroll);
 
 	//--- INPUT HANDLING -------------------------------------------------------------------------------------		
 	//! Simple camera movement
 	glfwGetCursorPos(window, &mouse_x, &mouse_y);
-	mouse_correct_x = ((mouse_x / 1024) * 2.0f) - 1.0f;
-	mouse_correct_y = ((mouse_y / 768) * 2.0f) - 1.0f;
+	mouse_correct_x = ((mouse_x / 1280) * 2.0f) - 1.0f;
+	mouse_correct_y = ((mouse_y / 720) * 2.0f) - 1.0f;
 
 	if (glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2))
 	{
@@ -371,6 +372,14 @@ void Renderer::renderloop(GLFWwindow *window)
 	glfwSetScrollCallback(glfwindow, ScrollCallback);
 	glfwSetKeyCallback(glfwindow, KeyboardCallback);
 
+
+
+	//! ### RENDER SHADOW MAP ############################################   
+	sun->update(projection, view);
+	sun->generateShadowMap(&m_renderqueue);
+	
+	
+	
 	//! First shader program:
 	//! ### GEOMETRY RENDER ############################################   
 	gBuffer->write();
@@ -378,7 +387,6 @@ void Renderer::renderloop(GLFWwindow *window)
 
 	// Set uniforms
 	m_shaderProgram_sky->use();
-	sun->update(projection, view);
 	m_shaderProgram_sky->setUniform(sky_uniform_loc_view, view);
 	m_shaderProgram_sky->setUniform(sky_uniform_loc_model, skyScale);
 	m_shaderProgram_sky->setUniform(sky_uniform_loc_projection, projection);
@@ -416,6 +424,11 @@ void Renderer::renderloop(GLFWwindow *window)
 
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_ambient_amount, sun->ambientAmount);
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_amount, sun->diffuseAmount);
+
+	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_shadowMap, sun->getShadowMap(), 3);
+	//m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowModel, );
+	m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowView, sun->getViewMatrix());
+	m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowProjection, sun->getProjectionMatrix());
 
 	//render geometry nodes 
 	for (unsigned int i = 0; i < m_renderqueue.size(); i++)
@@ -462,6 +475,7 @@ void Renderer::renderloop(GLFWwindow *window)
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
+
 std::string Renderer::getShaderSourceOf(GLSL::GLSLShaderType shaderType, unsigned int &lineCount)
 {
 	std::string code = m_shaderProgram_forward->getShaderCodeOf(shaderType, lineCount);
@@ -498,16 +512,17 @@ void Renderer::doTheSunlightEffect()
 
 void Renderer::switchExtractionStrategy(bool fast)
 {
-	if (fast) 
+	if (fast)
 	{
 		extractionPass = fastExtractionPass;
 		finalPass->minAveMaxTexture = fastExtractionPass->outputTexture;
 		finalPass->param_fastExtraction = 1.0f;
 	}
-	else 
+	else
 	{
 		extractionPass = slowExtractionPass;
 		finalPass->minAveMaxTexture = 0;
 		finalPass->param_fastExtraction = 0.0f;
 	}
 }
+

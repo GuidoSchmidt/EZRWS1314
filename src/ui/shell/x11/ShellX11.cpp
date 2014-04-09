@@ -73,7 +73,7 @@ bool Shell::OpenWindow(const char* name, bool attach_opengl)
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_COMPAT_PROFILE);
     */
 
-    glfwindow = glfwCreateWindow(1024.0f, 768.0f, "GLFW", 0, 0);
+    glfwindow = glfwCreateWindow(1280.0f, 720.0f, "GLFW", 0, 0);
     glfwMakeContextCurrent(glfwindow);
 
     /*
@@ -87,7 +87,7 @@ bool Shell::OpenWindow(const char* name, bool attach_opengl)
 
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, 1024, 768, 0, -1, 1);
+    glOrtho(0, 1280, 720, 0, -1, 1);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();

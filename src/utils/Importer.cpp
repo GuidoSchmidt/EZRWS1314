@@ -8,7 +8,7 @@ namespace utils {
 	Importer::Importer(void)
 	{
 		m_aiScene = 0;
-		FreeImage_Initialise(false);
+		//FreeImage_Initialise(false);
 	}
 
 	Importer::~Importer(void)
@@ -81,7 +81,7 @@ namespace utils {
 							       glm::vec3(position.x, position.y, position.z),
 							       glm::vec3(lookat.x, lookat.y, lookat.z),
 							       glm::vec3(up.x, up.y, up.z),
-							       glm::ivec2(1024, 1024));
+							       glm::ivec2(1280, 720));
 				new_camera->SetProjection(field_of_view, aspect, near_plane, far_plane);
 
 				//! Add to scene manager

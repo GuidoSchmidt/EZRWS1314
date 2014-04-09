@@ -66,7 +66,7 @@ int main(void)
     //! Render interface
     ShellRenderInterfaceOpenGL opengl_renderer;
     Rocket::Core::SetRenderInterface(&opengl_renderer);
-    opengl_renderer.SetViewport(1024, 768);
+    opengl_renderer.SetViewport(1280, 720);
 
     Rocket::Core::Initialise();
 

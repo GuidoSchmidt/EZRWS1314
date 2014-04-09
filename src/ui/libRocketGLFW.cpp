@@ -66,11 +66,11 @@ int oldmain(void)
     //! Render interface
     ShellRenderInterfaceOpenGL opengl_renderer;
     Rocket::Core::SetRenderInterface(&opengl_renderer);
-    opengl_renderer.SetViewport(1024,768);
+    opengl_renderer.SetViewport(1280,720);
 
     Rocket::Core::Initialise();
 
-    context = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(1024, 768));
+    context = Rocket::Core::CreateContext("main", Rocket::Core::Vector2i(1280, 720));
     if (context == NULL)
     {
         Rocket::Core::Shutdown();
