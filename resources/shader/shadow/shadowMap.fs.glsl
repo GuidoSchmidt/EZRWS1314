@@ -18,5 +18,6 @@ layout (location = 0) out float fragDepth;
 void main(void)
 {
     // fragcolor = vec4(vec3(gl_FragCoord.z), 1.0);
+    //check texture for alpha
     fragDepth = gl_FragCoord.z;
 }
