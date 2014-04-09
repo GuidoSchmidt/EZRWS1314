@@ -27,6 +27,7 @@ namespace scene
             GLuint m_uniform_loc_view;
             GLuint m_uniform_loc_projection;
             GLuint m_uniform_loc_model;
+			GLuint m_uniform_loc_diffuse_tex;
 		protected :
 			glm::vec3 m_color;
 			float     m_intensity; // should be [candela]

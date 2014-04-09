@@ -34,7 +34,7 @@ namespace scene
     glm::mat4 Light::getViewMatrix(void)
     {
 
-		m_view = glm::lookAt(glm::vec3(m_transform.getPosition()),
+		m_view = glm::lookAt(glm::vec3(m_transform.getPosition()),  //* glm::vec3(0.01),
                              glm::vec3( glm::vec3(0.0f, 0.3f, 0.0f) ),
                              glm::vec3(0.001f, 1.0f, 0.0f));
         return m_view;
@@ -42,8 +42,9 @@ namespace scene
 
     glm::mat4 Light::getProjectionMatrix(void)
     {
-		m_projection = glm::perspective(9.0f, 1.0f, 950.0f, 1010.0f);
-		//m_projection = glm::ortho(-10,10,-10,10,-100,200);
+		float length = glm::length(m_transform.getPosition());
+		m_projection = glm::perspective(4.0f, 1.0f, length*0.9f, length*1.3f);
+		//m_projection = glm::ortho(-30,30,-30,30);
         return m_projection;
     }
 
@@ -60,6 +61,7 @@ namespace scene
         m_uniform_loc_model      = m_shaderProgram->getUniform("model");
         m_uniform_loc_view       = m_shaderProgram->getUniform("view");
         m_uniform_loc_projection = m_shaderProgram->getUniform("projection");
+		m_uniform_loc_diffuse_tex = m_shaderProgram->getUniform("diffuse_tex");
         //! Framebuffer Object(
         m_fbo = new renderer::FrameBufferObject(m_shadowMap_size.x, m_shadowMap_size.y);
         //m_fbo->addColorAttachment(0);
@@ -75,7 +77,7 @@ namespace scene
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		//glEnable(GL_CULL_FACE);
-        //glCullFace(GL_FRONT_FACE);
+        //glCullFace(GL_FRONT);
 
         glViewport(0, 0, m_shadowMap_size.x, m_shadowMap_size.y);
 
@@ -85,9 +87,11 @@ namespace scene
         for(unsigned int i = 0; i < renderQueue->size(); i++)
         {
             m_shaderProgram->setUniform(m_uniform_loc_model, renderQueue->at(i)->getTransform()->getModelMatrix() );
+			m_shaderProgram->setUniformSampler(m_uniform_loc_diffuse_tex, renderQueue->at(i)->getMaterial()->getDiffuseTexture(), 0);
             renderQueue->at(i)->drawTriangles();
         }
 
+		//glDisable(GL_CULL_FACE);
         m_shaderProgram->unuse();
         m_fbo->unuse();
 
