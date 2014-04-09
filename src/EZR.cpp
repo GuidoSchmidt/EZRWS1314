@@ -91,11 +91,17 @@ int main(void)
 	if (contentBox != 0 || navBar != 0)
 	{
 		contentBox->SetProperty("left", Rocket::Core::Property(m_contentXPos, Rocket::Core::Property::PX));
+		contentBox->SetProperty("width", Rocket::Core::Property(size.x, Rocket::Core::Property::PX));
 		contentBox->Show();
 
 		navBar->SetProperty("left", Rocket::Core::Property(0, Rocket::Core::Property::PX));
 		navBar->SetProperty("top", Rocket::Core::Property(0, Rocket::Core::Property::PX));
-		navBar->SetProperty("top", Rocket::Core::Property(0, Rocket::Core::Property::PX));
+		navBar->SetProperty("width", Rocket::Core::Property(size.x, Rocket::Core::Property::PX));
+		navBar->GetElementById("vs")->SetProperty("width", Rocket::Core::Property(size.x/4, Rocket::Core::Property::PX));
+		navBar->GetElementById("ts")->SetProperty("width", Rocket::Core::Property(size.x / 4, Rocket::Core::Property::PX));
+		navBar->GetElementById("gs")->SetProperty("width", Rocket::Core::Property(size.x / 4, Rocket::Core::Property::PX));
+		navBar->GetElementById("fs")->SetProperty("width", Rocket::Core::Property(size.x / 4, Rocket::Core::Property::PX));
+
 		navBar->Show();
 	}
 	//! Fill line numbers
