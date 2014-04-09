@@ -31,9 +31,10 @@ void main(void)
 	vsUV = uv;
 
 	// Tesseltation
-	wsPosition = vec3(model * vec4(position, 1.0));
-    vsUV = uv;
-    wsNormal = vec3( transpose( inverse(model) ) * vec4(normal, 0.0));
-
-	gl_Position = projection * view * model * vec4(position, 1.0);
+	if(tesselation)
+	{
+		wsPosition = position.xyz;
+	}
+	else
+		gl_Position = projection * view * model * vec4(position, 1.0);
 }

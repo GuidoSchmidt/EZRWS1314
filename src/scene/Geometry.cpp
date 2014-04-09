@@ -374,6 +374,14 @@ namespace scene {
 		glBindVertexArray(0);
 	}
 
+
+	void Geometry::drawPatches(void)
+	{
+		glBindVertexArray(VAO_handle);
+		glDrawArrays(GL_PATCHES, 0, 6);
+		glBindVertexArray(0);
+	}
+
 	void Geometry::drawWireframe(void)
 	{
 		glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );

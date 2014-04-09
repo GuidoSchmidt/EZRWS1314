@@ -9,6 +9,9 @@ in vec3 vsPosition;
 smooth in vec3 vsNormal;
 in vec2 vsUV;
 
+in vec2 teTexCoord;
+in float teHeight;
+
 //*** Output *******************************************************************
 layout (location = 0) out vec4 fragcolor;
 layout (location = 1) out vec4 fragcolor2;
@@ -95,7 +98,7 @@ vec3 phong(in vec3 position, in vec4 light, in vec3 normal, in vec3 diffuse_colo
     vec3 specular_term = texture(specular_map, vsUV).rgb * pow(cosinSpec, shininess);
     specular_term = max(specular_term, 0.0); 
 
-    vec3 shaded = ambient_amount * ambient_term + diffuse_amount * diffuse_term + specular_term;
+    vec3 shaded = ambient_amount * ambient_term + diffuse_amount * (diffuse_term + specular_term);
     return max(shaded, 0.0);
 }
 
@@ -111,17 +114,38 @@ void main(void)
     vec4 shadowcoord = bias_matrix * light_projection * light_view * model * vec4(wsPosition, 1.0);
     vec4 projShadowcoord = shadowcoord / shadowcoord.w;
 
-    float distanceFromLight = texture(shadow_map, projShadowcoord.st).z;
-
-    float shadow = 1.0;
-    vec3 light_vector = normalize(vsPosition - light_position);
-    //loat cosTheta = clamp(dot( vsN,light_vector ),0.0,1.0);
-    //float bias = 0.005*tan(acos(cosTheta));
-    float bias = 0.005; // clamp(bias, 0, 0.01);
-    if (distanceFromLight < projShadowcoord.z-bias)
+    float shadowSum = 1;
+    if (projShadowcoord.x >= 1 || projShadowcoord.y >= 1 || 
+        projShadowcoord.x <= 0 || projShadowcoord.y <= 0)
     {
-        shadow = 0.3;
+        shadowSum = 1.0;
     }
+
+    else 
+    {
+        float bias = 0.005; // clamp(bias, 0, 0.01);
+
+        float distanceFromLight = textureOffset(shadow_map, projShadowcoord.st,ivec2(-1,-1)).z;
+        if (distanceFromLight < projShadowcoord.z-bias)
+                shadowSum -=0.2;
+
+        distanceFromLight       = textureOffset(shadow_map, projShadowcoord.st,ivec2(-1, 1)).z;
+        if (distanceFromLight < projShadowcoord.z-bias)
+                shadowSum -=0.2;
+        
+        distanceFromLight       = textureOffset(shadow_map, projShadowcoord.st,ivec2( 1,-1)).z;
+        if (distanceFromLight < projShadowcoord.z-bias)
+                shadowSum -=0.2;
+        
+        distanceFromLight       = textureOffset(shadow_map, projShadowcoord.st,ivec2( 1, 1)).z;
+        if (distanceFromLight < projShadowcoord.z-bias)
+                shadowSum -=0.2;
+    }
+
+    //vec3 light_vector = normalize(vsPosition - light_position);
+    //loat cosTheta = clamp(dot( vsN,light_vector ),0.0,1.0);
+    //float bias = 0.005*tan(acos(cosTheta));   
+
 
     vec4 lightpos = vec4( light_position , 1.0);
     //lightpos.y += mouse.y * 100.0;
@@ -131,6 +155,14 @@ void main(void)
 
     // fragcolor.rgb  = vsN;
     // fragcolor.a = 0;
-    fragcolor = vec4(shaded * shadow, texture(diffuse_map,vsUV).a);
+    fragcolor = vec4(shaded * shadowSum, texture(diffuse_map,vsUV).a);
     fragcolor2 = vec4(0.0);
+    if ( (projShadowcoord.x >= 0.99 && projShadowcoord.x <= 1.01) || (projShadowcoord.y >= 0.99 && projShadowcoord.y <= 1.01) || 
+         ( projShadowcoord.x >= -0.01 && projShadowcoord.x <= 0.01) || (projShadowcoord.y >= -0.01 && projShadowcoord.y <= 0.01))
+    {
+         fragcolor.r = 1;
+         fragcolor.b = 1;
+    }
 }
+
+
