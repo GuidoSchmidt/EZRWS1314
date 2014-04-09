@@ -62,6 +62,12 @@ namespace renderer {
 
 			//! \brief Constructor
 			ShaderProgram(GLSL::GLSLShaderType shaderType0, std::string filename0, GLSL::GLSLShaderType shaderType1, std::string filename1);
+
+			//! \brief Constructor
+			ShaderProgram(GLSL::GLSLShaderType shaderType0, std::string filename0,
+						  GLSL::GLSLShaderType shaderType1, std::string filename1,
+						  GLSL::GLSLShaderType shaderType2, std::string filename2,
+						  GLSL::GLSLShaderType shaderType3, std::string filename3);
 			
 			//! \brief Destructor
 			~ShaderProgram();

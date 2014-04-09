@@ -1,5 +1,5 @@
 //FRAGMENT SHADER
-#version 330
+#version 440
 
 //*** Uniform block definitions ************************************************
 

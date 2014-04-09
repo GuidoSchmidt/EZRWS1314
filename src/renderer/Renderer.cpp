@@ -22,6 +22,9 @@ extern glm::ivec2 size;
 //--- UNIFORM LOCATION NAMES ---------------------------------------------------------------
 GLuint night_tex;
 GLuint day_tex;
+GLuint ocean_tex_diffuse;
+GLuint ocean_tex_specular;
+GLuint ocean_tex_normal;
 
 GLuint forward_uniform_loc_view;
 GLuint forward_uniform_loc_projection;
@@ -59,6 +62,8 @@ GLuint forward_uniform_loc_shadowView;
 GLuint forward_uniform_loc_shadowProjection;
 GLuint compositing_uniform_loc_shadowMap;
 
+GLuint use_tesselation_uniform;
+
 using namespace renderer;
 
 Renderer::Renderer(void)
@@ -92,6 +97,11 @@ void Renderer::init(GLFWwindow *window)
 	utils::Importer::instance()->deleteGeometryNode(0);
 	scene::SceneManager::instance()->deleteGeometryNode(0);
 
+	utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/ocean.dae", "ocean");
+	oceanNode = utils::Importer::instance()->getGeometryNode(0);
+	utils::Importer::instance()->deleteGeometryNode(0);
+	scene::SceneManager::instance()->deleteGeometryNode(0);
+
 	utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
 	m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
 
@@ -100,6 +110,7 @@ void Renderer::init(GLFWwindow *window)
 void Renderer::setupGL(void)
 {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glPatchParameteri(GL_PATCH_VERTICES, 3);
 }
 
 void Renderer::setupShaderStages()
@@ -161,6 +172,10 @@ void Renderer::setupShaderStages()
 	//--- SHADER PROGRAMS ------------------------------------------------------------------------------------
 	m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
 												GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl");
+	m_shaderProgram_ocean = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
+												GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl",
+												GLSL::TESS_CONTROL, RESOURCES_PATH "/shader/forward/forward.tesctrl.glsl",
+												GLSL::TESS_EVALUATION, RESOURCES_PATH "/shader/forward/forward.teseval.glsl");
 	m_shaderProgram_sky = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
 											GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/sky.fs.glsl");
 	m_shaderProgram_sun = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/sun.vs.glsl",
@@ -184,6 +199,10 @@ void Renderer::setupRenderer(GLFWwindow* window)
 	glm::vec4 wsSunPos = glm::vec4(0, 10, 2000, 1);
 	night_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sky/night.dds", true);
 	day_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sky/day.dds", true);
+
+	ocean_tex_diffuse = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/ocean/water_diffuse.dds", true);
+	ocean_tex_specular = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/ocean/water-specular.dds", true);
+	ocean_tex_normal = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/ocean/water_normal.dds", true);
 
 	//--- CAMERA --------------------------------------------------------------------------------------------------
 	m_scene_camera = new scene::Camera( 0, "scene_camera",
@@ -234,6 +253,9 @@ void Renderer::setupRenderer(GLFWwindow* window)
 	sun_uniform_loc_projection = m_shaderProgram_sun->getUniform("projection");
 	sun_uniform_loc_tex = m_shaderProgram_sun->getUniform("tex");
 	sun_uniform_loc_color = m_shaderProgram_sun->getUniform("color");
+
+	//! Ocean shader
+	use_tesselation_uniform = m_shaderProgram_forward->getUniform("tesselation");
 }
 	
 
@@ -375,6 +397,8 @@ void Renderer::renderloop(GLFWwindow *window)
 	gBuffer->write();
 	double forwardTime1 = glfwGetTime();
 
+	glPatchParameteri(GL_PATCH_VERTICES, 3);
+
 	// Set uniforms
 	m_shaderProgram_sky->use();
 	m_shaderProgram_sky->setUniform(sky_uniform_loc_view, view);
@@ -401,11 +425,14 @@ void Renderer::renderloop(GLFWwindow *window)
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
+
+
 	
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// Forward rendering
 	m_shaderProgram_forward->use();
+	m_shaderProgram_forward->setUniform(use_tesselation_uniform, FALSE);
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(mouse_correct_x, mouse_correct_y));
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_view, view);
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_projection, projection);
@@ -435,6 +462,19 @@ void Renderer::renderloop(GLFWwindow *window)
 		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 2);
 		m_renderqueue[i]->drawTriangles();
 	}
+
+	//! Draw Ocean
+	m_shaderProgram_ocean->use();
+	m_shaderProgram_forward->setUniform(use_tesselation_uniform, TRUE);
+	m_shaderProgram_forward->setUniform(forward_uniform_loc_model, oceanNode->getTransform()->getModelMatrix() * skyScale);
+	m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_color, glm::vec3(0.0, 0.3, 1.0));
+	m_shaderProgram_forward->setUniform(forward_uniform_loc_specular_color, glm::vec3(1.0));
+	m_shaderProgram_forward->setUniform(forward_uniform_loc_shininess, 200.0f);
+	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, ocean_tex_diffuse, 3);
+	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, ocean_tex_specular, 4);
+	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, ocean_tex_normal, 5);
+	oceanNode->drawTriangles();
+	m_shaderProgram_ocean->unuse();
 
 	m_shaderProgram_forward->unuse();
 	gBuffer->unbind();
