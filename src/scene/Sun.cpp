@@ -34,7 +34,7 @@ namespace scene
 		tone_factor = 0;
 
 
-		m_transform.setScale(glm::vec3(300));
+		m_transform.setScale(glm::vec3(30));
 	}
 
 	void Sun::incHour()

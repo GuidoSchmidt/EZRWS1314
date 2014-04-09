@@ -100,8 +100,6 @@ void Renderer::init(GLFWwindow *window)
 void Renderer::setupGL(void)
 {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
-	glEnable(GL_POLYGON_OFFSET_FILL);
-	glPolygonOffset(0.96, 1.0);
 }
 
 void Renderer::setupShaderStages()
@@ -156,6 +154,7 @@ void Renderer::setupShaderStages()
 	skyScale[3][3] = 1;
 	scene::Transform trans = scene::Transform(glm::vec3(0), glm::toQuat(glm::mat4(1)), glm::vec3(1));
 	GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/niceSun.tga", true);
+
 	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 1, 1000, 16, sunTex);
 	sun->setupShadowMapping(glm::vec2(4096));
 
