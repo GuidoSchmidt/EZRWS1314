@@ -38,6 +38,7 @@ GLuint forward_uniform_loc_mouse;
 
 GLuint forward_uniform_loc_ambient_amount;
 GLuint forward_uniform_loc_diffuse_amount;
+GLuint forward_uniform_loc_shadow_amount;
 
 GLuint sky_uniform_loc_model;
 GLuint sky_uniform_loc_view;
@@ -155,7 +156,7 @@ void Renderer::setupShaderStages()
 	scene::Transform trans = scene::Transform(glm::vec3(0), glm::toQuat(glm::mat4(1)), glm::vec3(1));
 	GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/niceSun.tga", true);
 
-	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 1, 1000, 16, sunTex);
+	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 100, 1000, 16, sunTex);
 	sun->setupShadowMapping(glm::vec2(4096));
 
 	//--- SHADER PROGRAMS ------------------------------------------------------------------------------------
@@ -213,6 +214,7 @@ void Renderer::setupRenderer(GLFWwindow* window)
 	forward_uniform_loc_light_color = m_shaderProgram_forward->getUniform("light_color");
 	forward_uniform_loc_ambient_amount = m_shaderProgram_forward->getUniform("ambient_amount");
 	forward_uniform_loc_diffuse_amount = m_shaderProgram_forward->getUniform("diffuse_amount");
+	forward_uniform_loc_shadow_amount = m_shaderProgram_forward->getUniform("shadow_amount");
 	forward_uniform_loc_mouse = m_shaderProgram_forward->getUniform("mouse");
 	forward_uniform_loc_shadowMap = m_shaderProgram_forward->getUniform("shadow_map");
 	forward_uniform_loc_shadowModel = m_shaderProgram_forward->getUniform("light_model");
@@ -414,6 +416,7 @@ void Renderer::renderloop(GLFWwindow *window)
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_light_color, sun->getColor());
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_ambient_amount, sun->ambientAmount);
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_amount, sun->diffuseAmount);
+	m_shaderProgram_forward->setUniform(forward_uniform_loc_shadow_amount, sun->bloomAmount);
 
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_ambient_amount, sun->ambientAmount);
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_amount, sun->diffuseAmount);
@@ -449,7 +452,7 @@ void Renderer::renderloop(GLFWwindow *window)
 	compositingPass->doExecute();
 
 	time1 = glfwGetTime();
-	//extractionPass->doExecute();
+	extractionPass->doExecute();
 	time2 = glfwGetTime() - time1; // bla*e-6
 	//der langsame mode dauert 10-20ms
 

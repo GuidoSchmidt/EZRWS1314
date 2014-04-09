@@ -30,6 +30,7 @@ uniform vec3 light_color;
 uniform vec2 mouse;
 uniform float ambient_amount;
 uniform float diffuse_amount;
+uniform float shadow_amount;
 
 uniform sampler2D shadow_map;
 // uniform mat4 light_model;
@@ -111,32 +112,37 @@ void main(void)
     vec4 shadowcoord = bias_matrix * light_projection * light_view * model * vec4(wsPosition, 1.0);
     vec4 projShadowcoord = shadowcoord / shadowcoord.w;
 
-    float shadowSum = 1;
+    float shadowMultiplier = 1 ;
     if (projShadowcoord.x >= 1 || projShadowcoord.y >= 1 || 
         projShadowcoord.x <= 0 || projShadowcoord.y <= 0)
     {
-        shadowSum = 1.0;
+        shadowMultiplier = 1.0;
     }
 
     else 
     {
+        float shadowSum = 0;
         float bias = 0.005; // clamp(bias, 0, 0.01);
 
         float distanceFromLight = textureOffset(shadow_map, projShadowcoord.st,ivec2(-1,-1)).z;
         if (distanceFromLight < projShadowcoord.z-bias)
-                shadowSum -=0.2;
+                shadowSum +=0.25;
 
         distanceFromLight       = textureOffset(shadow_map, projShadowcoord.st,ivec2(-1, 1)).z;
         if (distanceFromLight < projShadowcoord.z-bias)
-                shadowSum -=0.2;
+                shadowSum +=0.25;
         
         distanceFromLight       = textureOffset(shadow_map, projShadowcoord.st,ivec2( 1,-1)).z;
         if (distanceFromLight < projShadowcoord.z-bias)
-                shadowSum -=0.2;
+                shadowSum +=0.25;
         
         distanceFromLight       = textureOffset(shadow_map, projShadowcoord.st,ivec2( 1, 1)).z;
         if (distanceFromLight < projShadowcoord.z-bias)
-                shadowSum -=0.2;
+                shadowSum +=0.25;
+
+        shadowSum *= shadow_amount*0.8;
+
+        shadowMultiplier = 1 - shadowSum;
     }
 
     //vec3 light_vector = normalize(vsPosition - light_position);
@@ -144,22 +150,23 @@ void main(void)
     //float bias = 0.005*tan(acos(cosTheta));   
 
 
-    vec4 lightpos = vec4( light_position , 1.0);
     //lightpos.y += mouse.y * 100.0;
-    lightpos = view * lightpos;
+    //lightpos = view * lightpos;
     //vec3 shaded = texture(diffuse_map, vsUV).rgb; // <-- Use for testing
+    vec4 lightpos = vec4( light_position , 1.0);
     vec3 shaded = phong(vsPosition, lightpos, normal, diffuse_color, specular_color, shininess);
 
     // fragcolor.rgb  = vsN;
     // fragcolor.a = 0;
-    fragcolor = vec4(shaded * shadowSum, texture(diffuse_map,vsUV).a);
+    
+    fragcolor = vec4(shaded * shadowMultiplier, texture(diffuse_map,vsUV).a);
     fragcolor2 = vec4(0.0);
-    if ( (projShadowcoord.x >= 0.99 && projShadowcoord.x <= 1.01) || (projShadowcoord.y >= 0.99 && projShadowcoord.y <= 1.01) || 
-         ( projShadowcoord.x >= -0.01 && projShadowcoord.x <= 0.01) || (projShadowcoord.y >= -0.01 && projShadowcoord.y <= 0.01))
-    {
-         fragcolor.r = 1;
-         fragcolor.b = 1;
-    }
+    // if ( (projShadowcoord.x >= 0.99 && projShadowcoord.x <= 1.01) || (projShadowcoord.y >= 0.99 && projShadowcoord.y <= 1.01) || 
+    //      ( projShadowcoord.x >= -0.01 && projShadowcoord.x <= 0.01) || (projShadowcoord.y >= -0.01 && projShadowcoord.y <= 0.01))
+    // {
+    //      fragcolor.r = 1;
+    //      fragcolor.b = 1;
+    // }
 
 //      if (projShadowcoord.x <= 1.0 && projShadowcoord.y <= 1.0 && 
 //          projShadowcoord.x >= 0.0 && projShadowcoord.y >= 0.0)
