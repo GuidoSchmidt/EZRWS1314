@@ -378,7 +378,8 @@ namespace scene {
 	void Geometry::drawPatches(void)
 	{
 		glBindVertexArray(VAO_handle);
-		glDrawArrays(GL_PATCHES, 0, 6);
+		glPatchParameteri(GL_PATCH_VERTICES, 3);
+		glDrawArrays(GL_PATCH_VERTICES, 0, 3);
 		glBindVertexArray(0);
 	}
 

@@ -16,7 +16,7 @@ Rocket::Core::Context *context = 0;
 extern GLFWwindow *glfwindow;
 extern double scroll;
 extern glm::ivec2 size;
-static float m_contentXPos = size.x - 20;
+static float m_contentXPos = size.x - 10;
 
 int main(void)
 {
@@ -98,9 +98,16 @@ int main(void)
 		navBar->SetProperty("top", Rocket::Core::Property(0, Rocket::Core::Property::PX));
 		navBar->SetProperty("width", Rocket::Core::Property(size.x, Rocket::Core::Property::PX));
 		navBar->GetElementById("vs")->SetProperty("width", Rocket::Core::Property(size.x/4, Rocket::Core::Property::PX));
+		navBar->GetElementById("vs")->SetProperty("left", Rocket::Core::Property(0 * size.x / 4, Rocket::Core::Property::PX));
+
 		navBar->GetElementById("ts")->SetProperty("width", Rocket::Core::Property(size.x / 4, Rocket::Core::Property::PX));
+		navBar->GetElementById("ts")->SetProperty("left", Rocket::Core::Property(1 * size.x / 4, Rocket::Core::Property::PX));
+
 		navBar->GetElementById("gs")->SetProperty("width", Rocket::Core::Property(size.x / 4, Rocket::Core::Property::PX));
+		navBar->GetElementById("gs")->SetProperty("left", Rocket::Core::Property(2 * size.x / 4, Rocket::Core::Property::PX));
+
 		navBar->GetElementById("fs")->SetProperty("width", Rocket::Core::Property(size.x / 4, Rocket::Core::Property::PX));
+		navBar->GetElementById("fs")->SetProperty("left", Rocket::Core::Property(3 * size.x / 4, Rocket::Core::Property::PX));
 
 		navBar->Show();
 	}
@@ -182,7 +189,7 @@ int main(void)
 		else if (xpos < m_contentXPos && ypos > 35)
 		{
 			scroll = 32.0;
-			m_contentXPos = (size.x * 0.9);
+			m_contentXPos = (size.x - 10);
 			contentBox->SetProperty("left", Rocket::Core::Property(m_contentXPos, Rocket::Core::Property::PX));
 		}
 

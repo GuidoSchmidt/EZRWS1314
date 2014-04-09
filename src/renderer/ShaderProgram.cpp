@@ -300,9 +300,6 @@ namespace renderer
 	{
 	   ReloadShader(GLSL::VERTEX);
 	   ReloadShader(GLSL::FRAGMENT);
-	   ReloadShader(GLSL::GEOMETRY);
-	   ReloadShader(GLSL::TESS_CONTROL);
-	   ReloadShader(GLSL::TESS_EVALUATION);
 	}
 
 	void ShaderProgram::ReloadShader(GLSL::GLSLShaderType shaderType)

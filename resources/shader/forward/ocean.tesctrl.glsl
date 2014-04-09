@@ -1,0 +1,78 @@
+#version 440 core
+
+layout(vertices = 3) out;
+
+uniform vec2 screen_size;
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+uniform float lod_factor;
+
+
+// http://codeflow.org/entries/2010/nov/07/opengl-4-tessellation/
+bool offscreen(vec4 vertex)
+{
+    if(vertex.z < -0.5){
+        return true;
+    }   
+    return any(
+        lessThan(vertex.xy, vec2(-1.7)) ||
+        greaterThan(vertex.xy, vec2(1.7))
+    );  
+}
+
+float level(vec2 v0, vec2 v1)
+{
+     return clamp(distance(v0, v1)/lod_factor, 1, 64);
+ }
+
+vec2 screen_space(vec4 vertex)
+{
+    return (clamp(vertex.xy, -1.3, 1.3) + 1) * (screen_size * 0.5);
+}
+
+vec4 project(vec4 vertex)
+{
+    vec4 result = projection * view * model * vertex;
+    result /= result.w;
+    return result;
+}
+
+void main(void)
+{
+     #define id gl_InvocationID
+     gl_out[id].gl_Position = gl_in[id].gl_Position;
+     if(id == 0){
+         vec4 v0 = project(gl_in[0].gl_Position);
+         vec4 v1 = project(gl_in[1].gl_Position);
+         vec4 v2 = project(gl_in[2].gl_Position);
+
+         if(all(bvec3(
+             offscreen(v0),
+             offscreen(v1),
+             offscreen(v2)
+         ))){
+             gl_TessLevelInner[0] = 0;
+             gl_TessLevelInner[1] = 0;
+             gl_TessLevelOuter[0] = 0;
+             gl_TessLevelOuter[1] = 0;
+             gl_TessLevelOuter[2] = 0;
+         }
+         else{
+             vec2 ss0 = screen_space(v0);
+             vec2 ss1 = screen_space(v1);
+             vec2 ss2 = screen_space(v2);
+
+             float e0 = level(ss1, ss2);
+             float e1 = level(ss0, ss1);
+             float e2 = level(ss2, ss0);
+ 
+
+             gl_TessLevelInner[0] = mix(e1, e2, 0.5);
+             gl_TessLevelInner[1] = mix(e0, e2, 0.5);
+             gl_TessLevelOuter[0] = e0;
+             gl_TessLevelOuter[1] = e1;
+             gl_TessLevelOuter[2] = e2;
+         }
+     }
+}

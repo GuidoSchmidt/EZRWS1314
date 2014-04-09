@@ -19,8 +19,6 @@ out vec2 vsUV;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
-uniform sampler2D displace;
-uniform bool tesselation;
 
 //*** Main *********************************************************************
 void main(void)
@@ -30,11 +28,5 @@ void main(void)
 	vsNormal = vec3( normalize(transpose(inverse(model * view)) * vec4(normal, 0.0)) );
 	vsUV = uv;
 
-	// Tesseltation
-	if(tesselation)
-	{
-		wsPosition = position.xyz;
-	}
-	else
-		gl_Position = projection * view * model * vec4(position, 1.0);
+	gl_Position = projection * view * model * vec4(position, 1.0);
 }

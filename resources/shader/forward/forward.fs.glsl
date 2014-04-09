@@ -135,7 +135,7 @@ vec3 translucencyFac(vec3 normal_comp, vec3 tEye)
     vec3  tThickness;   // Thickness Texturer
 
     lightAtt    =   lightAttenuation();
-    tPower      =   2.0;
+    tPower      =   1.0;
     tDistortion =   1.0;
     tThickness  =   texture(translucent_map, vsUV).rgb;
 
@@ -143,11 +143,11 @@ vec3 translucencyFac(vec3 normal_comp, vec3 tEye)
 
 //    Originally here is used saturate(), with glsl it will only work on NVIDIA
 //    GPUs. So we rewrite this using clamp()
-    float tDot  = pow( clamp( dot( tEye, -tLight ), 0.0, 1.0 ), tPower )
-                    * 0.01;
-    vec3 tLT    = ( vec3(tDot) + ambient_amount ) * tThickness;
+    float dot  = pow( clamp( dot( tEye, -tLight ), 0.0, 1.0 ), tPower )
+                    * 1.0;
+    vec3 translucent_term    = ( vec3(dot) + ambient_amount ) * tThickness;
 
-    return tLT * translucency;
+    return translucent_term * translucency;
 }
 
 //*** Main *********************************************************************
@@ -172,7 +172,7 @@ void main(void)
     else 
     {
         float shadowSum = 0;
-        float bias = 0.005; // clamp(bias, 0, 0.01);
+        float bias = 0.001; // clamp(bias, 0, 0.01);
 
         distanceFromLight = textureOffset(shadow_map, projShadowcoord.st,ivec2(-1,-1)).z;
         if (distanceFromLight < projShadowcoord.z-bias)
@@ -195,31 +195,22 @@ void main(void)
         shadowMultiplier = 1 - shadowSum;
     }
 
-    //vec3 light_vector = normalize(vsPosition - light_position);
-    //loat cosTheta = clamp(dot( vsN,light_vector ),0.0,1.0);
-    //float bias = 0.005*tan(acos(cosTheta));   
-
-    //lightpos.y += mouse.y * 100.0;
-    //vec3 shaded = texture(diffuse_map, vsUV).rgb; // <-- Use for testing
 	vec3 transFac = translucencyFac( normal, -vsPosition );
-
-
     vec4 lightpos = view * vec4( light_position , 1.0);
-    vec3 shaded = phong(vsPosition, lightpos, normal, diffuse_color, specular_color, shininess);
-
-    // fragcolor.rgb  = vsN;
-    // fragcolor.a = 0;
+    vec3 shaded = phong(vsPosition, lightpos, normal, diffuse_color, specular_color, shininess) + transFac;
     
-    // fragcolor = vec4(shaded * shadowMultiplier, texture(diffuse_map,vsUV).a);
-    fragcolor = vec4(shaded, texture(diffuse_map,vsUV).a);
+    fragcolor = vec4(shaded * shadowMultiplier, texture(diffuse_map,vsUV).a);
+    //fragcolor = vec4(shaded, texture(diffuse_map,vsUV).a);
     fragcolor2 = vec4(0.0);
 
+	/*
     if ( (projShadowcoord.x >= 0.99 && projShadowcoord.x <= 1.01) || (projShadowcoord.y >= 0.99 && projShadowcoord.y <= 1.01) || 
          ( projShadowcoord.x >= -0.01 && projShadowcoord.x <= 0.01) || (projShadowcoord.y >= -0.01 && projShadowcoord.y <= 0.01))
     {
          fragcolor.r = 1;
          fragcolor.b = 1;
     }
+    */
 }
 
 
