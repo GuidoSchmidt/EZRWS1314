@@ -112,7 +112,7 @@ namespace scene
 		glm::vec3 pos;
 		pos.x = distance*sin(cycle);
 		pos.y = distance*-cos(cycle);
-		pos.z = 0.0;
+		pos.z = distance*0.5*cos(cycle);
 		m_transform.setPosition(pos);
 		/*glm::mat4 rot1 = glm::mat4(0, 0.0f, 1, 0.0f,
 		0.0f, 1.0f, 0.0f, 0.0f,
@@ -171,7 +171,7 @@ namespace scene
 		//vec2 (ambient,diffuse,tonefactor)
 		if (hour <= 5 || hour >= 18)
 		{
-			return glm::vec3(1, 0, 3);
+			return glm::vec3(1, 0.1, 3);
 		}
 		if (hour >= 6 || hour <= 17)
 		{

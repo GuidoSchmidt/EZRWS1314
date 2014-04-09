@@ -157,7 +157,7 @@ void Renderer::setupShaderStages()
 	scene::Transform trans = scene::Transform(glm::vec3(0), glm::toQuat(glm::mat4(1)), glm::vec3(1));
 	GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/niceSun.tga", true);
 	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 1, 1000, 16, sunTex);
-	sun->setupShadowMapping(glm::vec2(2048));
+	sun->setupShadowMapping(glm::vec2(4096));
 
 	//--- SHADER PROGRAMS ------------------------------------------------------------------------------------
 	m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
@@ -367,7 +367,8 @@ void Renderer::renderloop(GLFWwindow *window)
 
 	//! ### RENDER SHADOW MAP ############################################   
 	sun->update(projection, view);
-	sun->generateShadowMap(&m_renderqueue);
+	if (sun->bloomAmount > 0)
+		sun->generateShadowMap(&m_renderqueue);
 	
 	glViewport(0, 0, size.x, size.y);
 	
