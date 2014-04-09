@@ -82,7 +82,7 @@ vec3 phong(in vec3 position, in vec4 light, in vec3 normal, in vec3 diffuse_colo
     vec3 light_vector = normalize(position - light.xyz);
     float cosin = max( dot( normalize(normal), light_vector), 0.0);
 
-    vec3 ambient_term  = texture(diffuse_map, vsUV).rgb * light_color;
+    vec3 ambient_term  = texture(diffuse_map, vsUV).rgb * ((light_color.x+light_color.y+light_color.z)/3);
 
     if(texture(diffuse_map, vsUV).a < 0.2)
         discard;
@@ -151,15 +151,15 @@ void main(void)
 
 
     //lightpos.y += mouse.y * 100.0;
-    //lightpos = view * lightpos;
     //vec3 shaded = texture(diffuse_map, vsUV).rgb; // <-- Use for testing
-    vec4 lightpos = vec4( light_position , 1.0);
+    vec4 lightpos = view * vec4( light_position , 1.0);
     vec3 shaded = phong(vsPosition, lightpos, normal, diffuse_color, specular_color, shininess);
 
     // fragcolor.rgb  = vsN;
     // fragcolor.a = 0;
     
-    fragcolor = vec4(shaded * shadowMultiplier, texture(diffuse_map,vsUV).a);
+    // fragcolor = vec4(shaded * shadowMultiplier, texture(diffuse_map,vsUV).a);
+    fragcolor = vec4(shaded, texture(diffuse_map,vsUV).a);
     fragcolor2 = vec4(0.0);
     // if ( (projShadowcoord.x >= 0.99 && projShadowcoord.x <= 1.01) || (projShadowcoord.y >= 0.99 && projShadowcoord.y <= 1.01) || 
     //      ( projShadowcoord.x >= -0.01 && projShadowcoord.x <= 0.01) || (projShadowcoord.y >= -0.01 && projShadowcoord.y <= 0.01))
