@@ -66,7 +66,7 @@ int main(void)
     //! Render interface
     ShellRenderInterfaceOpenGL opengl_renderer;
     Rocket::Core::SetRenderInterface(&opengl_renderer);
-    opengl_renderer.SetViewport(1024, 768);
+	opengl_renderer.SetViewport(1024, 768);
 
     Rocket::Core::Initialise();
 
@@ -120,8 +120,8 @@ int main(void)
     {
         //--- EZR rendering ------------------------------------------------------------------------
 		glEnable(GL_DEPTH_TEST);
-        renderer::Renderer::instance()->renderloop(glfwindow);
 
+        renderer::Renderer::instance()->renderloop(glfwindow);
 
         //--- libRocket ----------------------------------------------------------------------------
         // LibRocket input handling
