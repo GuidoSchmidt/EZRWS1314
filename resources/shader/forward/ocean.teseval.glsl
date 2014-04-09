@@ -1,23 +1,23 @@
-#version 440 core
 
-layout(quads, fractional_odd_spacing, ccw) in;
+//--- Input --------------------------------------------------------------------
+layout(triangles, equal_spacing, cw) in;
+in vec3 tcPosition[];
 
-out vec2 texcoord;
-out float depth;
+//--- Output -------------------------------------------------------------------
+out vec3 tePosition;
+out vec3 tePatchDistance;
 
-uniform sampler2D terrain;
-uniform mat4 mvp;
+//--- Uniforms -----------------------------------------------------------------
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
 
-
-void main(){
-    float u = gl_TessCoord.x;
-    float v = gl_TessCoord.y;
-
-    vec4 a = mix(gl_in[1].gl_Position, gl_in[0].gl_Position, u);
-    vec4 b = mix(gl_in[2].gl_Position, gl_in[3].gl_Position, u);
-    vec4 position = mix(a, b, v);
-    texcoord = position.xy;
-    float height = texture(terrain, texcoord).a;
-    gl_Position = mvp * vec4(texcoord, height, 1.0);
-    depth = gl_Position.z;
+void main()
+{
+    vec3 p0 = gl_TessCoord.x * tcPosition[0];
+    vec3 p1 = gl_TessCoord.y * tcPosition[1];
+    vec3 p2 = gl_TessCoord.z * tcPosition[2];
+    tePatchDistance = gl_TessCoord;
+    tePosition = normalize(p0 + p1 + p2);
+    gl_Position = projection * view * model * vec4(tePosition, 1);
 }

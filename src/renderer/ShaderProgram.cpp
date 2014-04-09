@@ -222,7 +222,8 @@ namespace renderer
 	ShaderProgram::ShaderProgram(GLSL::GLSLShaderType shaderType0, std::string filename0,
 								 GLSL::GLSLShaderType shaderType1, std::string filename1,
 								 GLSL::GLSLShaderType shaderType2, std::string filename2,
-								 GLSL::GLSLShaderType shaderType3, std::string filename3)
+								 GLSL::GLSLShaderType shaderType3, std::string filename3,
+								 GLSL::GLSLShaderType shaderType4, std::string filename4)
 	{
 		m_shaderProgram_ID = glCreateProgram();
 		m_activeAttributesWritten = false;
@@ -232,17 +233,20 @@ namespace renderer
 		m_shader_sources[shaderType1] = filename1;
 		m_shader_sources[shaderType2] = filename2;
 		m_shader_sources[shaderType3] = filename3;
+		m_shader_sources[shaderType4] = filename4;
 
 
 		addShader(shaderType0, m_shader_sources[shaderType0]);
 		addShader(shaderType1, m_shader_sources[shaderType1]);
 		addShader(shaderType2, m_shader_sources[shaderType2]);
 		addShader(shaderType3, m_shader_sources[shaderType3]);
+		addShader(shaderType4, m_shader_sources[shaderType4]);
 
 		glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::VERTEX]);
 		glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::TESS_CONTROL]);
 		glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::TESS_EVALUATION]);
 		glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::FRAGMENT]);
+		glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::GEOMETRY]);
 
 		link();
 

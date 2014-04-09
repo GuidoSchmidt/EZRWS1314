@@ -67,7 +67,8 @@ namespace renderer {
 			ShaderProgram(GLSL::GLSLShaderType shaderType0, std::string filename0,
 						  GLSL::GLSLShaderType shaderType1, std::string filename1,
 						  GLSL::GLSLShaderType shaderType2, std::string filename2,
-						  GLSL::GLSLShaderType shaderType3, std::string filename3);
+						  GLSL::GLSLShaderType shaderType3, std::string filename3,
+						  GLSL::GLSLShaderType shaderType4, std::string filename4);
 			
 			//! \brief Destructor
 			~ShaderProgram();
