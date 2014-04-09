@@ -6,6 +6,7 @@
 
 //--- Local Variables ----------------------------------------------------------------------
 extern float camera_speed;
+extern float move_speed;
 double old_x = 0.0;
 double old_y = 0.0;
 double mouse_x = 0.0;
@@ -160,8 +161,8 @@ void Renderer::setupShaderStages()
 	skyScale[3][3] = 1;
 	scene::Transform trans = scene::Transform(glm::vec3(0), glm::toQuat(glm::mat4(1)), glm::vec3(1));
 	GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/niceSun.tga", true);
-	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 10, 99, 16, sunTex);
-	sun->setupShadowMapping(glm::vec2(1024));
+	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 1, 1000, 16, sunTex);
+	sun->setupShadowMapping(glm::vec2(2048));
 
 	//--- SHADER PROGRAMS ------------------------------------------------------------------------------------
 	m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
@@ -256,9 +257,17 @@ void Renderer::renderloop(GLFWwindow *window)
 
 	//--- INPUT HANDLING -------------------------------------------------------------------------------------		
 	//! Simple camera movement
+	old_x = mouse_x;
+	old_y = mouse_y;
+
 	glfwGetCursorPos(window, &mouse_x, &mouse_y);
-	mouse_correct_x = ((mouse_x / 1280) * 2.0f) - 1.0f;
-	mouse_correct_y = ((mouse_y / 720) * 2.0f) - 1.0f;
+
+
+	mouse_correct_x = mouse_x - old_x;
+	mouse_correct_y = mouse_y - old_y;
+
+	//mouse_correct_x = ((mouse_x / 1280) * 2.0f) - 1.0f;
+	//mouse_correct_y = ((mouse_y / 720) * 2.0f) - 1.0f;
 
 	if (glfwGetMouseButton(glfwindow, GLFW_MOUSE_BUTTON_2))
 	{
@@ -266,19 +275,19 @@ void Renderer::renderloop(GLFWwindow *window)
 	}
 	if (glfwGetKey(glfwindow, GLFW_KEY_W))
 	{
-		m_scene_camera->MoveZ(camera_speed);
+		m_scene_camera->MoveZ(move_speed);
 	}
 	if (glfwGetKey(glfwindow, GLFW_KEY_S))
 	{
-		m_scene_camera->MoveZ(-camera_speed);
+		m_scene_camera->MoveZ(-move_speed);
 	}
 	if (glfwGetKey(glfwindow, GLFW_KEY_D))
 	{
-		m_scene_camera->MoveX(camera_speed);
+		m_scene_camera->MoveX(move_speed);
 	}
 	if (glfwGetKey(glfwindow, GLFW_KEY_A))
 	{
-		m_scene_camera->MoveX(-camera_speed);
+		m_scene_camera->MoveX(-move_speed);
 	}
 	if (glfwGetKey(glfwindow, GLFW_KEY_UP))
 	{
@@ -378,6 +387,7 @@ void Renderer::renderloop(GLFWwindow *window)
 	sun->update(projection, view);
 	sun->generateShadowMap(&m_renderqueue);
 	
+	glViewport(0, 0, 1280, 720);
 	
 	
 	//! First shader program:
@@ -456,7 +466,7 @@ void Renderer::renderloop(GLFWwindow *window)
 	compositingPass->doExecute();
 
 	time1 = glfwGetTime();
-	extractionPass->doExecute();
+	//extractionPass->doExecute();
 	time2 = glfwGetTime() - time1; // bla*e-6
 	//der langsame mode dauert 10-20ms
 

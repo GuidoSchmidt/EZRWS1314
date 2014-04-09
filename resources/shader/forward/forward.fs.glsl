@@ -115,7 +115,7 @@ void main(void)
     vec3 light_vector = normalize(vsPosition - light_position);
     //loat cosTheta = clamp(dot( vsN,light_vector ),0.0,1.0);
     //float bias = 0.005*tan(acos(cosTheta));
-    float bias = 0.00; // clamp(bias, 0, 0.01);
+    float bias = 0.005; // clamp(bias, 0, 0.01);
     if (distanceFromLight < projShadowcoord.z-bias)
     {
         shadow = 0.3;

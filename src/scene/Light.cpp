@@ -42,7 +42,7 @@ namespace scene
 
     glm::mat4 Light::getProjectionMatrix(void)
     {
-		m_projection = glm::perspective(10.0f, 1.0f, 0.1f, 200.0f);
+		m_projection = glm::perspective(9.0f, 1.0f, 950.0f, 1010.0f);
 		//m_projection = glm::ortho(-10,10,-10,10,-100,200);
         return m_projection;
     }
