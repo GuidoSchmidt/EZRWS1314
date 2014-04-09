@@ -24,6 +24,8 @@ namespace scene
 			int       m_cube_map_id;
 			//! Normal/Bump
 			GLuint    m_normal_map_ptr;
+			//! Translucency
+			float	m_translucency;
 
 			bool	  m_has_alpha;
 
@@ -57,6 +59,12 @@ namespace scene
 
 			//! \brief Returns the specular exponent
 			float getShininess(void);
+
+			//! \brief
+			void setTranslucency(float translucency);
+			
+			//! \brief
+			float getTranslucency(void);
 
 			//! \brief Returns if the material uses an alpha map
 			bool hasAlphaMap(void);

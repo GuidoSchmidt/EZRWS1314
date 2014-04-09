@@ -37,7 +37,6 @@ void main()
 	 
 		float height = texture(heightMap, teTexCoord).x;
 		teHeight = height;
-		height = posScale.y + height*posScale.z;
 		tePosition += normal * height;
 	 
 		gl_Position = projection * view * model * vec4(tePosition, 1.0);

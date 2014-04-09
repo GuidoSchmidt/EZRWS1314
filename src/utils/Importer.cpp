@@ -274,10 +274,10 @@ namespace utils {
 				float shininess;
 				current_material->Get(AI_MATKEY_SHININESS, shininess);
 
-				//! Using emsisive as alpha map indicator
+				//! Using emissive as translucency factor
 				aiColor3D emmisive;
 				current_material->Get(AI_MATKEY_COLOR_EMISSIVE, emmisive);
-				//std::cout << emmisive.r << emmisive.g << emmisive.b << std::endl;
+				std::cout << "Emissive Factor: " << emmisive.r << std::endl;
 
 				//! does not work
 				aiColor3D trans;
@@ -318,6 +318,7 @@ namespace utils {
 															 shininess,
 															 scene::SceneManager::instance()->loadTexture(RESOURCES_PATH + texture_name_normal, true));
 
+				new_material->setTranslucency(emmisive.g);
 				//! Add material to scene manager
 				scene::SceneManager::instance()->addMaterial(new_material);
 
