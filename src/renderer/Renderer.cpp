@@ -116,10 +116,10 @@ void Renderer::init(GLFWwindow *window)
 	utils::Importer::instance()->deleteGeometryNode(0);
 	scene::SceneManager::instance()->deleteGeometryNode(0);
 
-	utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/ocean.dae", "ocean");
-	oceanNode = utils::Importer::instance()->getGeometryNode(0);
-	utils::Importer::instance()->deleteGeometryNode(0);
-	scene::SceneManager::instance()->deleteGeometryNode(0);
+	//utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/ocean.dae", "ocean");
+	//oceanNode = utils::Importer::instance()->getGeometryNode(0);
+	//utils::Importer::instance()->deleteGeometryNode(0);
+	//scene::SceneManager::instance()->deleteGeometryNode(0);
 
 	utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
 	m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
@@ -186,24 +186,15 @@ void Renderer::setupShaderStages()
 	scene::Transform trans = scene::Transform(glm::vec3(0), glm::toQuat(glm::mat4(1)), glm::vec3(1));
 	GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sun.dds", true);
 
-	// Setup Ocean
-	oceanScale = glm::mat4(15);
-	oceanScale[3][3] = 1;
-
-	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 60, 1000, 16, sunTex);
+	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 100, 1000, 16, sunTex);
 	sun->setupShadowMapping(glm::vec2(4096));
+
 
 
 	//--- SHADER PROGRAMS ------------------------------------------------------------------------------------
 	m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
 												GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl");
-	/*
-	m_shaderProgram_ocean = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/ocean.vs.glsl",
-											  GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/ocean.fs.glsl",
-											  GLSL::TESS_CONTROL, RESOURCES_PATH "/shader/forward/ocean.tesctrl.glsl",
-											  GLSL::TESS_EVALUATION, RESOURCES_PATH "/shader/forward/ocean.teseval.glsl",
-											  GLSL::GEOMETRY, RESOURCES_PATH "/shader/forward/ocean.geo.glsl");
-	*/
+
 	m_shaderProgram_sky = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
 											GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/sky.fs.glsl");
 
@@ -273,20 +264,6 @@ void Renderer::setupRenderer(GLFWwindow* window)
 	forward_uniform_loc_translucent_tex = m_shaderProgram_forward->getUniform("translucent_map");
 	forward_uniform_loc_translucency = m_shaderProgram_forward->getUniform("translucency");
 
-	//! Ocean shader
-	/*
-	ocean_uniform_loc_view = m_shaderProgram_ocean->getUniform("view");
-	ocean_uniform_loc_projection = m_shaderProgram_ocean->getUniform("projection");
-	ocean_uniform_loc_model = m_shaderProgram_ocean->getUniform("model");
-	ocean_uniform_loc_diffuse_tex = m_shaderProgram_ocean->getUniform("diffuse_map");
-	ocean_uniform_loc_specular_tex = m_shaderProgram_ocean->getUniform("specular_map");
-	ocean_uniform_loc_shininess = m_shaderProgram_ocean->getUniform("shininess");
-	ocean_uniform_loc_normal_tex = m_shaderProgram_ocean->getUniform("normal_map");
-	ocean_uniform_loc_light_position = m_shaderProgram_ocean->getUniform("light_position");
-	ocean_uniform_loc_light_color = m_shaderProgram_ocean->getUniform("light_color");
-	ocean_uniform_loc_tesInner = m_shaderProgram_ocean->getUniform("TessLevelInner");
-	ocean_uniform_loc_tesOuter = m_shaderProgram_ocean->getUniform("TessLevelOuter");
-	*/
 
 	//! Sky shader
 	sky_uniform_loc_model = m_shaderProgram_sky->getUniform("model");
@@ -513,13 +490,7 @@ void Renderer::renderloop(GLFWwindow *window)
 		m_renderqueue[i]->drawTriangles();
 	}
 
-	//! Draw Ocean's Eleven
-	m_shaderProgram_forward->setUniform(forward_uniform_loc_model, oceanNode->getTransform()->getModelMatrix() * oceanScale);
-	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, ocean_tex_diffuse, 4);
-	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, ocean_tex_specular, 5);
-	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, ocean_tex_normal, 6);
-	m_shaderProgram_forward->setUniform(forward_uniform_loc_shininess, 200);
-	oceanNode->drawTriangles();
+
 	
 	m_shaderProgram_forward->unuse();
 

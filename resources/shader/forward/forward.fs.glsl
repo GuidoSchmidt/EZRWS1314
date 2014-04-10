@@ -179,7 +179,7 @@ vec3 translucencyFac(vec3 normal_comp, vec3 tEye)
                     * 1.0;
     vec3 translucent_term    = ( vec3(dot) + ambient_amount ) * tThickness;
 
-    return translucent_term * translucency;
+    return (translucent_term * translucency) * shadow_amount;
 }
 
 //*** Main *********************************************************************
@@ -203,8 +203,9 @@ void main(void)
     }
     else 
     {
-        float shadowSum = 0.0;
-        float bias = 0.001; // clamp(bias, 0, 0.01);
+        float shadowSum = 0;
+        float bias = 0.0005; // clamp(bias, 0, 0.01);
+
 
         distanceFromLight = textureOffset(shadow_map, projShadowcoord.st,ivec2(-1,-1)).z;
         if (distanceFromLight < projShadowcoord.z-bias)
@@ -223,8 +224,8 @@ void main(void)
                 shadowSum +=0.25;
 
         shadowSum *= shadow_amount * 0.8;
-        
-        shadowMultiplier = (1 - shadowSum);
+
+        shadowMultiplier = 1 - shadowSum;
     }
 
 	vec3 transFac = translucencyFac( normal, -vsPosition );
@@ -234,15 +235,6 @@ void main(void)
     
     fragcolor = vec4(shaded * shadowMultiplier, texture(diffuse_map,vsUV).a);
     fragcolor2 = vec4(0.0);
-
-	/*
-    if ( (projShadowcoord.x >= 0.99 && projShadowcoord.x <= 1.01) || (projShadowcoord.y >= 0.99 && projShadowcoord.y <= 1.01) || 
-         ( projShadowcoord.x >= -0.01 && projShadowcoord.x <= 0.01) || (projShadowcoord.y >= -0.01 && projShadowcoord.y <= 0.01))
-    {
-         fragcolor.r = 1;
-         fragcolor.b = 1;
-    }
-    */
 }
 
 
