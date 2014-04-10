@@ -4,7 +4,7 @@ layout(location = 0) in vec3 inPosition;
 layout(location = 1) in vec2 inTexCos;
 
 //uniform scale;
-float scale = 1.5;
+float scale = 3.0;
 out vec2 blurUV;
 out vec2 maskUV;
 out vec2 sunUV;

@@ -15,7 +15,7 @@ namespace scene
 		GLint billboardTex)
 		: Light(id, name, transform, color, intensity)
 	{
-		color_night = glm::vec3(0, 0.1, 0.1);
+		color_night = glm::vec3(0, 0.01, 0.01);
 		color_dawn = glm::vec3(0.56, 0.26, 0.4);
 		color_day = glm::vec3(1, 1, 0.9);
 		color_rise = glm::vec3(0.6, 0.12, 0.2);
