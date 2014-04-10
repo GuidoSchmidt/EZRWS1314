@@ -1,5 +1,5 @@
 //VERTEX SHADER
-#version 330
+#version 400 core
 
 //*** Uniform block definitions ************************************************
 
@@ -11,6 +11,7 @@ layout (location = 2) in vec2 uv;
 //*** Output *******************************************************************
 out vec3 wsPosition;
 out vec3 vsPosition;
+out vec3 wsNormal;
 out vec3 vsNormal;
 out vec2 vsUV;
 
@@ -26,5 +27,6 @@ void main(void)
 	vsPosition = vec3( view * model * vec4(position, 1.0) );
 	vsNormal = vec3(normalize(transpose(inverse(model * view)) * vec4(normal, 0.0)) );
 	vsUV = uv;
+
 	gl_Position = projection * view * model * vec4(position, 1.0);
 }

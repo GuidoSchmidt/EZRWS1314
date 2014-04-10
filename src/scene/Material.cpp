@@ -45,6 +45,18 @@ namespace scene
         return &m_specular_color;
     }
 
+	//! \brief
+	void Material::setTranslucency(float translucency)
+	{
+		m_translucency = translucency;
+	}
+
+	//! \brief
+	float Material::getTranslucency(void)
+	{
+		return m_translucency;
+	}
+
     GLuint Material::getSpecularTexture(void)
     {
         return m_specular_map_ptr;

@@ -22,6 +22,11 @@ extern glm::ivec2 size;
 //--- UNIFORM LOCATION NAMES ---------------------------------------------------------------
 GLuint night_tex;
 GLuint day_tex;
+GLuint ocean_tex_diffuse;
+GLuint ocean_tex_specular;
+GLuint ocean_tex_normal;
+GLuint statue_translucent_tex;
+GLuint leaves_translucent_tex;
 
 GLuint forward_uniform_loc_view;
 GLuint forward_uniform_loc_projection;
@@ -32,9 +37,25 @@ GLuint forward_uniform_loc_specular_color;
 GLuint forward_uniform_loc_specular_tex;
 GLuint forward_uniform_loc_shininess;
 GLuint forward_uniform_loc_normal_tex;
+GLuint forward_uniform_loc_translucency;
+GLuint forward_uniform_loc_translucent_tex;
 GLuint forward_uniform_loc_light_position;
 GLuint forward_uniform_loc_light_color;
 GLuint forward_uniform_loc_mouse;
+
+GLuint ocean_uniform_loc_view;
+GLuint ocean_uniform_loc_projection;
+GLuint ocean_uniform_loc_model;
+GLuint ocean_uniform_loc_diffuse_tex;
+GLuint ocean_uniform_loc_specular_tex;
+GLuint ocean_uniform_loc_shininess;
+GLuint ocean_uniform_loc_normal_tex;
+GLuint ocean_uniform_loc_light_position;
+GLuint ocean_uniform_loc_light_color;
+GLuint ocean_uniform_loc_mouse;
+GLuint ocean_uniform_loc_tesInner;
+GLuint ocean_uniform_loc_tesOuter;
+
 
 GLuint forward_uniform_loc_ambient_amount;
 GLuint forward_uniform_loc_diffuse_amount;
@@ -59,6 +80,8 @@ GLuint forward_uniform_loc_shadowModel;
 GLuint forward_uniform_loc_shadowView;
 GLuint forward_uniform_loc_shadowProjection;
 GLuint compositing_uniform_loc_shadowMap;
+
+GLuint use_tesselation_uniform;
 
 using namespace renderer;
 
@@ -93,6 +116,11 @@ void Renderer::init(GLFWwindow *window)
 	utils::Importer::instance()->deleteGeometryNode(0);
 	scene::SceneManager::instance()->deleteGeometryNode(0);
 
+	utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/ocean.dae", "ocean");
+	oceanNode = utils::Importer::instance()->getGeometryNode(0);
+	utils::Importer::instance()->deleteGeometryNode(0);
+	scene::SceneManager::instance()->deleteGeometryNode(0);
+
 	utils::Importer::instance()->importFile(RESOURCES_PATH "/scenes/dae/house.dae", "house");
 	m_renderqueue = scene::SceneManager::instance()->generateRenderQueue();
 
@@ -101,6 +129,8 @@ void Renderer::init(GLFWwindow *window)
 void Renderer::setupGL(void)
 {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glPatchParameteri(GL_PATCH_VERTICES, 3);
+	glEnable(GL_CULL_FACE);
 }
 
 void Renderer::setupShaderStages()
@@ -154,17 +184,25 @@ void Renderer::setupShaderStages()
 	skyScale = glm::mat4(10);
 	skyScale[3][3] = 1;
 	scene::Transform trans = scene::Transform(glm::vec3(0), glm::toQuat(glm::mat4(1)), glm::vec3(1));
-	GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/niceSun.tga", true);
+	GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sun.dds", true);
 
-	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 100, 1000, 16, sunTex);
+	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 1, 1000, 16, sunTex);
 	sun->setupShadowMapping(glm::vec2(4096));
 
 
 	//--- SHADER PROGRAMS ------------------------------------------------------------------------------------
 	m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
 												GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl");
+
+	m_shaderProgram_ocean = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/ocean.vs.glsl",
+											  GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/ocean.fs.glsl",
+											  GLSL::TESS_CONTROL, RESOURCES_PATH "/shader/forward/ocean.tesctrl.glsl",
+											  GLSL::TESS_EVALUATION, RESOURCES_PATH "/shader/forward/ocean.teseval.glsl",
+											  GLSL::GEOMETRY, RESOURCES_PATH "/shader/forward/ocean.geo.glsl");
+
 	m_shaderProgram_sky = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
 											GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/sky.fs.glsl");
+
 	m_shaderProgram_sun = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/sun.vs.glsl",
 											GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/sun.fs.glsl");
 }
@@ -186,6 +224,13 @@ void Renderer::setupRenderer(GLFWwindow* window)
 	glm::vec4 wsSunPos = glm::vec4(0, 10, 2000, 1);
 	night_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sky/night.dds", true);
 	day_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sky/day.dds", true);
+
+	ocean_tex_diffuse = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/ocean/water_diffuse.dds", true);
+	ocean_tex_specular = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/ocean/water-specular.dds", true);
+	ocean_tex_normal = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/ocean/water_normal.dds", true);
+
+	statue_translucent_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/house/dds/statue_translucent.dds", false);
+	leaves_translucent_tex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/house/dds/leaf-translucent.dds", false);
 
 	//--- CAMERA --------------------------------------------------------------------------------------------------
 	m_scene_camera = new scene::Camera( 0, "scene_camera",
@@ -221,6 +266,21 @@ void Renderer::setupRenderer(GLFWwindow* window)
 	forward_uniform_loc_shadowModel = m_shaderProgram_forward->getUniform("light_model");
 	forward_uniform_loc_shadowView = m_shaderProgram_forward->getUniform("light_view");
 	forward_uniform_loc_shadowProjection = m_shaderProgram_forward->getUniform("light_projection");
+	forward_uniform_loc_translucent_tex = m_shaderProgram_forward->getUniform("translucent_map");
+	forward_uniform_loc_translucency = m_shaderProgram_forward->getUniform("translucency");
+
+	//! Ocean shader
+	ocean_uniform_loc_view = m_shaderProgram_ocean->getUniform("view");
+	ocean_uniform_loc_projection = m_shaderProgram_ocean->getUniform("projection");
+	ocean_uniform_loc_model = m_shaderProgram_ocean->getUniform("model");
+	ocean_uniform_loc_diffuse_tex = m_shaderProgram_ocean->getUniform("diffuse_map");
+	ocean_uniform_loc_specular_tex = m_shaderProgram_ocean->getUniform("specular_map");
+	ocean_uniform_loc_shininess = m_shaderProgram_ocean->getUniform("shininess");
+	ocean_uniform_loc_normal_tex = m_shaderProgram_ocean->getUniform("normal_map");
+	ocean_uniform_loc_light_position = m_shaderProgram_ocean->getUniform("light_position");
+	ocean_uniform_loc_light_color = m_shaderProgram_ocean->getUniform("light_color");
+	ocean_uniform_loc_tesInner = m_shaderProgram_ocean->getUniform("TessLevelInner");
+	ocean_uniform_loc_tesOuter = m_shaderProgram_ocean->getUniform("TessLevelOuter");
 
 	//! Sky shader
 	sky_uniform_loc_model = m_shaderProgram_sky->getUniform("model");
@@ -237,6 +297,9 @@ void Renderer::setupRenderer(GLFWwindow* window)
 	sun_uniform_loc_projection = m_shaderProgram_sun->getUniform("projection");
 	sun_uniform_loc_tex = m_shaderProgram_sun->getUniform("tex");
 	sun_uniform_loc_color = m_shaderProgram_sun->getUniform("color");
+
+	//! Ocean shader
+	use_tesselation_uniform = m_shaderProgram_forward->getUniform("tesselation");
 }
 	
 
@@ -366,7 +429,6 @@ void Renderer::renderloop(GLFWwindow *window)
 	glfwSetScrollCallback(glfwindow, ScrollCallback);
 	glfwSetKeyCallback(glfwindow, KeyboardCallback);
 
-
 	//! ### RENDER SHADOW MAP ############################################   
 	sun->update(projection, view);
 	if (sun->bloomAmount > 0)
@@ -405,11 +467,13 @@ void Renderer::renderloop(GLFWwindow *window)
 	glEnable(GL_DEPTH_TEST);
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
-	
+
+
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// Forward rendering
 	m_shaderProgram_forward->use();
+	m_shaderProgram_forward->setUniform(use_tesselation_uniform, FALSE);
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_mouse, glm::vec2(mouse_correct_x, mouse_correct_y));
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_view, view);
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_projection, projection);
@@ -422,26 +486,48 @@ void Renderer::renderloop(GLFWwindow *window)
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_ambient_amount, sun->ambientAmount);
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_amount, sun->diffuseAmount);
 
-	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_shadowMap, sun->getShadowMap(), 3);
-	//m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowModel, );
+	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_shadowMap, sun->getShadowMap(), 0);
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowView, sun->getViewMatrix());
 	m_shaderProgram_forward->setUniform(forward_uniform_loc_shadowProjection, sun->getProjectionMatrix());
 
-	//render geometry nodes 
 	for (unsigned int i = 0; i < m_renderqueue.size(); i++)
+	//render geometry nodes
 	{
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_model, m_renderqueue[i]->getTransform()->getModelMatrix());
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_diffuse_color, *(m_renderqueue[i]->getMaterial()->getDiffuseColor()));
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_specular_color, *(m_renderqueue[i]->getMaterial()->getSpecularColor()));
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_shininess, m_renderqueue[i]->getMaterial()->getShininess());
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_light_color, sun->getColor());
-		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 0);
-		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, m_renderqueue[i]->getMaterial()->getSpecularTexture(), 1);
-		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 2);
+		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, m_renderqueue[i]->getMaterial()->getDiffuseTexture(), 1);
+		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, m_renderqueue[i]->getMaterial()->getSpecularTexture(), 2);
+		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 3);
+		if(m_renderqueue[i]->getName() == "statue")
+			m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_translucent_tex, statue_translucent_tex, 4);
+		if (m_renderqueue[i]->getName() == "leaves")
+			m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_translucent_tex, leaves_translucent_tex, 4);
+		m_shaderProgram_forward->setUniform(forward_uniform_loc_translucency, m_renderqueue[i]->getMaterial()->getTranslucency());
+
 		m_renderqueue[i]->drawTriangles();
 	}
-
 	m_shaderProgram_forward->unuse();
+
+	//! Draw Ocean
+	m_shaderProgram_ocean->use();
+	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_tesInner, 8);
+	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_tesOuter, 4);
+	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_view, view);
+	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_projection, projection);
+	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_model, oceanNode->getTransform()->getModelMatrix() * skyScale);
+	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_shininess, 200.0f);
+	m_shaderProgram_ocean->setUniformSampler(ocean_uniform_loc_diffuse_tex, ocean_tex_diffuse, 1);
+	m_shaderProgram_ocean->setUniformSampler(ocean_uniform_loc_specular_tex, ocean_tex_specular, 2);
+	m_shaderProgram_ocean->setUniformSampler(ocean_uniform_loc_normal_tex, ocean_tex_normal, 3);
+	
+	glPatchParameteri(GL_PATCH_VERTICES, 3);
+	oceanNode->drawPatches();
+	
+	m_shaderProgram_ocean->unuse();
+
 	gBuffer->unbind();
 	glDisable(GL_BLEND);
 
@@ -470,7 +556,6 @@ void Renderer::renderloop(GLFWwindow *window)
 	m_framecount++;
 	glUseProgram(0);
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	
 }
 
 

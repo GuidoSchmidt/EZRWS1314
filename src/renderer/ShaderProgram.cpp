@@ -119,8 +119,7 @@ namespace renderer
 			}
 			else
 			{
-				std::cout << "ERROR (ShaderProgram): Unable to read shader source code from '";
-				std::cout << filename;
+				std::cout << "ERROR (ShaderProgram): Unable to read shader source code from '" << filename;
 				std::cout << "'\n";
 			}
 
@@ -220,6 +219,44 @@ namespace renderer
 		}
 	}
 
+	ShaderProgram::ShaderProgram(GLSL::GLSLShaderType shaderType0, std::string filename0,
+								 GLSL::GLSLShaderType shaderType1, std::string filename1,
+								 GLSL::GLSLShaderType shaderType2, std::string filename2,
+								 GLSL::GLSLShaderType shaderType3, std::string filename3,
+								 GLSL::GLSLShaderType shaderType4, std::string filename4)
+	{
+		m_shaderProgram_ID = glCreateProgram();
+		m_activeAttributesWritten = false;
+		m_activeUniformsWritten = false;
+
+		m_shader_sources[shaderType0] = filename0;
+		m_shader_sources[shaderType1] = filename1;
+		m_shader_sources[shaderType2] = filename2;
+		m_shader_sources[shaderType3] = filename3;
+		m_shader_sources[shaderType4] = filename4;
+
+
+		addShader(shaderType0, m_shader_sources[shaderType0]);
+		addShader(shaderType1, m_shader_sources[shaderType1]);
+		addShader(shaderType2, m_shader_sources[shaderType2]);
+		addShader(shaderType3, m_shader_sources[shaderType3]);
+		addShader(shaderType4, m_shader_sources[shaderType4]);
+
+		glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::VERTEX]);
+		glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::TESS_CONTROL]);
+		glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::TESS_EVALUATION]);
+		glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::FRAGMENT]);
+		glAttachShader(m_shaderProgram_ID, m_shader_IDs[GLSL::GEOMETRY]);
+
+		link();
+
+		if (g_log)
+		{
+			std::cout << "\n-- SHADER PROGRAMM LOG --------------------------------------------------\n";
+			std::cout << "\n";
+		}
+	}
+
 	ShaderProgram::~ShaderProgram()
 	{
 
@@ -231,18 +268,23 @@ namespace renderer
 
 		switch (shaderType) {
 			case 0:
+				std::cout << "VERTEX SHADER: " << filename << std::endl;
 				Shader_ID = glCreateShader(GL_VERTEX_SHADER);
 				break;
 			case 1:
+				std::cout << "FRAGMENT SHADER: " << filename << std::endl;
 				Shader_ID = glCreateShader(GL_FRAGMENT_SHADER);
 				break;
 			case 2:
+				std::cout << "GEOMETRY SHADER: " << filename << std::endl;
 				Shader_ID = glCreateShader(GL_GEOMETRY_SHADER);
 				break;
 			case 3:
+				std::cout << "TESS CONTROL SHADER: " << filename << std::endl;
 				Shader_ID = glCreateShader(GL_TESS_CONTROL_SHADER);
 				break;
 			case 4:
+				std::cout << "TESS EVAL SHADER: " << filename << std::endl;
 				Shader_ID = glCreateShader(GL_TESS_EVALUATION_SHADER);
 				break;
 		}
@@ -262,9 +304,6 @@ namespace renderer
 	{
 	   ReloadShader(GLSL::VERTEX);
 	   ReloadShader(GLSL::FRAGMENT);
-	   ReloadShader(GLSL::GEOMETRY);
-	   ReloadShader(GLSL::TESS_CONTROL);
-	   ReloadShader(GLSL::TESS_EVALUATION);
 	}
 
 	void ShaderProgram::ReloadShader(GLSL::GLSLShaderType shaderType)

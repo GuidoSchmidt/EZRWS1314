@@ -37,6 +37,7 @@ namespace renderer {
             ShaderProgram* m_shaderProgram_forward;
 			ShaderProgram* m_shaderProgram_sky;
 			ShaderProgram* m_shaderProgram_sun;
+			ShaderProgram* m_shaderProgram_ocean;
             ShaderProgram* m_shaderProgram_compositing;
             //! Framebuffer objects
             FrameBufferObject* m_fbo;
@@ -74,7 +75,7 @@ namespace renderer {
 			scene::Sun* sun;
 			scene::Light* lamp;
 			scene::Geometry* skyNode;
-
+			scene::Geometry* oceanNode;
 
 			//! \brief Constructor (singleton)
 			Renderer(void);

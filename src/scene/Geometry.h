@@ -115,6 +115,9 @@ namespace scene {
 			//! \brief Draws the normals
 			void drawNormals(void);
 
+			//! \brief Draws as patches for tesselation shader
+			void drawPatches(void);
+
 			//! \brief Draws the boundign box
             void drawBoundingBox(void);
 
