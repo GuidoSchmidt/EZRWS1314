@@ -509,6 +509,11 @@ void Renderer::renderloop(GLFWwindow *window)
 	}
 
 	//! Draw Ocean's Eleven
+	m_shaderProgram_forward->setUniform(forward_uniform_loc_model, oceanNode->getTransform()->getModelMatrix() * skyScale);
+	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, oceanNode->getMaterial()->getDiffuseTexture(), 4);
+	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, oceanNode->getMaterial()->getSpecularTexture(), 5);
+	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, oceanNode->getMaterial()->getNormalTexture(), 6);
+	m_shaderProgram_forward->setUniform(forward_uniform_loc_shininess, 200);
 	oceanNode->drawTriangles();
 	
 	m_shaderProgram_forward->unuse();
