@@ -222,7 +222,7 @@ void main(void)
         if (distanceFromLight < projShadowcoord.z-bias)
                 shadowSum +=0.25;
 
-        shadowSum *= shadow_amount*0.8;
+        shadowSum *= shadow_amount * 0.8;
 
         shadowMultiplier = 1 - shadowSum;
     }
@@ -237,6 +237,7 @@ void main(void)
     
     fragcolor = vec4(shaded * shadowMultiplier, texture(diffuse_map,vsUV).a);
     //fragcolor = vec4(shaded, texture(diffuse_map,vsUV).a);
+    fragcolor = vec4(vec3(shadowMultiplier), texture(diffuse_map,vsUV).a);
     fragcolor2 = vec4(0.0);
 
 	/*

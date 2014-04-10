@@ -1,5 +1,5 @@
 //! Window properties
-bool RENDER_FULLSCREEN = TRUE;
+bool RENDER_FULLSCREEN = FALSE;
 glm::ivec2 size = glm::ivec2(1024, 768);
 
 //! Camera properties

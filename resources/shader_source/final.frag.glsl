@@ -107,6 +107,6 @@ void main()
 	
 
 	//colorOut = texture(topLeft,UV);
-	//colorOut = reinhard(texture(lowerRight,UV));
+	colorOut = reinhard(texture(lowerRight,UV));
 
 }

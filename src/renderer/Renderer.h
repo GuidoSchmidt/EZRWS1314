@@ -72,6 +72,7 @@ namespace renderer {
 
 
 			glm::mat4 skyScale;
+			glm::mat4 oceanScale;
 			scene::Sun* sun;
 			scene::Light* lamp;
 			scene::Geometry* skyNode;
