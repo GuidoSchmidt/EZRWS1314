@@ -16,9 +16,9 @@ namespace scene
 		: Light(id, name, transform, color, intensity)
 	{
 		color_night = glm::vec3(0, 0.01, 0.01);
-		color_dawn = glm::vec3(0.56, 0.26, 0.4);
+		color_dawn = glm::vec3(0.4, 0.2, 0.3);
 		color_day = glm::vec3(1, 1, 0.9);
-		color_rise = glm::vec3(0.6, 0.12, 0.2);
+		color_rise = glm::vec3(0.4, 0.3, 0.2);
 
 		ambientAmount = 0.5;
 		diffuseAmount = 0.5;
@@ -169,20 +169,20 @@ namespace scene
 
 	glm::vec3 Sun::calcAmounts() {
 		//vec2 (ambient,diffuse,tonefactor)
-		if (hour <= 5 || hour > 17)
+		if (hour <= 4 || hour > 18)
 		{
 			return glm::vec3(1.0, 0.01, 4);
 		}
-		if (hour == 6)
+		if (hour == 5)
 		{
 			float blend = blendSmooth1((float)minute / 60.0f);
 			return glm::vec3(1.0, blend, 4.0 - 2.0 * blend);
 		}
-		if (hour > 6 && hour < 17)
+		if (hour > 5 && hour < 18)
 		{
 			return glm::vec3(1.0, 1.0, 2);
 		}
-		if (hour == 17)
+		if (hour == 18)
 		{
 			float blend = 1 - blendSmooth1((float)minute / 60.0f);
 			return glm::vec3(1.0, blend, 4.0 - 2.0 * blend);

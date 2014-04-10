@@ -179,7 +179,7 @@ vec3 translucencyFac(vec3 normal_comp, vec3 tEye)
                     * 1.0;
     vec3 translucent_term    = ( vec3(dot) + ambient_amount ) * tThickness;
 
-    return translucent_term * translucency;
+    return (translucent_term * translucency) * shadow_amount;
 }
 
 //*** Main *********************************************************************
@@ -204,7 +204,7 @@ void main(void)
     else 
     {
         float shadowSum = 0;
-        float bias = 0.001; // clamp(bias, 0, 0.01);
+        float bias = 0.0005; // clamp(bias, 0, 0.01);
 
         distanceFromLight = textureOffset(shadow_map, projShadowcoord.st,ivec2(-1,-1)).z;
         if (distanceFromLight < projShadowcoord.z-bias)

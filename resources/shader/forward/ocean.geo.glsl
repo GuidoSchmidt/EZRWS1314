@@ -19,7 +19,7 @@ void main()
 {
     vec3 A = tePosition[2] - tePosition[0];
     vec3 B = tePosition[1] - tePosition[0];
-    gFacetNormal = trabnspose(inverse(view * model)) * normalize(cross(A, B));
+    gFacetNormal = transpose(inverse(view * model)) * vec4(normalize(cross(A, B)),0.0);
     
     gPatchDistance = tePatchDistance[0];
     gTriDistance = vec3(1, 0, 0);
