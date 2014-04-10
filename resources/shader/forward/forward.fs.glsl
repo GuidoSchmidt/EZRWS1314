@@ -1,5 +1,5 @@
 //FRAGMENT SHADER
-#version 440
+#version 330
 
 //*** Uniform block definitions ************************************************
 
@@ -103,7 +103,39 @@ vec3 phong(in vec3 position, in vec4 light, in vec3 normal, in vec3 diffuse_colo
 
     vec3 shaded = ambient_amount * ambient_term + diffuse_amount * (diffuse_term + specular_term);
     return max(shaded, 0.0);
+    //return vec3(cosin);
 }
+
+vec3 phongLamp(vec3 position, vec3 normal)
+{
+    vec3 wsLamp_pos = vec3(1,12,5);
+    vec3 lamp_color = vec3(10.0,10.0,3.3);
+    float max_distance = 15.0;
+
+    vec3 vsLamp_pos = vec3(view * vec4(wsLamp_pos,1.0));
+    vec3 light_vector = vsLamp_pos - position;
+    float dis = length(light_vector);
+    if (dis > max_distance)
+        return vec3(0);
+    light_vector = normalize(light_vector);
+    float cosin = max( dot( normalize(normal), light_vector), 0.0);
+
+    dis = dis / max_distance;
+    dis = 1 - dis;
+
+    vec4 tex = texture(diffuse_map, vsUV);
+    vec3 diffuse_term = (tex.rgb * cosin * lamp_color + tex.rgb * 0.1 ) * dis ;
+    diffuse_term = max(diffuse_term, 0.0);
+
+    // vec3 viewVector = position;
+    // float cosinSpec = max( dot( normalize(normal), normalize(viewVector)), 0.0);
+    // vec3 specular_term = texture(specular_map, vsUV).rgb * pow(cosinSpec, shininess);
+    // specular_term = max(specular_term, 0.0); 
+    //vec3 shaded = vec3(dis);
+    vec3 shaded = diffuse_term;// + tex.rgb * 0.5;// + specular_term;
+    return max(shaded, 0.0);
+}
+
 
 // @source: http://gamedev.stackexchange.com/questions/56897/glsl-light-attenuation-color-and-intensity-formula
 float lightAttenuation()
@@ -198,6 +230,10 @@ void main(void)
 	vec3 transFac = translucencyFac( normal, -vsPosition );
     vec4 lightpos = view * vec4( light_position , 1.0);
     vec3 shaded = phong(vsPosition, lightpos, normal, diffuse_color, specular_color, shininess) + transFac;
+    shaded += phongLamp(vsPosition, vsN);
+
+    // fragcolor.rgb  = vsN;
+    // fragcolor.a = 0;
     
     fragcolor = vec4(shaded * shadowMultiplier, texture(diffuse_map,vsUV).a);
     //fragcolor = vec4(shaded, texture(diffuse_map,vsUV).a);

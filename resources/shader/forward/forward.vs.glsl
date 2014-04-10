@@ -1,5 +1,5 @@
 //VERTEX SHADER
-#version 440 core
+#version 400 core
 
 //*** Uniform block definitions ************************************************
 
@@ -24,8 +24,8 @@ uniform mat4 projection;
 void main(void)
 {   
 	wsPosition = position.xyz;
-	vsPosition = vec3( model * vec4(position, 1.0) );
-	vsNormal = vec3( normalize(transpose(inverse(model * view)) * vec4(normal, 0.0)) );
+	vsPosition = vec3( view * model * vec4(position, 1.0) );
+	vsNormal = vec3(normalize(transpose(inverse(model * view)) * vec4(normal, 0.0)) );
 	vsUV = uv;
 
 	gl_Position = projection * view * model * vec4(position, 1.0);

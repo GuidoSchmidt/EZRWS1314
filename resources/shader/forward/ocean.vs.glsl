@@ -1,5 +1,5 @@
 //VERTEX SHADER
-#version 440
+#version 400
 
 //--- Uniform block definitions ------------------------------------------------
 

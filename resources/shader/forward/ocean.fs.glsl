@@ -1,5 +1,5 @@
 //FRAGMENT SHADER
-#version 440
+#version 400
 
 //--- Input --------------------------------------------------------------------
 in vec3 normal;

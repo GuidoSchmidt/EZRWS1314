@@ -189,6 +189,7 @@ void Renderer::setupShaderStages()
 	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 1, 1000, 16, sunTex);
 	sun->setupShadowMapping(glm::vec2(4096));
 
+
 	//--- SHADER PROGRAMS ------------------------------------------------------------------------------------
 	m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
 												GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl");
