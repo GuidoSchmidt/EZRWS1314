@@ -186,6 +186,10 @@ void Renderer::setupShaderStages()
 	scene::Transform trans = scene::Transform(glm::vec3(0), glm::toQuat(glm::mat4(1)), glm::vec3(1));
 	GLint sunTex = scene::SceneManager::instance()->loadTexture(RESOURCES_PATH "/textures/sun.dds", true);
 
+	// Setup Ocean
+	oceanScale = glm::mat4(15);
+	oceanScale[3][3] = 1;
+
 	sun = new scene::Sun(1337, "sun", trans, glm::vec3(1), 60, 1000, 16, sunTex);
 	sun->setupShadowMapping(glm::vec2(4096));
 
@@ -510,7 +514,7 @@ void Renderer::renderloop(GLFWwindow *window)
 	}
 
 	//! Draw Ocean's Eleven
-	m_shaderProgram_forward->setUniform(forward_uniform_loc_model, oceanNode->getTransform()->getModelMatrix() * skyScale);
+	m_shaderProgram_forward->setUniform(forward_uniform_loc_model, oceanNode->getTransform()->getModelMatrix() * oceanScale);
 	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_diffuse_tex, ocean_tex_diffuse, 4);
 	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_specular_tex, ocean_tex_specular, 5);
 	m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, ocean_tex_normal, 6);
