@@ -506,7 +506,7 @@ void Renderer::renderloop(GLFWwindow *window)
 		m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_normal_tex, m_renderqueue[i]->getMaterial()->getNormalTexture(), 3);
 		if(m_renderqueue[i]->getName() == "statue")
 			m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_translucent_tex, statue_translucent_tex, 4);
-		if (m_renderqueue[i]->getName() == "leaves")
+		if (m_renderqueue[i]->getName() == "leaves-01" || m_renderqueue[i]->getName() == "leaves-02")
 			m_shaderProgram_forward->setUniformSampler(forward_uniform_loc_translucent_tex, leaves_translucent_tex, 4);
 		m_shaderProgram_forward->setUniform(forward_uniform_loc_translucency, m_renderqueue[i]->getMaterial()->getTranslucency());
 

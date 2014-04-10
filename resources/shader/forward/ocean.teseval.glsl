@@ -1,3 +1,4 @@
+#version 440
 
 //--- Input --------------------------------------------------------------------
 layout(triangles, equal_spacing, cw) in;

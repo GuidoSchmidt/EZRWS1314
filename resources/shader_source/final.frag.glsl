@@ -58,6 +58,7 @@ void main()
 	else
 		minAveMax = texture(minAveMaxTexture,vec2(0.0,0.0)).rgb; 
 
+	/*
 	if (gl_FragCoord.x < screenSize.x/2 && gl_FragCoord.y > screenSize.y/2 )
 		colorOut = reinhard(texture(topLeft,UV*2-vec2(0,1)));
 	else if (gl_FragCoord.x > screenSize.x/2 && gl_FragCoord.y > screenSize.y/2 )
@@ -66,7 +67,7 @@ void main()
 		colorOut = reinhard(texture(lowerRight,UV*2-vec2(1,0)));
 	else if (gl_FragCoord.x < screenSize.x/2 && gl_FragCoord.y < screenSize.y/2 )
 		colorOut = reinhard(texture(lowerLeft,UV*2));
-
+	*/
 
 
 	//if (gl_FragCoord.x < screenSize.x/4 && gl_FragCoord.y < screenSize.y/4 )
@@ -107,6 +108,6 @@ void main()
 	
 
 	//colorOut = texture(topLeft,UV);
-	//colorOut = reinhard(texture(lowerRight,UV));
+	colorOut = reinhard(texture(lowerRight,UV));
 
 }

@@ -203,7 +203,7 @@ void main(void)
     }
     else 
     {
-        float shadowSum = 0;
+        float shadowSum = 0.0;
         float bias = 0.001; // clamp(bias, 0, 0.01);
 
         distanceFromLight = textureOffset(shadow_map, projShadowcoord.st,ivec2(-1,-1)).z;
@@ -222,21 +222,17 @@ void main(void)
         if (distanceFromLight < projShadowcoord.z-bias)
                 shadowSum +=0.25;
 
-        shadowSum *= shadow_amount*0.8;
-
-        shadowMultiplier = 1 - shadowSum;
+        shadowSum *= shadow_amount * 0.8;
+        
+        shadowMultiplier = (1 - shadowSum);
     }
 
 	vec3 transFac = translucencyFac( normal, -vsPosition );
     vec4 lightpos = view * vec4( light_position , 1.0);
     vec3 shaded = phong(vsPosition, lightpos, normal, diffuse_color, specular_color, shininess) + transFac;
     shaded += phongLamp(vsPosition, vsN);
-
-    // fragcolor.rgb  = vsN;
-    // fragcolor.a = 0;
     
     fragcolor = vec4(shaded * shadowMultiplier, texture(diffuse_map,vsUV).a);
-    //fragcolor = vec4(shaded, texture(diffuse_map,vsUV).a);
     fragcolor2 = vec4(0.0);
 
 	/*
