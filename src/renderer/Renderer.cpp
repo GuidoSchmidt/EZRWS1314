@@ -192,13 +192,13 @@ void Renderer::setupShaderStages()
 	//--- SHADER PROGRAMS ------------------------------------------------------------------------------------
 	m_shaderProgram_forward = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
 												GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/forward.fs.glsl");
-
+	/*
 	m_shaderProgram_ocean = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/ocean.vs.glsl",
 											  GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/ocean.fs.glsl",
 											  GLSL::TESS_CONTROL, RESOURCES_PATH "/shader/forward/ocean.tesctrl.glsl",
 											  GLSL::TESS_EVALUATION, RESOURCES_PATH "/shader/forward/ocean.teseval.glsl",
 											  GLSL::GEOMETRY, RESOURCES_PATH "/shader/forward/ocean.geo.glsl");
-
+	*/
 	m_shaderProgram_sky = new ShaderProgram(GLSL::VERTEX, RESOURCES_PATH "/shader/forward/forward.vs.glsl",
 											GLSL::FRAGMENT, RESOURCES_PATH "/shader/forward/sky.fs.glsl");
 
@@ -269,6 +269,7 @@ void Renderer::setupRenderer(GLFWwindow* window)
 	forward_uniform_loc_translucency = m_shaderProgram_forward->getUniform("translucency");
 
 	//! Ocean shader
+	/*
 	ocean_uniform_loc_view = m_shaderProgram_ocean->getUniform("view");
 	ocean_uniform_loc_projection = m_shaderProgram_ocean->getUniform("projection");
 	ocean_uniform_loc_model = m_shaderProgram_ocean->getUniform("model");
@@ -280,6 +281,7 @@ void Renderer::setupRenderer(GLFWwindow* window)
 	ocean_uniform_loc_light_color = m_shaderProgram_ocean->getUniform("light_color");
 	ocean_uniform_loc_tesInner = m_shaderProgram_ocean->getUniform("TessLevelInner");
 	ocean_uniform_loc_tesOuter = m_shaderProgram_ocean->getUniform("TessLevelOuter");
+	*/
 
 	//! Sky shader
 	sky_uniform_loc_model = m_shaderProgram_sky->getUniform("model");
@@ -467,9 +469,6 @@ void Renderer::renderloop(GLFWwindow *window)
 	glDepthMask(GL_TRUE);
 	glDisable(GL_BLEND);
 
-
-	//glEnable(GL_BLEND);
-	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// Forward rendering
 	m_shaderProgram_forward->use();
 	m_shaderProgram_forward->setUniform(use_tesselation_uniform, FALSE);
@@ -508,24 +507,11 @@ void Renderer::renderloop(GLFWwindow *window)
 
 		m_renderqueue[i]->drawTriangles();
 	}
-	m_shaderProgram_forward->unuse();
 
-	//! Draw Ocean
-	m_shaderProgram_ocean->use();
-	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_tesInner, 8);
-	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_tesOuter, 4);
-	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_view, view);
-	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_projection, projection);
-	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_model, oceanNode->getTransform()->getModelMatrix() * skyScale);
-	m_shaderProgram_ocean->setUniform(ocean_uniform_loc_shininess, 200.0f);
-	m_shaderProgram_ocean->setUniformSampler(ocean_uniform_loc_diffuse_tex, ocean_tex_diffuse, 1);
-	m_shaderProgram_ocean->setUniformSampler(ocean_uniform_loc_specular_tex, ocean_tex_specular, 2);
-	m_shaderProgram_ocean->setUniformSampler(ocean_uniform_loc_normal_tex, ocean_tex_normal, 3);
+	//! Draw Ocean's Eleven
+	oceanNode->drawTriangles();
 	
-	glPatchParameteri(GL_PATCH_VERTICES, 3);
-	oceanNode->drawPatches();
-	
-	m_shaderProgram_ocean->unuse();
+	m_shaderProgram_forward->unuse();
 
 	gBuffer->unbind();
 	glDisable(GL_BLEND);
